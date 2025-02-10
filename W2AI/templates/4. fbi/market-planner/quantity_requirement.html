@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+    <title>Way2AgriIntel AI |Market Planner Quantity Requirement</title>
+    <link href="{% static 'css/form.css' %}" rel="stylesheet"/>
+{% endblock %}
+{% block header %}{% endblock %}
+{% block content %}
+<div class="background-container">
+    <div class="content">
+        <h3 class="fund-head">Quantity Requirement</h3>
+        <form method="POST" class="form-md">
+            {% csrf_token %}
+            <div class="form-group-container">
+                <div class="form-group full-width">
+                    {{ form.crops }}
+                    <label for="{{ form.crops.id_for_label }}">{{ form.crops.label }}</label>
+                </div>
+                <div class="form-group full-width">
+                    {{ form.crop_varieties }}
+                    <label for="{{ form.crop_varieties.id_for_label }}">{{ form.crop_varieties.label }}</label>
+                </div>
+                <div class="form-group full-width">
+                    {{ form.quantity_required }}
+                    <label for="{{ form.quantity_available.id_for_label }}">{{ form.quantity_required.label }}</label>
+                </div>
+                {% for field in form.visible_fields %}
+                    {% if field.name|slice:":7" == 'amount_' %}
+                        <div class="form-group amount-group">{{ field }} <label for="{{ field.id_for_label }}">{{ field.label }}</label></div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <br><br>
+            <button type="submit"><span></span><span></span><span></span><span></span>Submit</button><br>
+        </form>
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    var inputFields = document.querySelectorAll("input");
+    inputFields.forEach(function(input) {
+        var label = input.nextElementSibling;
+        input.addEventListener("input", function() {
+            if (input.value.trim() !== "") {
+                label.style.height = "10px"; 
+                label.style.lineHeight = "25px"
+                label.style.color = "darkgreen"; 
+            } 
+        });
+    });
+});
+</script>
+{% endblock %}

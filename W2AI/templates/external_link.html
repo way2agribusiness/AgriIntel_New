@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="	https://res.cloudinary.com/dm71xhdxd/image/upload/v1696049315/Static%20Images/logo_fiiga6.png"/>
+    <title>Way2AgriIntel AI| Backlinks</title>
+    <link rel="canonical" href="{{canonical}}">
+</head>
+<body>
+    <div id="backlinks">
+        {% for links in links_list %} 
+            {% for link in links %}
+                <a href="{{ link }}" rel="noopener" target="_blank">{{ link }}</a><br>
+            {% endfor %}
+        {% endfor %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+    <title>Way2AI | {{user.username|capfirst}} Dashboard</title>
+    <link href="{% static 'css/auth.css' %}" rel="stylesheet"/>        	
+	
+{% endblock %}
+{% block header %}{% endblock %}
+{% block content %}
+    <i class="material-icons" id="account-icon" onclick="openProfile(event)">account_box</i>
+    <div class="dashboard-div">
+        <section class="profile-sec">
+            <h3 id="username"><span></span>Welcome <span>{{user.username|capfirst}}</span></h3>
+            <p><strong>Name</strong><span>{{user_data.name | capfirst}}</span></p>
+            <p><strong>Whatsapp No.</strong><span>{{user_data.whatsapp_no}}</span></p>
+            <p><strong>Registration Date </strong><span>{{user.date_joined}}</span></p>
+            {% if user.email %}
+                <p><strong>Email ID</strong><span>{{user.email}}</span></p>
+            {% endif %}
+            {% if user_data.district %}
+                <p><strong>Current Location</strong><span>{{user_data.district}}</span></p>
+            {% endif %} 
+            {% if user_data.zone_district %}
+                <p><strong>Crop Grown Location</strong><span>{{user_data.zone_district}}</span></p>
+            {% endif %}
+            {% if user_data.taluk %}
+                <p><strong>Taluk</strong><span>{{user_data.taluk}}</span></p>
+            {% endif %}
+            {% if user_data.village %}
+                <p><strong>Village</strong><span>{{user_data.village}}</span></p>
+            {% endif %}
+            {% if user_data.zone %}
+                <p><strong>Zone</strong><span>{{user_data.zone}}</span></p>
+            {% endif %}
+            {% if user_data.state %}
+                <p><strong>State</strong><span>{{user_data.state}}</span></p>
+            {% endif %}
+            {% if user_data.zip_code %}
+                <p><strong>ZIP Code</strong><span>{{user_data.zip_code}}</span></p>
+            {% endif %}
+            <div class="btns">
+                {% if plots.plot_name == None %}
+                    <button type="submit" class="cp">
+                        <i class="fa-solid fa-pencil"></i>
+                        <a href="{% url 'W2AI:update-user-profile' %}">Complete Profile</a>
+                    </button>
+                {% endif %}
+            </div>
+            <br>
+            <div class="features">
+                <h3>Our Services</h3><br>
+                <div class="services">
+                    <div id="hover-link" {% if plots.plot_name == None %}onmouseover="hoverMessage()" onmouseleave="mouseLeave()"{% endif %}><a href="{% url 'W2AI:cropintel' %}" {% if plots.plot_name == None %}style="pointer-events:none"{% endif %}>CropIntel</a></div>
+                    <div id="hover-link" {% if plots.plot_name == None %}onmouseover="hoverMessage()" onmouseleave="mouseLeave()"{% endif %}><a href="{% url 'W2AI:agriclinic' %}" {% if plots.plot_name == None %}style="pointer-events:none"{% endif %}>Agri Clinic</a></div>
+                    <div id="hover-link" {% if plots.plot_name == None %}onmouseover="hoverMessage()" onmouseleave="mouseLeave()"{% endif %}><a href="{% url 'W2AI:agmachinex' %}" {% if plots.plot_name == None %}style="pointer-events:none"{% endif %}>AgMachineX</a></div>
+                    <div id="hover-link" {% if plots.plot_name == None %}onmouseover="hoverMessage()" onmouseleave="mouseLeave()"{% endif %}><a href="{% url 'W2AI:agri-fbi' %}" {% if plots.plot_name == None %}style="pointer-events:none"{% endif %}>Way2ABI Agri FBI</a></div>
+                    <div id="hover-link" {% if plots.plot_name == None %}onmouseover="hoverMessage()" onmouseleave="mouseLeave()"{% endif %}><a href="{% url 'W2AI:nutritracker' %}" {% if plots.plot_name == None %}style="pointer-events:none"{% endif %}>NutriTracker</a></div>
+                </div>
+                <div id="message">Please Complete Your Profile (<strong style="color:darkgreen">"Complete Profile"</strong>)</div>
+            </div>
+        </section>
+        <section class="dashboard-center">
+            {% if plots.plot_name == None %}
+                <p>Please Complete Your Profile by Clicking <strong style="color:darkgreen">"Complete Profile"</strong> in left side Pane</p>
+            {% endif %}
+        </section>
+        <section class="profile-info">
+            <div class="loc-weather">
+                <div>
+                    <h2>Device Location</h2>
+                    <h3>
+                        <img src="https://res.cloudinary.com/dm71xhdxd/image/upload/v1705925079/Static%20Images/map_tpmloy.png"/> 
+                        <span>{{city}} {{region}} {{country}}-{{postal_code}}</span>
+                    </h3>
+                    <h4>
+                        <span><strong>Longitude Coordinate: </strong></span>
+                        <span>{{longitude}}</span>
+                    </h4>
+                    <h4>
+                        <span><strong>Latitude Coordinate: </strong></span>
+                        <span>{{latitude}}</span>
+                    </h4>
+                </div>
+                <div>
+                    <h2>Weather Profile</h2>
+                    <p style="text-align: center">{{day}}</p>
+                    <h3>
+                        <img src="http://openweathermap.org/img/w/{{icon}}.png"/>
+                        <span>{{description | capfirst}}</span>
+                        
+                    </h3>
+                    <h4>
+                        <span><strong>Temperature: </strong></span>
+                        <span>{{temp}} C</span>
+                    </h4>
+                    <h4>
+                        <span><strong>Weather: </strong></span>
+                        <span>{{main}}</span>
+                    </h4>
+                    <h4>
+                        <span><strong>Feels Like: </strong></span>
+                        <span>{{feels_like}} C</span>
+                    </h4>
+                    <h4>
+                        <span><strong>Humidity: </strong></span>
+                        <span>{{humid}} %</span>
+                    </h4>
+                    <h4>
+                        <span><strong>Wind Speed: </strong></span>
+                        <span>{{wind}} miles/h</span>
+                    </h4>
+                    <h4>
+                        <span><strong>Wind Degree: </strong></span>
+                        <span>{{wind_deg}} deg</span>
+                    </h4>
+                    <h4>
+                        <span><strong>Wind Direction: </strong></span>
+                        {% if wind_deg == 0 or wind_deg == 360 %}
+                            <span>North</span>
+                        {% elif wind_deg > 0 and wind_deg < 90 %}
+                            <span>North East</span>
+                        {% elif wind_deg == 90 %}
+                            <span>{{wind_deg}} deg and Direction: East</span>
+                        {% elif wind_deg > 90 and wind_deg < 180 %}
+                            <span>South East</span>
+                        {% elif wind_deg == 180 %}
+                            <span>South</span>
+                        {% elif wind_deg > 180 and wind_deg < 270 %}
+                            <span>West South</span>
+                        {% elif wind_deg == 270 %}
+                            <span>West</span>
+                        {% elif wind_deg > 270 or wind_deg < 360 %}
+                            <span>North West</span>
+                        {% endif %}
+                    </h4>
+                    <h4>
+                        <span><strong>Cloud: </strong></span>
+                        <span>{{cloud}} %</span>
+                    </h4>
+                    <h4>
+                        <span><strong>Sunrise Time: </strong></span>
+                        <span>{{sunrise}}</span>
+                    </h4>
+                    <h4>
+                        <span><strong>Sunset Time: </strong></span>
+                        <span>{{sunset}}</span>
+                    </h4>
+                    <h4>
+                        <span><strong>Atmospheric Pressure: </strong></span>
+                        <span>{{pressure}} hPa</span>
+                    </h4>
+                </div>
+            </div>
+        </section>
+        
+    </div>
+    <script>
+    	const msg = document.getElementById('message')
+        msg.style.display='none';
+        function hoverMessage(){
+            msg.style.display='block';
+            msg.style.position='absolute';
+            msg.style.top='95%';
+            msg.style.left='300px';
+        }
+        function mouseLeave(){
+            msg.style.display='none';
+        }
+        const profileSec = document.querySelector('.profile-sec');
+        const weatherSec = document.querySelector('.profile-info');
+        const profileIcon = document.getElementById('account-icon');
+        const weatherIcon = document.getElementById('account-icon1');
+        const dashBoard = document.querySelector('.dashboard-div');
+        const userName = document.getElementById('username');
+        const services = document.querySelector('.features');
+       
+        if (window.innerWidth <= 768){
+            profileSec.style.display = 'none';
+            profileIcon.insertAdjacentElement('beforebegin',userName);
+            profileIcon.insertAdjacentElement('afterend',services);
+        }
+        function openProfile(){
+            if (profileSec.style.display === 'none'){
+                profileSec.style.display = 'block';
+            }else{
+                profileSec.style.display = 'none';
+            } 
+        }
+    </script>
+{% endblock %}
+

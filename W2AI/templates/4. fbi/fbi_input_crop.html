@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+    <title>Way2AgriIntel AI | Way2ABI Agri FBI</title>
+    <link rel="stylesheet" href="{% static 'css/nutricrops.css' %}"/>
+{% endblock %}
+{% block header %}{% endblock %}
+{% block content %}
+    <p class="note">
+        Access to the online service will be available shortly after the launch of the <strong>"Agri FBI"</strong> module. 
+        Until then, our team will call you to offer an interim solution over the phone. 
+        Kindly complete and submit the form below./ 
+        Agri FBI ಮಾಡ್ಯೂಲ್ ಸ್ವಲ್ಪ ಸಮಯದ ನಂತರ ಆನ್‌ಲೈನ್ ಸೇವೆಗೆ ಲಭ್ಯವಿರುತ್ತದೆ. ಅಲ್ಲಿಯವರೆಗೆ, ನಮ್ಮ ತಂಡವು ಫೋನ್ ಮೂಲಕ ಮಧ್ಯಂತರ ಪರಿಹಾರವನ್ನು ನೀಡಲು ನಿಮಗೆ ಕರೆ ಮಾಡುತ್ತದೆ. ದಯವಿಟ್ಟು ಕೆಳಗಿನ ಫಾರ್ಮ್ ಪೂರ್ಣಗೊಳಿಸಿ ಮತ್ತು ಸಲ್ಲಿಸಿ.
+    </p>
+    <br>
+	<h1 id="select-crop">Select Crop</h1>
+    <br>
+    <form method="POST" id="crop-form">
+        {% csrf_token %}
+        <div  class="crops">
+            {% for crop in crops %}
+                <div class="selected-crops">
+                    <div>
+                        <img src="{{crop.crop_image.url}}" alt="{{crop.crop}}" loading="lazy">
+                        <p>{{crop.crop}}</p>
+                    </div>
+                    <input type="checkbox" name="crops" value="{{crop.crop}}" id="{{crop.crop}}">
+                </div>
+            {% endfor %}
+        </div>
+        <button class="btn">Submit</button>
+    </form>
+{% endblock %}

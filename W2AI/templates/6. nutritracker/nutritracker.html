@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+    <title>Way2AgriIntel AI | NutriTracker {% if title %}| {{title}} {% endif %}</title>
+{% endblock %}
+{% block content %}
+	<br><br><br>
+    <div class="intro">
+        <div class="div1">
+            <img src="https://res.cloudinary.com/dm71xhdxd/image/upload/v1714453408/Static%20Images/NutriTracker_x1zeer.webp" alt="NutriTracker Logo" loading="lazy"/>
+        </div>
+        <div class="div2">
+            <h3>About NutriTracker</h3>
+        	<p><strong>NutriTracker</strong>, a flagship service by Way2Agribusiness India Pvt Ltd under Way2AgriIntel, revolutionizes nutrient management for farmers. It encompasses robust features such as Farmers’ profile management, nutrient application monitoring, nutrient sourcing aid, precision nutrient scheduling, and efficient nutrient usage. NutriTracker leverages a wealth of data including farmers' input, historical application records, and recommendations from the Agri Clinic module to tailor nutrient schedules. It prioritizes rescheduling and notification provisions for timely adjustments. The cornerstone of NutriTracker is the "AgriClinic" module, powered by AI and machine learning models. These advanced algorithms analyze diverse factors like soil composition, weather conditions, and plant attributes to generate optimized nutrient recommendations. NutriTracker covers a wide array of crops, ensuring comprehensive nutrient management across various agricultural landscapes.<p>
+        	{% if not user.is_authenticated %}
+                <span class="tooltiptext">Click <a href="{% url 'W2AI:login_url' %}" id="login">Login</a>  for Access Service</span>
+            {% endif %}
+    	</div>
+    </div>  
+	{% if user.is_authenticated %}
+	    <div class="click" id="hover-link" {% if user.username not in plot_data %}onmouseover="hoverMessage()" {% endif %}>
+		    <a href="{% url 'W2AI:nutri-tracker-input-form' %}" {% if user.username not in plot_data %}style="pointer-events:none"{% endif %}>Click Here</a>
+	    </div>
+        <div id="message" >Please Complete Your Profile click (<strong style="color:darkgreen"><a href="{% url 'W2AI:update-user-profile' %}">"Complete Profile"</a></strong>)</div>
+	{% endif %} 
+	<br><br>
+	<br>
+	<script>
+    	const msg = document.getElementById('message');
+        msg.style.display='none';
+        function hoverMessage(){
+            msg.style.display='block';
+            msg.style.marginLeft='800px';
+            msg.style.marginTop='-25px';
+            msg.style.opacity='1';
+        }
+        window.onload = setInterval(() => msg.style.opacity = '0', 5000);
+    </script>
+{% endblock %}

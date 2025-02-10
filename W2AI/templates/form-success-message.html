@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/report.css' %}"/>
+    <title>Way2AgriIntel AI | Form Submission Success </title>
+{% endblock %}
+{% block header %}{% endblock %}
+{% block content %}
+    <br><br>
+    <div class="popup-form">
+        <center><img src="https://res.cloudinary.com/dm71xhdxd/image/upload/v1718688659/Static%20Images/depositphotos_12065279-stock-photo-green-check-mark-symbol_bfddel-removebg-preview_l47dki.png" alt="form-submitted-successfully" loading="lazy"></center>
+        <h4 style="line-height:50px; font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;text-transform: capitalize;">
+            Thank You for your inquiry &#128522; !!! We have received your submission and will contact you soon with telephonic advice. Our instant online recommendations are in the final stage and will be available shortly.
+            <br>
+            <span style="font-size:0.8em;">ನಿಮ್ಮ ಪ್ರಶ್ನೆಗಾಗಿ ಧನ್ಯವಾದಗಳು &#128522; !!! ನಿಮ್ಮ ಸಲ್ಲಿಕೆಯನ್ನು ನಾವು ಸ್ವೀಕರಿಸಿದ್ದೇವೆ ಮತ್ತು ದೂರವಾಣಿ ಸಲಹೆಯೊಂದಿಗೆ ಶೀಘ್ರದಲ್ಲೇ ನಿಮ್ಮನ್ನು ಸಂಪರ್ಕಿಸುತ್ತೇವೆ. ನಮ್ಮ ತ್ವರಿತ ಆನ್‌ಲೈನ್ ಶಿಫಾರಸುಗಳು ಅಂತಿಮ ಹಂತದಲ್ಲಿವೆ ಮತ್ತು ಶೀಘ್ರದಲ್ಲೇ ಲಭ್ಯವಿರುತ್ತವೆ.</span>
+        </h4>
+        <center><button><a href="{% url 'W2AI:dashboard' %}">Go Back</a></button></center>
+    </div>
+    <br><br>
+{% endblock %}

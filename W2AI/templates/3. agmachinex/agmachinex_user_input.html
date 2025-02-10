@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+    <title>Way2AgriIntel AI | AgMachineX Input Form</title>
+    <link href="{% static 'css/auth.css' %}" rel="stylesheet"/>
+{% endblock %}
+{% block header %}{% endblock %}
+{% block content %}
+<br>
+<div class="form-div"> 
+    <br>
+    <p class="note">
+      Access to the online service will be available shortly after the launch of the <strong>"AgMachineX"</strong> module. 
+      Until then, our team will call you to offer an interim solution over the phone. 
+      Kindly complete and submit the form below./ 
+      AgMachineX ಮಾಡ್ಯೂಲ್ ಸ್ವಲ್ಪ ಸಮಯದ ನಂತರ ಆನ್‌ಲೈನ್ ಸೇವೆಗೆ ಲಭ್ಯವಿರುತ್ತದೆ. ಅಲ್ಲಿಯವರೆಗೆ, ನಮ್ಮ ತಂಡವು ಫೋನ್ ಮೂಲಕ ಮಧ್ಯಂತರ ಪರಿಹಾರವನ್ನು ನೀಡಲು ನಿಮಗೆ ಕರೆ ಮಾಡುತ್ತದೆ. ದಯವಿಟ್ಟು ಕೆಳಗಿನ ಫಾರ್ಮ್ ಪೂರ್ಣಗೊಳಿಸಿ ಮತ್ತು ಸಲ್ಲಿಸಿ.
+    </p>
+    <br>
+    <h3 class="register">AgMachineX Input Form</h3> 
+      <form method="post" class="for-crop1">
+        <br>
+        {% csrf_token %}
+        <p>All <span class="valid">*</span> marked are required fields <span>(ಎಲ್ಲಾ <span class="valid">*</span> ಗೆರೆಗಳು ಅಗತ್ಯವಿದೆ)</span></p>
+        <div id="repeat-form-div">
+          {% for field in form %}
+            <div class="inside-form">
+              <div id = "{{field.id_for_label}}-div">
+                <div>
+                  <label for="{{field.id_for_label}}">{{field.label}} <span class="valid">*</span></label>
+                </div>
+                <div>{{field}}</div><br>
+                {% if field.errors %}
+                  <div>{{field.errors}}</div><br>
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+        <br><br>
+        <div class="button-div"><button type="submit">Input</button></div><br><br>
+      </form>
+</div>
+<br>
+<script>
+  // Retrieve all field elements by their IDs
+  const landArea = document.getElementById('id_land_area-div');
+  const machineAvl = document.getElementById('id_machine_available-div');
+  const laboursEmpl = document.getElementById('id_labours_employed-div');
+  const irrigationReq = document.getElementById('id_irrigation_req-div');
+  const irrigationAvl = document.getElementById('id_other_current_irrigation-div');
+  const budget = document.getElementById('id_budget-div');
+  const waterSource = document.getElementById('id_water_source-div');
+  const waterAvail = document.getElementById('id_water_availability-div');
+  const soilCond = document.getElementById('id_soil_condition-div');
+  const vegetationtype = document.getElementById('id_vegetation_type-div');
+
+  // Hide all fields initially
+  function hideAllFields() {
+    landArea.style.display = 'none';
+    machineAvl.style.display = 'none';
+    laboursEmpl.style.display = 'none';
+    irrigationReq.style.display = 'none';
+    irrigationAvl.style.display = 'none';
+    budget.style.display = 'none';
+    waterSource.style.display = 'none';
+    waterAvail.style.display = 'none';
+    soilCond.style.display = 'none';
+    vegetationtype.style.display = 'none';
+  }
+
+  hideAllFields(); // Initial call to hide all fields
+
+  document.getElementById('id_machinery_req').addEventListener('change', function(event) {
+    
+
+    let choice = event.target.value;
+
+    hideAllFields(); // Reset visibility of all fields
+
+    if (choice === 'Irrigation Systems') {
+      irrigationReq.style.display = 'block';
+      irrigationAvl.style.display = 'block';
+      budget.style.display = 'block';
+      landArea.style.display = 'block';
+      vegetationtype.style.display = 'none';  // Ensure visibility for irrigation systems
+      waterSource.style.display = 'block';
+      waterAvail.style.display = 'block';
+    } else if (choice === 'brush cutter') {
+      budget.style.display = 'block';
+      landArea.style.display = 'block';
+      machineAvl.style.display = 'block';
+      vegetationtype.style.display = 'block';  // Ensure visibility for brush cutter
+      laboursEmpl.style.display = 'block';
+    } else {
+      landArea.style.display = 'block';
+      machineAvl.style.display = 'block';
+      laboursEmpl.style.display = 'block';
+      budget.style.display = 'block';
+      soilCond.style.display = 'block';
+      // Vegetation type is not shown for other options
+    }
+
+  });
+</script>
+
+
+
+
+{% endblock %}

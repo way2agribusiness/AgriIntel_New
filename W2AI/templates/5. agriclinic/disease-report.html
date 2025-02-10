@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/report.css' %}" />
+<title>Way2AgriIntel AI | Crop Disease Report</title>
+{% endblock %}
+{% block header %}{% endblock %}
+{% block content %}
+<div class="report-container">
+  <h3>Image Recognition Report for {{ enquiry.crop }} Crop</h3>
+  <h2>Please Select which is indicating your entire plot</h2>
+
+  {% if predictions %}
+    <div class="predictions">
+      {% for prediction in predictions %}
+        <div class="prediction-item" onclick="showDetails(this)">
+          <h4>Image</h4>
+          <img src="{{ prediction.image }}" alt="Disease Image" class="disease-image" loading="lazy" />
+          <p><strong>Detected Disease:</strong> {{ prediction.predicted_class }}</p>
+          <p><strong>Confidence:</strong> {{ prediction.confidence }}%</p>
+          <form method="post" action="{% url 'W2AI:update_final_prediction' enquiry.id %}">
+            {% csrf_token %}
+            <input type="hidden" name="finalpredicted_class" value="{{ prediction.predicted_class }}">
+            <button type="submit" class="continue-link">Continue to Symptom Recognition</button>
+          </form>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>No predictions available.</p>
+  {% endif %}
+</div>
+
+<script>
+function showDetails(element) {
+  const items = document.querySelectorAll('.prediction-item');
+  items.forEach(item => {
+    if (item !== element) {
+      item.style.display = 'none';
+    } else {
+      item.style.display = 'block'; // Ensures the clicked item remains visible
+    }
+  });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,301 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block head %}
+	<title>Way2AgriIntel AI | Agritech Mart {% if title %}| {{title}}{% endif %}</title>
+	<link rel="stylesheet" href="{% static 'css/ats.css' %}" />
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+{% endblock %} 
+{% block header %}{% endblock %}
+{% block content %}
+       <br>
+       <button class="scale-btn" onclick="scrollToSection()"><i class="material-icons">pan_tool_alt</i><span>Start to Scale Up (To be filled by Manufacturers)</span></button>
+       <br><br>
+      <div class="ats-intro">
+        {% if intro %}
+          {% for i in intro %}
+            <h2>{{i.title}}</h2><br><br>
+            <p>{{i.description}}</p>
+          {% endfor %}
+        {% else %}
+          {{error_message}}
+        {% endif %}
+      </div>
+      <br>
+      <div class="ats">
+        <div class="ats-div">
+          {% if data or contact_info %}
+            <select id="ats-category" onchange="selectDropdwn(event)">
+              <option>Select Product Category</option>
+              {% for i in data %}
+                <option value="{{i.category_name}}">{{i.category_name}}</option>
+              {% endfor %}
+            </select>
+            <br><br>
+            <form name="form2" method="POST" id="form2">
+              {% csrf_token%}
+              {% for c in data %}
+                <select class="ats-select" style="display:none;" id="{{c.category_name}}" name="select-form2" onchange="sellerDropdwn(event)">
+                  <option value="" disabled selected>Select Seller</option>
+                  {% for i in contact_info %}
+                    {% if c.category_name == i.category.category_name %}
+                      <option value="{{i.contact_company_name}}--ats-category-company--{{c.category_name|slugify}}--{{i.contact_company_name|slugify}}" id="{{c.category_name}}" name="select-form2">{{i.contact_company_name}}</option>
+                    {% endif %}
+                  {% endfor %}
+                </select>
+              {% endfor %}
+            </form>
+          {% else %}
+            {{error_message}}
+          {% endif %}
+          <br>
+          <h4 class="scale">{{roadmap.roadmap_title}} <br><span>To be filled by Manufacturers</span></h4>
+          <img src="{{roadmap.ppt.url}}" alt="{{roadmap.alt}}" loading="lazy" style="width:100%;background-color:white;margin-top: -1.2em;">
+          <form name="form1" method="POST" enctype="multipart/form-data" class="seller-form" >
+            {% csrf_token %}
+          	<p style="font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; text-align:center;" id="all">All <strong style="color:red">*</strong> marked fields are mandatory</p>
+          	{% if message %}<center><p class="message">{{message}}</p></center>{% endif %}<br>
+            {% for field in form %}
+              {% if field.id_for_label == 'id_seller_product_avail' %}
+          			{% if field.field.required %}
+                		<label>{{field.label}}</label><span style="color: red;padding:0.2rem 0.8rem; font-weight:bold;font-size:1.1rem">*</span>
+                		{{field}}<br><br>
+          			{% else %}
+          				<label>{{field.label}}</label>
+                		{{field}}<br><br>
+          			{% endif %}
+              {% else %}
+          			{% if field.field.required %}
+                		{{field}}<span style="color: red;padding:0.2rem 0.8rem; font-weight:bold;font-size:1.1rem">*</span><br><br>
+          			{% else %}
+          				{{field}}<br><br>
+          			{% endif %}
+              {% endif %}
+            {% endfor %}
+          	<center><h4 class="upload">Upload Your Product Images</h4></center>
+          	<div id="form-count">{{ image_formset.management_form }}</div>
+          	<div id="plot-forms">
+                {% for form in image_formset %}
+                  {% for field in form %}
+                    <div class="input">{{field}}<i class="material-icons" id="close-{{field.id_for_label}}" style="display:none" onclick="deleteImage(event)">close</i></div>
+                  {% endfor %}
+                {% endfor %}
+            </div>
+          	<button type="button" id="add-plot-form" onclick="addImage()" >Add New Product Image</button>
+          	<br><br><br>
+            <div class="btn-div"><button name="form1">Submit</button></div>
+          	<br>
+          </form>
+        </div>
+        <div class="main-ats">
+          {% if data or contact_info %}
+            {% for i in data %}
+              <div class="ats-card" id="{{i.category_name}}-div">
+                <h2 class="category-h2">{{i.category_name}}</h2>
+                <br><br>
+                <div class="ats-category1" id="{{i.category_name}}">
+                  <img src="{{i.category_image}}">
+                  <p>{{i.category_text}}</p>
+                </div>
+                <br>
+              </div> <br>
+            {% endfor %}
+          {% else %}
+            {{error_message}}
+          {% endif %}
+        </div>
+      	<br>
+      	<div class="supplier-form" id="start-to-scale-up">
+
+        </div>
+      </div>
+      <br><br>
+    <script>
+      function selectDropdwn(event){
+        const restDiv = document.querySelectorAll(".ats-card");
+        const selectedDiv = document.getElementById(`${event.target.value}-div`);
+        const dropdwn = document.getElementById('ats-category');
+        const cntct = document.querySelectorAll(".ats-select");
+        const categoryDiv = document.querySelectorAll('.ats-category1');
+        const options = dropdwn.options;
+        for (let i=0; i < options.length; i++){
+          if (options[i].value !== event.target.value){
+            for (let j = 0; j< restDiv.length; j++){
+              if(restDiv[j].id === selectedDiv.id){
+                restDiv[j].style.display = 'block';
+                for (let k = 0; k< cntct.length; k++){
+                  if (cntct[k] && cntct[k].id && cntct[k].id === event.target.value) {
+                    cntct[k].style.display = 'block';
+                    if (categoryDiv[k].style.display === 'none'){
+                      categoryDiv[k].style.display = "flex";
+                    }
+                  }else if (cntct[k]) {
+                    cntct[k].style.display = 'none';
+                  }
+                }
+              }else{
+                restDiv[j].style.display = 'none';
+                for (let r = 0; r < restDiv.length; r++) {
+                  if (restDiv[r].style.display === 'none') {
+                    let nextElement = restDiv[r].nextElementSibling;
+                    if (nextElement && nextElement.tagName === 'BR') {
+                        nextElement.remove();
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      
+      function sellerDropdwn(event){
+        const allSellers = document.querySelectorAll('.ats-cnt');
+        const categoryDiv = document.querySelectorAll('.ats-category1');
+        const selectedSeller = document.getElementById(`${event.target.value.split('--')[0]}`);
+        for (let i=0; i< allSellers.length; i++) {
+          categoryDiv.forEach(function(category){
+            if(event.target.id === category.id){
+              category.style.display='none';
+            }
+          })
+          if (allSellers[i] && allSellers[i].id.split('-')[0] === event.target.value.split('--')[0]) {
+            allSellers[i].style.display = 'block';
+          } else if (allSellers[i]) {
+            allSellers[i].style.display = 'none';
+          }
+        }
+      }
+    if (window.innerWidth <= 768 ){
+        const sellerH2 = document.querySelector('.scale');
+        const targetDiv = document.querySelector('.supplier-form');
+        const sellerForm = document.querySelector('.seller-form');
+        if (targetDiv) {
+          targetDiv.appendChild(sellerH2);
+          targetDiv.appendChild(sellerForm);
+        }
+    }
+    function scrollToSection() {
+        const section = document.getElementById('start-to-scale-up');
+        if (section) {
+          section.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+    document.getElementById('id_atssellerproductimage_set-0-seller_product_images').style.display='block';
+    for (let i=1; i < 10; i++) {
+          const fileInput = document.getElementById(`id_atssellerproductimage_set-${i}-seller_product_images`);
+          fileInput.style.display = 'none';
+        }
+
+        const removeIcon = document.getElementById('close-id_atssellerproductimage_set-0-seller_product_images');
+        removeIcon.style.display = 'none';
+
+        for (let i=0; i<10; i++){
+          const deleteInput = document.getElementById(`id_atssellerproductimage_set-${i}-DELETE`);
+          deleteInput.style.display = 'none';
+        }
+        let count = 0;
+        function addImage() {
+          count += 1;
+          const fileInput = document.getElementById(`id_atssellerproductimage_set-${count}-seller_product_images`);
+          const openRemoveIcon = document.getElementById(`close-id_atssellerproductimage_set-${count}-seller_product_images`);
+          if (fileInput && openRemoveIcon) {
+            fileInput.parentNode.style.display = 'flex';
+            fileInput.parentNode.style.marginTop = '1rem';
+            fileInput.parentNode.style.gap = '1rem';
+            fileInput.style.display = 'flex';
+            openRemoveIcon.style.display = 'flex';
+            openRemoveIcon.style.cursor = 'pointer';
+            openRemoveIcon.style.fontWeight = 'bold';
+            openRemoveIcon.style.fontSize = '1rem';
+            openRemoveIcon.style.color = 'darkblue';
+          }
+          if(fileInput.id === 'id_atssellerproductimage_set-9-seller_product_images'){
+            if(fileInput.style.display === 'flex'){
+              const addBtn = document.getElementById('add-plot-form');
+        	    addBtn.style.display = 'none';
+            }
+          }
+        }
+        function deleteImage(event){
+          id = event.target.id;
+          if (id !== '0'){
+            const closeInput = document.getElementById(`id_atssellerproductimage_set-${id.split('-')[2]}-seller_product_images`);
+            const closeIcon = document.getElementById(`close-id_atssellerproductimage_set-${id.split('-')[2]}-seller_product_images`);
+            if(closeInput && closeIcon){
+              closeInput.style.display = 'none';
+              closeIcon.style.display = 'none';
+              if (closeInput.parentNode.className === 'input' && closeInput.parentNode.style.display === 'flex'){
+              	closeInput.parentNode.style.display = 'none';
+              }else{
+              	closeInput.parentNode.style.display = 'flex';
+              }
+            }
+          	if(closeInput.id === 'id_atssellerproductimage_set-9-seller_product_images'){
+            	if(closeInput.style.display === 'none'){
+              		const addBtn = document.getElementById('add-plot-form');
+        	    	addBtn.style.display = 'block';
+            	}
+            }
+          }
+        }
+    	  function prevImg(event){
+        const prodImg = document.querySelectorAll('.product-image');
+        let count = 0;
+        for (let i=0; i<prodImg.length; i++){
+          if (prodImg[i].id === event.target.id.split('-')[1]){
+            const selectedDiv = document.getElementById(`${prodImg[i].id}`);
+            let len1 = parseInt(event.target.id.split('-')[2])
+            if (len1 !== 1){
+              count = len1;
+              const currentImg = document.getElementsByClassName(`${event.target.id.split('-')[1]}-image-${count}`);
+              count--
+              const nextImg = document.getElementsByClassName(`${event.target.id.split('-')[1]}-image-${count}`);
+              if(nextImg){
+                currentImg[0].parentNode.style.display='none';
+                nextImg[0].parentNode.style.display='flex';
+                nextImg.style.cursor='zoom-in';
+              }else{
+                currentImg[0].parentNode.style.display='flex';
+                nextImg[0].parentNode.style.display='none';
+                currentImg.style.cursor='zoom-in';
+              }
+            }
+          }
+        }
+      }
+        function nextImg(event){
+        const prodImg = document.querySelectorAll('.product-image');
+        let count = 0;
+        for (let i=0; i<prodImg.length; i++){
+          if (prodImg[i].id === event.target.id.split('-')[1]){
+            const selectedDiv = document.getElementById(`${prodImg[i].id}`);
+            let len = parseInt(selectedDiv.children.length);
+            let len1 = parseInt(event.target.id.split('-')[2])
+            if ( len1 !== len){
+              count = len1;
+              const currentImg = document.getElementsByClassName(`${event.target.id.split('-')[1]}-image-${count}`);
+              count++
+              const nextImg = document.getElementsByClassName(`${event.target.id.split('-')[1]}-image-${count}`);
+              if(nextImg){
+                currentImg[0].parentNode.style.display='none';
+                nextImg[0].parentNode.style.display='flex';
+                nextImg.style.cursor='zoom-in';
+              }else{
+                currentImg[0].parentNode.style.display='flex';
+                nextImg[0].parentNode.style.display='none';
+                currentImg.style.cursor='zoom-in';
+              }
+            }
+          }
+        }
+      }
+        
+      document.querySelectorAll('.ats-select').forEach(selectElement => {
+        selectElement.addEventListener('change', function(event) {
+          const form = document.getElementById('form2');
+          form.submit();
+        });
+      });
+    </script>
+{% endblock %}

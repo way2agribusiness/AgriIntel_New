@@ -1,0 +1,208 @@
+{% extends 'admin/index.html' %}
+{% load i18n %}
+{% load static %}
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/admin_custom.css' %}">
+	<link rel="icon" type="image/x-icon" href="https://res.cloudinary.com/dm71xhdxd/image/upload/v1699434356/Static%20Images/AgMachineX_nvo5ao.png">
+{% endblock %}
+{% block branding %}
+	<h1 id="site-name">{% trans 'Way2AgriIntel AI Admin Panel' %}</h1>
+{% endblock %}
+{% block content %}
+    <div id ="content-main">
+        {% for app in app_list %}
+            {% if app.app_label == 'W2AI' %}
+                    <div class="app-{{app.app_label}} module">
+                        <table>
+                            <caption><a href="{{app.app_url}}" class="section" title="Models in the Appabi Admin Model">Way2AgriIntel AI Models</a></caption>
+                            <tbody>
+                                <thead class="admin">
+                                    <th>SEO Models</th>
+                                </thead>
+                                {% for model in app.models%}
+                                    {% if model.name == 'Enter SEO Content for WebPages' %}
+                                        <tr class="model-{{model.name}}">
+                                            <th scope="row"><a href="{{model.admin_url}}">{{model.name}}</a></th>
+                                            <td><a href="{{model.admin_url}}add/" class="addlink">Add</a></td>
+                                            <td><a href="{{model.admin_url}}" class="changelink">Change</a></td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                <thead class="admin">
+                                    <th>Home Page Models</th>
+                                </thead>
+                                {% for model in app.models%}
+                                    {% if model.name == 'Enter Cross Promotion Content' or model.name == 'Enter Kannada and English Description AGI' or model.name == 'Contact Number' %}
+                                        <tr class="model-{{model.name}}">
+                                            <th scope="row"><a href="{{model.admin_url}}">{{model.name}}</a></th>
+                                            <td><a href="{{model.admin_url}}add/" class="addlink">Add</a></td>
+                                            <td><a href="{{model.admin_url}}" class="changelink">Change</a></td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                <thead class="admin">
+                                    <th>FieldIntel Models</th>
+                                </thead>
+                                {% for model in app.models%}
+                                    {% if model.name == 'FieldIntel: Get User Feedback for Way2AgriIntel AI Services' or model.name == 'FieldIntel: Get User Farm Management Solutions Requirements Enquiries' %}
+                                        <tr class="model-{{model.name}}">
+                                            <th scope="row"><a href="{{model.admin_url}}">{{model.name}}</a></th>
+                                            <td><a href="{{model.admin_url}}add/" class="addlink">Add</a></td>
+                                            <td><a href="{{model.admin_url}}" class="changelink">Change</a></td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                <thead class="admin">
+                                    <th>Agritech Mart Models</th>
+                                </thead>
+                                {% for model in app.models%}
+                                    {% if model.name == 'Agritech Mart: Enter ATM Introduction' or model.name == 'Agritech Mart: Enter ATM Product Categories Info' or model.name == 'Agritech Mart: Enter ATM Supplier Info' or model.name == 'Agritech Mart: Enter ATM Supplier Product Info' or model.name == 'Agritech Mart: Get ATM Seller Enquiry' %}
+                                        <tr class="model-{{model.name}}">
+                                            <th scope="row"><a href="{{model.admin_url}}">{{model.name}}</a></th>
+                                            <td><a href="{{model.admin_url}}add/" class="addlink">Add</a></td>
+                                            <td><a href="{{model.admin_url}}" class="changelink">Change</a></td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                <thead class="admin">
+                                    <th>Registered User Models</th>
+                                </thead>
+                                {% for model in app.models%}
+                                    {% if model.name == 'Get Registered User Profile Info' or model.name == 'Get Registered User Plot Info' or model.name == 'Get Existing User Credentials' %}
+                                        <tr class="model-{{model.name}}">
+                                            <th scope="row"><a href="{{model.admin_url}}">{{model.name}}</a></th>
+                                            <td><a href="{{model.admin_url}}add/" class="addlink">Add</a></td>
+                                            <td><a href="{{model.admin_url}}" class="changelink">Change</a></td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                            	<thead class="admin">
+                                    <th>NutriTracker Models</th>
+                                </thead>
+                                {% for model in app.models%}
+                                    {% if model.name == 'NutriTracker Existing User Fertilizer Purchase Info' or model.name == 'NutriTracker New User Fertilizer Purchase Info' or model.name == 'NutriTracker Crop-Specific Scheduling Period Record' or model.name == 'NutriTracker User-Notification Record' %}
+                                        <tr class="model-{{model.name}}">
+                                            <th scope="row"><a href="{{model.admin_url}}">{{model.name}}</a></th>
+                                            <td><a href="{{model.admin_url}}add/" class="addlink">Add</a></td>
+                                            <td><a href="{{model.admin_url}}" class="changelink">Change</a></td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                <thead class="admin">
+                                    <th>AgMachineX Models</th>
+                                </thead>
+                                {% for model in app.models%}
+                                    {% if model.name == 'AgMachineX: Upload Farm Machinery & Drip Irrigation Specifications' or model.name == 'AgMachinex: Get User Enquiries' %}
+                                        <tr class="model-{{model.name}}">
+                                            <th scope="row"><a href="{{model.admin_url}}">{{model.name}}</a></th>
+                                            <td><a href="{{model.admin_url}}add/" class="addlink">Add</a></td>
+                                            <td><a href="{{model.admin_url}}" class="changelink">Change</a></td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                <thead class="admin">
+                                    <th>Agri FBI Models</th>
+                                </thead>
+                                {% for model in app.models%}
+                                    {% if model.name == 'Agri FBI: Upload Crop-Specific Market Prospects Reports' or model.name == 'Agri FBI: Get User Enquiries' or model.name == 'Agri FBI Market Planner: Get User Fund Requirement Enquiries' or model.name == 'Agri FBI Market Planner: Get User Quantity Requirement Enquiries' or model.name == 'Agri FBI Market Planner: Get User Actual Sales Enquiries' or model.name == 'Agri FBI Market Planner: Upload Monthly Crop-Specific Price Outlooks' %}
+                                        <tr class="model-{{model.name}}">
+                                            <th scope="row"><a href="{{model.admin_url}}">{{model.name}}</a></th>
+                                            <td><a href="{{model.admin_url}}add/" class="addlink">Add</a></td>
+                                            <td><a href="{{model.admin_url}}" class="changelink">Change</a></td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                <thead class="admin">
+                                    <th>CropIntel Models</th>
+                                </thead>
+                                {% for model in app.models%}
+                                    {% if model.name == 'CropIntel: Upload CropIntel Knowledge data' or model.name == 'CropIntel: Get User Enquiries' %}
+                                        <tr class="model-{{model.name}}">
+                                            <th scope="row"><a href="{{model.admin_url}}">{{model.name}}</a></th>
+                                            <td><a href="{{model.admin_url}}add/" class="addlink">Add</a></td>
+                                            <td><a href="{{model.admin_url}}" class="changelink">Change</a></td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                <thead class="admin">
+                                    <th>AgriClinic Models</th>
+                                </thead>
+                                {% for model in app.models%}
+                                    {% if model.name == 'AgriClinic: Store Crop-Specific Blanket NPK Values' or model.name == 'AgriClinic: Get User Enquiry from Nutrient Deficiency Form' or model.name == 'AgriClinic: Get User Image Recognition Enquiries' or model.name == 'AgriClinic: Store Crop-Ailments Specific Symptoms' or model.name == 'AgriClinic: Get User Symptom Recognition Enquiries' or model.name == 'AgriClinic: Store AgriClinic Products NPK Values' %}
+                                        <tr class="model-{{model.name}}">
+                                            <th scope="row"><a href="{{model.admin_url}}">{{model.name}}</a></th>
+                                            <td><a href="{{model.admin_url}}add/" class="addlink">Add</a></td>
+                                            <td><a href="{{model.admin_url}}" class="changelink">Change</a></td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                <thead class="admin">
+                                    <th>About Us Page Models</th>
+                                </thead>
+                                {% for model in app.models%}
+                                    {% if model.name == 'Upload Collabration Images' or model.name == 'Upload Credential Images' %}
+                                        <tr class="model-{{model.name}}">
+                                            <th scope="row"><a href="{{model.admin_url}}">{{model.name}}</a></th>
+                                            <td><a href="{{model.admin_url}}add/" class="addlink">Add</a></td>
+                                            <td><a href="{{model.admin_url}}" class="changelink">Change</a></td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                <thead class="admin">
+                                    <th>Contact Us Page Models</th>
+                                </thead>
+                                {% for model in app.models%}
+                                    {% if model.name == 'Get User Messages from Contact Us' %}
+                                        <tr class="model-{{model.name}}">
+                                            <th scope="row"><a href="{{model.admin_url}}">{{model.name}}</a></th>
+                                            <td><a href="{{model.admin_url}}add/" class="addlink">Add</a></td>
+                                            <td><a href="{{model.admin_url}}" class="changelink">Change</a></td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+            {% elif app.app_label == 'auth'%}
+                    <div class="app-{{app.app_label}} module">
+                        <table>
+                            <caption><a href="{{app.app_url}}" class="section" title="Models in the Auth Admin Model">Authentication & Authorization</a></caption>
+                            <tbody>
+                                {% for model in app.models%}
+                                    <tr class="model-{{model.name}}">
+                                        <th scope="row"><a href="{{model.admin_url}}">{{model.name}}</a></th>
+                                        <td><a href="{{model.admin_url}}add/" class="addlink">Add</a></td>
+                                        <td><a href="{{model.admin_url}}" class="changelink">Change</a></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+    		{% elif app.app_label == 'sites'%}
+    			<div class="app-{{app.app_label}} module">
+                        <table>
+                            <caption><a href="{{app.app_url}}" class="section" title="Models in the Auth Admin Model">Sites</a></caption>
+                            <tbody>
+                                {% for model in app.models%}
+                                    <tr class="model-{{model.name}}">
+                                        <th scope="row"><a href="{{model.admin_url}}">{{model.name}}</a></th>
+                                        <td><a href="{{model.admin_url}}add/" class="addlink">Add</a></td>
+                                        <td><a href="{{model.admin_url}}" class="changelink">Change</a></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                 </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endblock %}
+{% block sidebar %}
+    <div id="content-related">
+        <div class="module" id="recent-actions-module">
+            <h2 style="color:purple">{% translate 'Recent actions' %} </h2>
+            <h3 style="color:red">{% translate 'My actions' %}</h3>
+        </div>
+    </div>
+{% endblock %}

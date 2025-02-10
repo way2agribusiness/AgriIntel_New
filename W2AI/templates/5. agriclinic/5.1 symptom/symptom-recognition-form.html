@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/report.css' %}"/>
+    <title>Way2AgriIntel AI | Symptom Recognition Form</title>
+{% endblock %}
+{% block header %}{% endblock %}
+{% block content %}
+    <form method="POST">
+        {% csrf_token %}
+        {% for field in form %}
+            <label>{{field.label}}</label>
+            {{field}}<br><br>
+        {% endfor %}
+        <button>Submit</button>
+    </form>
+{% endblock %}

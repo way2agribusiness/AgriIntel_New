@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/report.css' %}"/>
+    <title>Way2AgriIntel AI | Nutrient Deficiency Report</title>
+{% endblock %}
+{% block header %}{% endblock %}
+{% block content %}
+    <div class="main-div">
+        <h3>Hi <span>{{name}}</span>, &nbsp;&nbsp;&nbsp;Your Nutrient Analysis Report</h3>
+        <h4>Total NPK Required for your <span>{{crop}}</span> crop and <span>{{area}}</span> acre land</h4>
+        <div class="report-table">
+            <div class="calci-caption">
+                <p>Total N Value</p>
+                <p>Total P Value</p>
+                <p>Total K Value</p>
+            </div>
+            <div class="calci">
+                <p>
+                    {% if final_nval > 0 %}
+                        {{final_nval | floatformat:2}} Kg
+                    {% else %}
+                        {{final_nval | floatformat:2}}
+                    {% endif %}
+                </p>
+                <p>
+                    {% if final_pval > 0 %}
+                        {{final_pval | floatformat:2}} Kg
+                    {% else %}
+                        {{final_pval | floatformat:2}}
+                    {% endif %}
+                </p>
+                <p>
+                    {% if final_kval > 0 %}
+                        {{final_kval | floatformat:2}} Kg
+                    {% else %}
+                        {{final_kval | floatformat:2}}
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+        <h4>Recommended Product for your <span>{{crop}}</span></h4>
+        {% if recommended_n %}
+            <h4 class="deficiency-title">Nitrogen Deficient</h4>
+            {% for product, details in recommended_n.items %}
+                <div class="product-card">
+                    <h5>{{product}}</h5>
+                    <div class="product-details">
+                        <img src="{{details.5.url}}" alt="{{product}}"/>
+                        <div class="product-info">
+                            <p>Category: {{details.2}}</p>
+                            <p>SubCategory: {{details.3}}</p>
+                            <p>No. of Bags req.: {{area}}</p>
+                            <p><a href="{{details.6}}" target="_blank" rel="noopener">{{details.6}}</a></p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+        {% if recommended_p %}
+            <h4 class="deficiency-title">Potassium Deficient</h4>
+            {% for product, details in recommended_p.items %}
+                <div class="product-card">
+                    <h5>{{product}}</h5>
+                    <div class="product-details">
+                        <img src="{{details.5.url}}" alt="{{product}}"/>
+                        <div class="product-info">
+                            <p>Category: {{details.2}}</p>
+                            <p>SubCategory: {{details.3}}</p>
+                            <p>No. of Bags req.: {{area}}</p>
+                            <p><a href="{{details.6}}" target="_blank" rel="noopener">{{details.6}}</a></p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+        {% if recommended_k %}
+            <h4 class="deficiency-title">Phosphorous Deficient</h4>
+            {% for product, details in recommended_k.items %}
+                <div class="product-card">
+                    <h5>{{product}}</h5>
+                    <div class="product-details">
+                        <img src="{{details.5.url}}" alt="{{product}}"/>
+                        <div class="product-info">
+                            <p>Category: {{details.2}}</p>
+                            <p>SubCategory: {{details.3}}</p>
+                            <p>No. of Bags req.: {{area}}</p>
+                            <p><a href="{{details.6}}" target="_blank" rel="noopener">{{details.6}}</a></p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endblock %}

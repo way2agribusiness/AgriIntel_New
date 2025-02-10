@@ -1,0 +1,213 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+    <title>Way2AgriIntel AI | CropIntel</title>
+    <link rel="stylesheet" href="{% static 'css/nutricrops.css' %}"/>
+{% endblock %}
+{% block header %}{% endblock %}
+{% block content %}
+    <p class="note">
+        Access to the online service will be available shortly after the launch of the <strong>"CropIntel"</strong> module. 
+        Until then, our team will call you to offer an interim solution over the phone. 
+        Kindly complete and submit the form below./ 
+        CropIntel ಮಾಡ್ಯೂಲ್ ಸ್ವಲ್ಪ ಸಮಯದ ನಂತರ ಆನ್‌ಲೈನ್ ಸೇವೆಗೆ ಲಭ್ಯವಿರುತ್ತದೆ. ಅಲ್ಲಿಯವರೆಗೆ, ನಮ್ಮ ತಂಡವು ಫೋನ್ ಮೂಲಕ ಮಧ್ಯಂತರ ಪರಿಹಾರವನ್ನು ನೀಡಲು ನಿಮಗೆ ಕರೆ ಮಾಡುತ್ತದೆ. ದಯವಿಟ್ಟು ಕೆಳಗಿನ ಫಾರ್ಮ್ ಪೂರ್ಣಗೊಳಿಸಿ ಮತ್ತು ಸಲ್ಲಿಸಿ.
+    </p>
+    <br>
+    <h3 id="head">CropIntel UI</h3>
+    <form method="POST" class="ci-feeding">
+        {% csrf_token %}
+        <label>Select which Plot you want to do Cultivation:</label><br>
+        {% for plot in plots %}
+            <div class="radio-plot">
+                <input type="radio" id="id_plot_name_{{forloop.counter}}" name="plot" value="{{plot.plot_name}}" onchange="selectedPlot(event)">
+                <label for="id_plot_name_{{forloop.counter}}">{{plot.plot_name}}</label>
+            </div><br>
+        {% endfor %}
+        <div class="plot">
+        {% for plot in plots %}
+            <div id="{{plot.plot_name}}" style="display:none" class="plot-infor">
+                <h5>Selected Plot Information: </h5>
+                <div class="edit-plot">
+                    <label>Plot Name: </label>
+                    <input type="text" value="{{plot.plot_name}}" name="plot_name"/>
+                    <br>
+                </div>
+                <div class="edit-plot">
+                    <label>Crop Grown: </label>
+                    <select name="crop_grown" id="id_crop_grown" onchange="updateLandType()">
+                        {% for crop1, crop2 in crop_grown_options %}
+                            <option value="{{crop1}}" {% if plot.crop_grown == crop1 %}selected{% endif %}>{{crop1}}</option>
+                        {% endfor %}
+                    </select>
+                    <br>
+                </div>
+                <div class="edit-plot">
+                    <label>Plot Area/Extent (in Acre): </label>
+                    <input value="{{plot.land_area}}" type="text" name="land_area"/>
+                    <br>
+                </div>
+                <div class="edit-plot">
+                    <label>Soil Condition : </label>
+                    <select name="soil_condition">
+                        {% for cond1, cond2 in soil_condition_options %}
+                            <option value="{{cond1}}" {% if plot.soil_condition == cond1 %}selected{% endif %}>{{cond1}}</option>
+                        {% endfor %}
+                    </select>
+                    <br>
+                </div>
+                <div class="edit-plot">
+                    <label>Soil Health : </label>
+                    <select name="soil_health">
+                        {% for opt1, opt2 in soil_health_options %}
+                            <option value="{{opt1}}" {% if plot.soil_health == opt1 %}selected{% endif %}>{{opt1}}</option>
+                        {% endfor %}
+                    </select>
+                    <br>
+                </div>
+                <div class="edit-plot">
+                    <label>Soil pH : </label>
+                    <select name="soil_ph">
+                        {% for opt1, opt2 in  soil_ph_options %}
+                            <option value="{{opt1}}" {% if plot.soil_ph == opt1 %}selected{% endif %}>{{opt1}}</option>
+                        {% endfor %}
+                    </select>
+                    <br>
+                </div>
+                <div class="edit-plot">
+                    <label>Soil Rich in nutrients : </label>
+                    <select name="soil_rich_nutrients">
+                       {% for opt1, opt2 in soil_nutrients_options %}
+                            <option value="{{opt1}}" {% if plot.soil_rich_nutrients == opt1 %}selected{% endif %}>{{opt1}}</option>
+                       {% endfor %}
+                    </select>
+                    <br>
+                </div>
+                <div class="edit-plot">
+                    <label>Soil Medium in nutrients : </label>
+                    <select name="soil_avg_nutrients">
+                        {% for opt1, opt2 in soil_nutrients_options %}
+                            <option value="{{opt1}}" {% if plot.soil_average_nutrients == opt1 %}selected{% endif %}>{{opt1}}</option>
+                        {% endfor %}
+                    </select>
+                    <br>
+                </div>
+                <div class="edit-plot">
+                    <label>Soil Defiecient in nutrients: </label>
+                    <select name="soil_poor_nutrients">
+                        {% for opt1, opt2 in soil_nutrients_options %}
+                            <option value="{{opt1}}" {% if plot.soil_poor_nutrients == opt1 %}selected{% endif %}>{{opt1}}</option>
+                        {% endfor %}
+                    </select>
+                    <br>
+                </div>
+                <div class="edit-plot">
+                    <label>Water source: </label>
+                    <select name="water_source">
+                        {% for opt1, op2 in water_source_options %}
+                            <option value="{{opt1}}" {% if plot.water_sources == opt1 %}selected{% endif %}>{{opt1}}</option>
+                        {% endfor %}
+                    </select>
+                    <br>
+                </div>
+                <div class="edit-plot">
+                    <label>Water Availibility Status : </label>
+                    <select name="water_avail">
+                        {% for opt1, opt2 in water_avail_options %}
+                            <option value="{{opt1}}" {% if plot.water_availability == opt1 %}selected{% endif %}> {{opt1}}</option>
+                        {% endfor %}
+                    </select>
+                    <br>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+        <br>
+        {% for field in form %}
+            <div id = "{{field.id_for_label}}-div">
+                <label id="{{field.id_for_label}}-label">{{field.label}}</label>
+                {{field}}
+            </div>
+        {% endfor %}
+        <br><br>
+        <button class="ci-submit-btn">Submit</button>
+    </form>
+    <br>
+    <script>
+           document.addEventListener('DOMContentLoaded', function() {
+            const landType = document.querySelector('#id_land_type');
+            const cropGrownSelect = document.querySelector('#id_crop_grown');
+            const perennials = [
+                'Amla', 'Areca New', 'Arecanut', 'Avocado', 'Banana', 'Betelvine',
+                'Cashewnut', 'Cocoa', 'Coconut', 'Coffee', 'Curry leaves',
+                'Custard Apple', 'Dragon fruit', 'Drumstick', 'Durian', 'Fig',
+                'Grapes', 'Guava', 'Jack Fruit', 'Jasmin', 'Kokum', 'Lime',
+                'Macadamia', 'Mahogani', 'Mango', 'Mangosteen', 'Mosambi',
+                'Nutmeg', 'Papaya', 'Pepper', 'Pineapple', 'Pomegranate',
+                'Rambutan', 'Rosewood', 'Sapota', 'Tender Coconut'
+            ];
+
+            const fieldsToToggle = [
+                'id_cultivation', 'id_crop_varieties', 'id_no_of_plants', 'id_spacing',
+                'id_crop_stage', 'id_land_prepration', 'id_inter_crops', 'id_crop_yield',
+                'id_planting_date', 'id_pests', 'id_diseases', 'id_planting_method'
+            ];
+
+            function updateFieldsVisibility() {
+                const selectedValue = landType.value;
+
+                if (selectedValue === 'New Land') {
+                    fieldsToToggle.forEach(id => {
+                        const element = document.querySelector(`#${id}-div`);
+                        if (element) {
+                            element.style.display = 'none';
+                        }
+                        
+                    });
+                    const plantingDateElement = document.querySelector('#id_planting_date-div');
+                        if (plantingDateElement) {
+                            plantingDateElement.style.display = 'block';    
+                }   
+            }
+                else if (selectedValue === 'Existing Land') {
+                    fieldsToToggle.forEach(id => {
+                        const element = document.querySelector(`#${id}-div`);
+                        if (element) {
+                            element.style.display = 'block';
+                        }
+                    });
+                }
+            }
+
+            function updateLandType() {
+                const cropGrown = cropGrownSelect.value;
+                if (perennials.includes(cropGrown)) {
+                    landType.value = 'Existing Land';
+                } else {
+                    landType.value = 'New Land';
+                }
+                updateFieldsVisibility();
+            }
+
+            // Initialize visibility based on the current selection
+            updateLandType();
+            updateFieldsVisibility();
+
+            // Add event listener to cropGrown
+            cropGrownSelect.addEventListener('change', updateLandType);
+
+            // Add event listener to landType
+            landType.addEventListener('change', updateFieldsVisibility);
+        });
+
+        function selectedPlot(event) {
+            const plotId = event.target.value;
+            const plots = document.querySelectorAll('.plot-infor');
+            plots.forEach(plot => {
+                plot.style.display = 'none';
+            });
+            document.getElementById(plotId).style.display = 'block';
+        }
+    </script>
+
+    
+{% endblock %}

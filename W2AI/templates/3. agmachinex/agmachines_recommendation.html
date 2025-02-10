@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@900&display=swap" rel="stylesheet">
+    <title>Way2AgriIntel AI | AgMachineX Recommendation</title>
+    <link rel="stylesheet" href="{% static 'css/nutricrops.css' %}"/>    
+{% endblock %}
+{% block header %}{% endblock %}
+{% block content %}
+        {{selected_brand}}
+        {{selected_crop}}
+<h3 class="recommend">Recommendation of <span>{{enquired_machine | capfirst}}</span> for {{enquired_landarea}} acre and for {{enquired_crop}} in the range of Rs. {{enquired_budget}}</h3>
+    <div class="agmcx">
+        <div class="filter">
+            <form method="POST" id="filters">
+                {% csrf_token %}
+                {% for field in form %}
+                    <label>{{field.label}} Filter</label>
+                    <br>
+                    {{field}}<br>
+                {% endfor %}
+            </form>
+        </div>
+        
+        <div class="recommend-product">
+            {% if selected_brand and not selected_crop %}
+                {% for product, details in filtered_products.items %}
+                    <div>
+                    	<h4>{{product}}</h4>
+                    	<img src="{{details.1}}" alt="{{product}}" loading="lazy" width="100px">
+                    	<p>Rs. {{details.2}}</p>
+                    	<p>{{details.4}} Acre</p>
+                    	<p>{{details.5}}</p>
+                    	<p>{{details.0 | capfirst}}</p>
+                    	<a href="{{details.3}}" rel="noopener" target="_blank">Click Here To buy</a>
+                    </div>
+                {% endfor %}
+            {% elif selected_crop and not selected_brand %}
+                {% for product, details in filtered_products_crop.items %}
+                    <div>
+                    	<h4>{{product}}</h4>
+                    	<img src="{{details.1}}" alt="{{product}}" loading="lazy" width="100px">
+                    	<p>Rs. {{details.2}}</p>
+                    	<p>{{details.4}} Acre</p>
+                    	<p>{{details.5}}</p>
+                    	<p>{{details.0 | capfirst}}</p>
+                    	<a href="{{details.3}}" rel="noopener" target="_blank">Click Here To buy</a>
+                    </div>
+                {% endfor %}
+            {% elif selected_brand and selected_crop %}
+                {% for product, details in filtered_all.items %}
+                    <div>
+                        <h4>{{product}}</h4>
+                        <img src="{{details.1}}" alt="{{product}}" loading="lazy" width="100px">
+                        <p>Rs. {{details.2}}</p>
+                        <p>{{details.4}} Acre</p>
+                        <p>{{details.5}}</p>
+                        <p>{{details.0 | capfirst}}</p>
+                        <a href="{{details.3}}" rel="noopener" target="_blank">Click Here To buy</a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                {% for machine in recommended_product %}
+                    <div>
+                        <p><strong id="product-name">{{machine.product_name}}</strong></p>
+                        <img src="{{machine.product_image.url}}" alt="{{machine.product_name}}" loading="lazy" width="100px" >
+                        <p>Rs. {{machine.price}}</p>
+                        <p>{{machine.land_extent}} Acre</p>
+                        <p>{{machine.crop}}</p>
+                        <p>{{machine.soil_type | capfirst}}</p>
+                        <p>{{machine.brand}}</p>
+                        <p>Suitable for:{{machine.crop}}</p>
+                        <p>Quality is:{{machine.quality}}</p>
+                        <a href="{{machine.website_link}}" rel="noopener" target="_blank">Click Here To buy</a>
+                        <br>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+<script>
+    const radioButtons = document.querySelectorAll('#filters input[type="radio"]');
+    radioButtons.forEach(radioButton => {
+        radioButton.addEventListener('change', function() {
+            document.getElementById('filters').submit();
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,256 @@
+.register{
+    text-align: center;
+    color: white;
+    background-color: darkgreen;
+    padding: 5px 0;
+    border-radius: 3px;
+    border: 2px solid gainsboro;
+    box-shadow: 5px 2px 8px black;
+    text-shadow: 2px 1.5px black;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    width: 34.8%;
+    margin: auto;
+}
+.valid{
+    font-size:18px;
+    color:red;
+    font-weight:bold;
+}
+form{
+    box-shadow: 3px 10px 10px 5px rgb(20, 19, 19, 0.5);
+    background-color:ghostwhite;
+}
+.form-div{
+    display: flex;
+    align-items: center;
+    justify-content: center;  
+    flex-direction:column;
+}
+.inside-form{
+    padding:0 80px;
+}
+form input{
+    width: 310px;
+    border-radius:5px;
+    border:none;
+    outline:none;
+    box-shadow:0 2px 3px black;
+    padding:5px;
+}
+form textarea{
+    width:300px;
+    border-radius: 5px;
+    border:none;
+    outline:none;
+    box-shadow:0 2px 3px black;
+    padding: 10px;
+}
+form select{
+    width: 320px;
+    border-radius:5px;
+    border:none;
+    outline:none;
+    box-shadow:0 2px 3px black;
+    padding:5px;
+}
+.button-div button{
+    background-color: darkgreen;
+    color: white;
+    padding:10px 25px;
+    border-radius: 20px;
+    font-size: 18px;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    text-shadow: 2px 2px darkblue;
+    font-weight: bold;
+    box-shadow: rgba(21, 22, 22, 0.3) 0px 5px 2px 0px, rgba(17, 17, 17, 0.15) 0px 2px 7px 2px;
+    border: 1px solid wheat;
+    cursor: pointer;
+}
+.button-div{
+    text-align: center;
+}
+form label{
+    color: darkblue;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size:medium;
+    text-shadow: 1px 0.3px black;
+    display: block;
+}
+.form-div ul li{
+    font-size:13px;
+    color:darkgreen;
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    text-align:justify;
+}
+.form-div p{
+    text-align: center;
+    color:darkgreen;
+}
+.form-div p span{
+    font-size:13px;
+    font-weight:bold;
+}
+.form-div ul{
+    width: 250px;
+    margin: auto;
+}
+.dashboard-div{
+    display:grid;
+    grid-template-columns: 0.6fr 2fr 0.6fr;
+}
+.profile-sec{
+    box-shadow:0 2px 8px black;
+    background-color:whitesmoke;
+}
+.profile-sec p{
+    padding: 0 10px;
+    color: darkgreen;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+}
+.profile-sec p strong{
+    color:darkblue;
+}
+.profile-sec h3{
+    text-align: center;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    background-image: linear-gradient(180deg, rgb(180, 130, 5), rgb(250, 212, 109));
+    color: darkgreen;
+    margin: auto;
+    padding: 5px 0;
+    text-shadow: 0.5px 0.5px black;
+    box-shadow: 3px 0px 5px gray;
+}
+.cp{
+    background-image: linear-gradient(to left, rgb(1, 46, 1), transparent, rgb(1, 46, 1));
+    background-color: green;
+    border: none;
+    outline: none;
+    border-radius:10px;
+    padding: 5px 10px;
+    animation: blink 2s infinite;
+}
+@keyframes blink {
+    0% { background-image: linear-gradient(to left,transparent,rgb(1, 46, 1),transparent); box-shadow:0 0 0 black; color:darkblue;}
+    50% { background-image:linear-gradient(to left,transparent,rgb(1, 46, 1),transparent) ;box-shadow:2px 3px 5px black; color:darkgreen; }
+    100% { background-image: linear-gradient(to left,transparent,rgb(1, 46, 1),transparent);box-shadow:0 0 0 black; color:darkblue;}
+}
+.cp i{
+    color: goldenrod;
+    font-size: 18px;
+    text-shadow: 2px 2px black;
+}
+.cp a{
+    color: white;
+    text-decoration: none;
+    font-family: times new roman;
+    font-size: 15px;
+    text-shadow: 2px 2px black;
+}
+.cp a:hover{
+    color:goldenrod;
+}
+.btns{
+    text-align:center;
+    display: flex;
+    justify-content: space-around;
+}
+.features a{
+    display: block;
+    text-decoration: none;
+    background-color: darkgreen;
+    color: #ffc100;
+    width: 90%;
+    margin: auto;
+    text-align: center;
+    border-radius: 0 10px;
+    background-image: linear-gradient(45deg, rgb(1, 39, 18), transparent);
+    box-shadow: 0 2px 8px gray;
+    text-shadow: 1px 1.5px black;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-weight: bold;
+    font-size: 16px;
+    padding:10px 0;
+}
+.add{
+    cursor: pointer;
+    box-shadow: 2px 3px 5px black;
+    background-color: rgb(203, 229, 252);
+    width: 60%;
+    margin: auto;
+    border-radius: 20px;
+    text-shadow: 1px 0.3px 0.3px black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+.add i{
+    text-shadow: 1px 0.5px 0.5px black;
+    color: darkblue;
+    font-weight: bold;
+    font-size: 22px;
+}
+#heading{
+    text-align:center;
+    color:darkgreen;
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+.profile-info{
+    box-shadow:0 2px 8px black;
+    background-color:whitesmoke;
+}
+.profile-info h3{
+    padding: 0 10px;
+    color: darkgreen;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    display: grid;
+    grid-template-columns: 0.5fr 1fr;
+}
+.profile-info h4{
+    padding: 0 10px;
+    color: gray;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    display: grid;
+    grid-template-columns: 2.3fr 1fr;
+}
+.profile-info h3 span{
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size:15px;
+    color:gray;
+    line-height: 25px;
+}
+.profile-info h3 img{
+    width:50px;
+    box-shadow:2px 2px 5px gray;
+    border-radius: 50%;
+    background-color:darkblue;
+}
+.loc-weather{
+    display:block;
+}
+.loc-weather div h2{
+    text-align: center;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    background-image: linear-gradient(180deg, rgb(180, 130, 5), rgb(250, 212, 109));
+    color: darkgreen;
+    margin: auto;
+    padding: 5px 0;
+    text-shadow: 0.5px 0.5px black;
+    box-shadow: 3px 0px 5px gray;
+    font-size:15px;
+    animation: pop 2s infinite;
+}
+@keyframes pop {
+    0% {background-image:linear-gradient(45deg, wheat,rgb(236, 210, 144),wheat); text-shadow:0.5px 0.5px black;}
+    50% {background-image:linear-gradient(45deg,  rgb(236, 195, 90),wheat,rgb(236, 195, 90)); text-shadow:0 0 black;}
+    100% {background-image:linear-gradient(45deg, wheat,rgb(236, 210, 144),wheat);text-shadow:0.5px 0.5px black;}
+}
+
+#register-btn {
+    text-align: center; /* Centers inline elements */
+    display: block; /* Ensures it behaves as a block element */
+    margin: 0 auto; /* Centers it horizontally */
+    width: fit-content; /* Adjusts width based on content */
+}

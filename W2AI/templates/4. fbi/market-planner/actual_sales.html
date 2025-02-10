@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+    <title>Way2AgriIntel AI |Market Planner Actual Sales</title>
+    <link rel="stylesheet" href="{% static 'css/form.css' %}"/>
+{% endblock %}
+{% block header %}{% endblock %}
+{% block content %}
+    <div class="background-container">
+        <div class="content">
+            <h3 class="fund-head">Actual Sales Details</h3>
+            <form method="POST" class="form-md">
+                {% csrf_token %}
+                <div class="form-group-container">
+                    <div class="form-group full-width">
+                        {{ form.crops }}
+                        <label for="{{ form.crops.id_for_label }}">{{ form.crops.label }}</label>
+                    </div>
+                    <div class="form-group full-width">
+                        {{ form.crop_varieties }}
+                        <label for="{{ form.crop_varieties.id_for_label }}">{{ form.crop_varieties.label }}</label>
+                    </div>
+                    <div class="form-group price-quant-container">
+                        <div class="form-group actual-sales">
+                            {{form.amount_jan}}
+                            <label for="{{ form.amount_jan.id_for_label }}">{{ form.amount_jan.label }}</label>
+                        </div>
+                        <div class="form-group actual-sales">
+                            {{form.quant_jan}}
+                            <label for="{{ form.quant_jan.id_for_label }}">{{ form.quant_jan.label }}</label>
+                        </div>
+                    </div>
+                    <div class="form-group price-quant-container">
+                        <div class="form-group actual-sales">
+                            {{form.amount_feb}}
+                            <label for="{{ form.amount_feb.id_for_label }}">{{ form.amount_feb.label }}</label>
+                        </div>
+                        <div class="form-group actual-sales">
+                            {{form.quant_feb}}
+                            <label for="{{ form.quant_feb.id_for_label }}">{{ form.quant_feb.label }}</label>
+                        </div>
+                    </div>
+                    <div class="form-group price-quant-container">
+                        <div class="form-group actual-sales">
+                            {{form.amount_mar}}
+                            <label for="{{ form.amount_mar.id_for_label }}">{{ form.amount_mar.label }}</label>
+                        </div>
+                        <div class="form-group actual-sales">
+                            {{form.quant_mar}}
+                            <label for="{{ form.quant_mar.id_for_label }}">{{ form.quant_mar.label }}</label>
+                        </div>
+                    </div>
+                    <div class="form-group price-quant-container">
+                        <div class="form-group actual-sales">
+                            {{form.amount_apr}}
+                            <label for="{{ form.amount_apr.id_for_label }}">{{ form.amount_apr.label }}</label>
+                        </div>
+                        <div class="form-group actual-sales">
+                            {{form.quant_apr}}
+                            <label for="{{ form.quant_apr.id_for_label }}">{{ form.quant_apr.label }}</label>
+                        </div>
+                    </div>
+                    <div class="form-group price-quant-container">
+                        <div class="form-group actual-sales">
+                            {{form.amount_may}}
+                            <label for="{{ form.amount_may.id_for_label }}">{{ form.amount_may.label }}</label>
+                        </div>
+                        <div class="form-group actual-sales">
+                            {{form.quant_may}}
+                            <label for="{{ form.quant_may.id_for_label }}">{{ form.quant_may.label }}</label>
+                        </div>
+                    </div>
+                    <div class="form-group price-quant-container">
+                        <div class="form-group actual-sales">
+                            {{form.amount_jun}}
+                            <label for="{{ form.amount_jun.id_for_label }}">{{ form.amount_jun.label }}</label>
+                        </div>
+                        <div class="form-group actual-sales">
+                            {{form.quant_jun}}
+                            <label for="{{ form.quant_jun.id_for_label }}">{{ form.quant_jun.label }}</label>
+                        </div>
+                    </div>
+                    <div class="form-group price-quant-container">
+                        <div class="form-group actual-sales">
+                            {{form.amount_jul}}
+                            <label for="{{ form.amount_jul.id_for_label }}">{{ form.amount_jul.label }}</label>
+                        </div>
+                        <div class="form-group actual-sales">
+                            {{form.quant_jul}}
+                            <label for="{{ form.quant_jul.id_for_label }}">{{ form.quant_jul.label }}</label>
+                        </div>
+                    </div>
+                    <div class="form-group price-quant-container">
+                        <div class="form-group actual-sales">
+                            {{form.amount_aug}}
+                            <label for="{{ form.amount_aug.id_for_label }}">{{ form.amount_aug.label }}</label>
+                        </div>
+                        <div class="form-group actual-sales">
+                            {{form.quant_aug}}
+                            <label for="{{ form.quant_aug.id_for_label }}">{{ form.quant_aug.label }}</label>
+                        </div>
+                    </div>
+                    <div class="form-group price-quant-container">
+                        <div class="form-group actual-sales">
+                            {{form.amount_sep}}
+                            <label for="{{ form.amount_sep.id_for_label }}">{{ form.amount_sep.label }}</label>
+                        </div>
+                        <div class="form-group actual-sales">
+                            {{form.quant_sep}}
+                            <label for="{{ form.quant_sep.id_for_label }}">{{ form.quant_sep.label }}</label>
+                        </div>
+                    </div>
+                    <div class="form-group price-quant-container">
+                        <div class="form-group actual-sales">
+                            {{form.amount_oct}}
+                            <label for="{{ form.amount_oct.id_for_label }}">{{ form.amount_oct.label }}</label>
+                        </div>
+                        <div class="form-group actual-sales">
+                            {{form.quant_oct}}
+                            <label for="{{ form.quant_oct.id_for_label }}">{{ form.quant_oct.label }}</label>
+                        </div>
+                    </div>
+                    <div class="form-group price-quant-container">
+                        <div class="form-group actual-sales">
+                            {{form.amount_nov}}
+                            <label for="{{ form.amount_nov.id_for_label }}">{{ form.amount_nov.label }}</label>
+                        </div>
+                        <div class="form-group actual-sales">
+                            {{form.quant_nov}}
+                            <label for="{{ form.quant_nov.id_for_label }}">{{ form.quant_nov.label }}</label>
+                        </div>
+                    </div>
+                    <div class="form-group price-quant-container">
+                        <div class="form-group actual-sales">
+                            {{form.amount_dec}}
+                            <label for="{{ form.amount_dec.id_for_label }}">{{ form.amount_dec.label }}</label>
+                        </div>
+                        <div class="form-group actual-sales">
+                            {{form.quant_dec}}
+                            <label for="{{ form.quant_dec.id_for_label }}">{{ form.quant_dec.label }}</label>
+                        </div>
+                    </div>
+                </div>
+                <br><br>
+                <button type="submit"><span></span><span></span><span></span><span></span>Submit</button><br>
+            </form>
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+        var inputFields = document.querySelectorAll("input");
+    
+        inputFields.forEach(function(input) {
+            var label = input.nextElementSibling;
+    
+            // Add event listener for input event
+            input.addEventListener("input", function() {
+                if (input.value.trim() !== "") {
+                    label.style.height = "20px"; 
+                    label.style.lineHeight = "25px"
+                    label.style.color = "darkgreen"; 
+                    label.style.margin = "-10px 0"
+                } 
+            });
+        });
+    });
+    </script>
+{% endblock %}

@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+    <link href="{% static 'css/auth.css' %}" rel="stylesheet"/>
+    <title>Way2AgriIntel AI | Login</title>
+	<script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function showPosition(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+            // Fetch location details from Nominatim API
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`, {
+                headers: {
+                    'Accept-Language': 'en'
+                         }
+                    })
+                .then(response => response.json())
+                .then(data => {
+                    const city = data.address.state_district || data.address.district || data.address.county || data.address.suburb; //But this will give the district value  
+                    const country = data.address.country;
+                    const region = data.address.state;
+                    const postal_code = data.address.postcode;
+
+                    // Get CSRF token from the cookies
+                    const csrftoken = getCookie('csrftoken');
+
+                    // Send the location details to the Django view
+                    fetch('/get-location/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrftoken
+                        },
+                        body: JSON.stringify({
+                            latitude: latitude,
+                            longitude: longitude,
+                            city: city,
+                            country: country,
+                            region: region,
+                            postal_code: postal_code
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            console.log("Location data updated successfully.");
+                        } else {
+                            alert("Failed to get location data.");
+                        }
+                    });
+                });
+        }
+
+        function showError(error) {
+    	switch(error.code) {
+        case error.PERMISSION_DENIED:
+            alert("User denied the request for Geolocation. Please allow location access.");
+            setTimeout(getLocation, 10000); // Ask again after 10 seconds
+            break;
+        case error.POSITION_UNAVAILABLE:
+            alert("Location information is unavailable.");
+            setTimeout(getLocation, 10000); // Ask again after 10 seconds
+            break;
+        case error.TIMEOUT:
+            alert("The request to get user location timed out. Please try again.");
+            setTimeout(getLocation, 10000); // Ask again after 10 seconds
+            break;
+        case error.UNKNOWN_ERROR:
+            alert("An unknown error occurred.");
+            setTimeout(getLocation, 10000); // Ask again after 10 seconds
+            break;
+    }
+}
+
+        // Function to get CSRF token from the cookie
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        window.onload = getLocation; // Automatically get location on page load
+    </script>
+{% endblock %}
+{% block header %}{% endblock %}
+{% block content %}
+    <br><br>
+    <div class="form-div">  
+        <h3 class="register">Login</h3>
+        <form method="POST" class="for-crop1">
+            <br>
+            {% csrf_token %}
+                <p>All <span class="valid">*</span> marked are required fields <span>(ಎಲ್ಲಾ <span class="valid">*</span> ಗೆರೆಗಳು ಅಗತ್ಯವಿದೆ)</span></p>
+                {% for field in form %}
+                    <div class="inside-form">
+                        <div>
+                            <label for="{{field.id_for_label}}">{{field.label}} <span class="valid">*</span></label>
+                        </div>
+                        <div>{{field}} </div>
+                        <br><br>
+                    </div>
+                {% endfor %}
+                <div class="button-div"><button>Login</button></div>
+                <br><br>
+        		<div id="register-btn"><i class="material-icons">group_add</i><a href="{% url 'W2AI:register_url' %}" >Create New Account</a></div>
+                <br><br>
+        </form>
+        {% if form.errors %}
+        <div class="error">
+            <strong>Please fix the following errors:</strong>
+            <ul>
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li>{{ field.label }}: {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+    <br>
+{% endblock %}
+{% block section %}{% endblock %}

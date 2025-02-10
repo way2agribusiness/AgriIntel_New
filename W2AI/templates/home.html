@@ -1,0 +1,270 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+    <title>Way2AgriIntel AI {% if title %}| {{title}} {% endif %}</title>
+	<link rel="stylesheet" href="{% static 'css/review.css' %}"/>
+     <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function showPosition(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+            // Fetch location details from Nominatim API
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`, {
+                headers: {
+                    'Accept-Language': 'en'
+                         }
+                    })
+                .then(response => response.json())
+                .then(data => {
+                    const city = data.address.state_district || data.address.district || data.address.county || data.address.suburb; //But this will give the district value  
+                    const country = data.address.country;
+                    const region = data.address.state;
+                    const postal_code = data.address.postcode;
+
+
+                    // Get CSRF token from the cookies
+                    const csrftoken = getCookie('csrftoken');
+
+                    // Send the location details to the Django view
+                    fetch('/get-location/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrftoken
+                        },
+                        body: JSON.stringify({
+                            latitude: latitude,
+                            longitude: longitude,
+                            city: city,
+                            country: country,
+                            region: region,
+                            postal_code: postal_code,
+                        
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            console.log("Location data updated successfully.");
+                        } else {
+                            alert("Failed to get location data.");
+                        }
+                    });
+                });
+        }
+
+        function showError(error) {
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("User denied the request for Geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    alert("The request to get user location timed out.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("An unknown error occurred.");
+                    break;
+            }
+        }
+
+        // Function to get CSRF token from the cookie
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        window.onload = getLocation; // Automatically get location on page load
+    </script>
+{% endblock %}
+
+{% block banner %}
+    <div class="banner-container">
+        <div class="banner">
+            <img src="https://res.cloudinary.com/dm71xhdxd/image/upload/v1712307684/Static%20Images/5_for_5_jnce2x.webp" alt="Way2AgriIntel AI" loading="lazy">
+            <img src="https://res.cloudinary.com/dm71xhdxd/image/upload/v1712307677/Static%20Images/Way2AI_bv8iea.webp" alt="Way2AgriIntel AI | AgriClinic" loading="lazy">
+            <img src="https://res.cloudinary.com/dm71xhdxd/image/upload/v1712307681/Static%20Images/CropIntel_ksduke.webp" alt="Way2AgriIntel AI | CropIntel" loading="lazy">
+            <img src="https://res.cloudinary.com/dm71xhdxd/image/upload/v1712307678/Static%20Images/NutriTracker_sqzulg.webp" alt="Way2AgriIntel AI | NutriTracker" loading="lazy">
+            <img src="https://res.cloudinary.com/dm71xhdxd/image/upload/v1712307681/Static%20Images/FieldIntel_bjguh6.webp" alt="Way2AgriIntel AI | FieldIntel" loading="lazy">
+        </div>
+    </div>
+{% endblock %}
+<br>
+{% block content %}
+    <div class="hhighlight">
+    	{% for i in highlight %}
+    		<div >
+            	<p>{{i.text}}</p>
+            	<a href="{{i.link}}" target="_blank" rel="noopener">
+                	<img src="{{ i.image.url }}" alt="{{ i.alt }}" loading="lazy" class="web-image"/>
+            	</a>
+            	<a href="{{i.link}}" target="_blank" rel="noopener">
+                	<strong>{{ i.name }}</strong>
+            	</a>
+            	<section class="link-div"><i class="material-icons">pan_tool_alt</i><a href="{{i.link}}" class="web-link">{{i.link}}</a></section>
+    		</div>
+    	{% endfor %}
+	</div>
+    <br>
+    <div class="intro">
+        <div class="div1">
+            <img src="https://res.cloudinary.com/dm71xhdxd/image/upload/v1714453420/Static%20Images/AgriIntelAI_h5d9bp.webp" alt="Way2AgriIntel AI" loading="lazy">
+        </div>
+        <div class="div2">
+            <h3>About Way2AgriIntel AI</h3>
+            <!-- <p>{% for i in desc %}
+                {{ i.Englishdescription }}<br>
+                <span class="kannada-description">{{ i.Kannadadescription }}</span>
+            {% endfor %}
+            <p> -->
+            <p>"AgriIntel" or "Agri Intel" refers to agricultural intelligence, leveraging data analysis, technology, and information systems in farming. This intricate process aggregates data from diverse sources: direct sensor feeds, satellite imagery, weather data, and historical records. The ensuing insights are actionable, benefiting farmers and stakeholders. A prominent initiative in this sphere is "Way2AgriIntel" by Way2Agribusiness India Pvt Ltd. Its prime goal is optimizing farming, reducing waste, and enhancing decision-making through analytics and AI. Way2AgriIntel significantly contributes to crop planning mainly perennial plants, nutrient management, pest and disease control, advanced farm mechanization, and holistic marketing support. By merging tech and tradition, it catalyzes enhanced productivity, profitability, and sustainable practices in agriculture.
+                "ಅಗ್ರಿ ಇಂಟೆಲ್" ಅಥವಾ "ಅಗ್ರಿ ಇಂಟೆಲಿಜೆನ್ಸ್" ಎಂದರೆ ಕೃಷಿಯ ಬುದ್ಧಿಮತ್ತೆ, ಇದು ಡೇಟಾ ವಿಶ್ಲೇಷಣೆ, ತಂತ್ರಜ್ಞಾನ, ಮತ್ತು ಮಾಹಿತಿ ವ್ಯವಸ್ಥೆಗಳನ್ನು ಕೃಷಿಯಲ್ಲಿ ಬಳಸುವುದು.</p>
+        </div>
+    </div>  
+	<br>
+	{% load custom_filters %}
+	{% if feedbacks %}
+    	<center><h3 class="heading">Rating & Reviews</h3></center>
+    	<br>
+    	<div class="rating1">
+        	<div class="review-stat">
+            	<div class="review-stat-inside">
+                	<h1>{{avg_rating}}/5</h1>
+                	<h1>
+                    	{% for _ in avg_rating|starDisplay %}
+                        	<i class="material-icons">star</i>
+                    	{% endfor %}
+                	</h1>
+            	</div>
+            	{% if total_review %}<p>Reviewed by {{total_review}} {% if total_review == 1 %}user{% else %}users {% endif%}</p>{% endif %}
+            	<input type="hidden" value="{{per5}}" id="per4">
+            	<input type="hidden" value="{{per4}}" id="per3">
+            	<input type="hidden" value="{{per3}}" id="per2">
+            	<input type="hidden" value="{{per2}}" id="per1">
+            	<input type="hidden" value="{{per1}}" id="per0">
+        	</div>
+        	<div class="review-bar-div">
+            	<div class="review-bar">
+                	<p>5<i class="material-icons">star</i></p>
+                	<div class="rate-bar">
+                    	<div id="filledDiv"><span id="4-span"></span></div>
+                    	<p>{{per5}}%</p>
+                	</div>
+            	</div>
+            	<div class="review-bar">
+                	<p>4<i class="material-icons">star</i></p>
+                	<div class="rate-bar">
+                    	<div id="filledDiv"><span id="3-span"></span></div>
+                    	<p>{{per4}}%</p>
+                	</div>
+            	</div>
+            	<div class="review-bar">
+                	<p>3<i class="material-icons">star</i></p>
+                	<div class="rate-bar">
+                    	<div id="filledDiv"><span id="2-span"></span></div>
+                    	<p>{{per3}}%</p>
+                	</div>
+            	</div>
+            	<div class="review-bar">
+                	<p>2<i class="material-icons">star</i></p>
+                	<div class="rate-bar">
+                    	<div id="filledDiv"><span id="1-span"></span></div>
+                    	<p>{{per2}}%</p>
+                	</div>
+            	</div>
+            	<div class="review-bar">
+                	<p>1<i class="material-icons">star</i></p>
+                	<div class="rate-bar">
+                    	<div id="filledDiv"><span id="0-span"></span></div>
+                    	<p>{{per1}}%</p>
+                	</div>
+            	</div>
+        	</div>
+    	</div>
+    	<br><br><hr style="width:20%; margin:auto; border-top:1px solid gold"><br>
+    	<div class="review-div">
+        	<h4 >Most Relevant Reviews</h4>
+        	<div class="review-inner-div">
+        		{% for feedback in feedbacks %}
+            		{% if feedback.is_important == True %}
+                		<div class="review-name">
+                    		<div class="review-date">
+                        		<div class="review-2-div">
+                            		<div>
+                                		<span class="feedback-sec">{{feedback.services_used}}</span>
+                                		<div>
+                                    		{% for _ in feedback.rating|starDisplay %}
+                                        		<i class="material-icons" style="color:gold;">star</i>
+                                    		{% endfor %}
+                                		</div>
+                            		</div><br>
+                            		<span class="feedback-review"><strong >Feedback: </strong>{{feedback.feedback}}</span><br><br>
+                        		</div>
+                        		<span>{{feedback.feedback_user.date}}</span>
+                    		</div>
+                    		<div><span class="feedback-user"><strong>By: </strong>{{feedback.feedback_user.name}}</span><br></div>
+                    		<div><span class="feedback-user" ><strong>From: </strong>{{feedback.feedback_user.address}}</span></div>
+                    		<div><br><hr><br></div>
+                		</div>
+            		{% endif %}
+        		{% endfor %}
+        	</div>
+    	</div>
+	{% endif %}
+    <script>
+        const banner = document.querySelector('.banner');
+        let imgIndex = 0;
+    
+        function slideBanner() {
+            imgIndex = (imgIndex + 1) % banner.children.length;
+            const imgWidth = banner.children[0].offsetWidth; 
+            const imgMarginRight = parseFloat(window.getComputedStyle(banner.children[0]).marginRight);
+            const imgMarginLeft = parseFloat(window.getComputedStyle(banner.children[0]).marginLeft);
+            const translateX = -(imgIndex * (imgWidth + imgMarginRight + imgMarginLeft)); 
+            banner.style.transform = `translateX(${translateX}px)`; 
+        }
+        setInterval(slideBanner, 5000); 
+    
+    	const filledDivs = document.querySelectorAll('#filledDiv');
+  		filledDivs.forEach((filledDiv, index) => {
+    		const percentage = document.getElementById(`per${index}`).value; 
+    		const spanDiv = document.getElementById(`${index}-span`);
+    		const coloredWidth = percentage + '%';
+            console.log(coloredWidth);
+    		spanDiv.style.width = coloredWidth;
+    		spanDiv.style.backgroundColor = 'mediumseagreen';
+  		});
+    
+    	const reviewDivs = document.querySelectorAll('.review-name');
+        reviewDivs.forEach(reviewDiv =>{
+            reviewDiv.addEventListener('mouseover', function(){
+                reviewDiv.children[3].children[1].style.borderTop='2px solid darkblue';
+                reviewDiv.children[3].children[1].style.transition='all .2s ease-in-out';
+            });
+            reviewDiv.addEventListener('mouseleave',function(){
+                reviewDiv.children[3].children[1].style.borderTop='1px solid gray';
+            })
+        });
+    </script>
+{% endblock %}

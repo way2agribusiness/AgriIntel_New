@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+    <link href="{% static 'css/auth.css' %}" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
+    <title>Way2AgriIntel AI | Update Profile</title>
+{% endblock %}
+{% block header %}{% endblock %}
+{% block content %}
+<br><br>
+<div class="form-div"> 
+    <h3 class="register">Update Profile</h3> 
+      <form method="post" class="for-crop1">
+        <br>
+        {% csrf_token %}
+        <p>All <span class="valid">*</span> marked are required fields <span>(ಎಲ್ಲಾ <span class="valid">*</span> ಗೆರೆಗಳು ಅಗತ್ಯವಿದೆ)</span></p>
+      	{% if message %}
+          <p class="message">{{message}}</p>
+        {% endif %}
+        <input type="hidden" value="{{user_data.district}}" id="district">
+        {% for field in form %}
+          <div class="inside-form">
+            {% if field.id_for_label %}
+            <div id="{{field.id_for_label}}-div">
+              <label for="{{field.id_for_label}}">{{field.label}} <span class="valid">*</span></label>
+              <div>{{field}}</div>
+              <br>
+            </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+        <center><h4>Plot Specific Information</h4></center><br>
+        <div id="form-count">{{ plot_formset.management_form }}</div>
+        <div id="plot-forms">
+          {% for form in plot_formset %}
+            <div class="forms-{{forloop.counter}}">
+              {% for field in form %}
+                <div id="{{field.id_for_label}}">
+                  <label for ="{{field.id_for_label}}" >{{field.label}}</label>
+                  {{field}}
+                </div>
+              {% endfor %}
+            </div>
+          {% endfor %}
+        </div>
+        <button type="button" id="add-plot-form" onclick="addImage()">Add New Plot</button>
+        <br><br>
+        <div class="button-div"><button type="submit">Update Profile</button></div><br><br>
+      </form>
+</div>
+<br>
+<script>
+  for(let i=1; i < 5; i++){
+    const form = document.querySelector(`.forms-${i}`);
+    if (form){
+      form.style.display = 'none';
+    }
+  }
+
+  for(let i=0; i < 5; i++){
+    const plotId = document.querySelector(`#id_plot_set-${i}-id`);
+    const userProfile = document.querySelector(`#id_plot_set-${i}-user_profile`);
+    const deleteInput = document.querySelector(`#id_plot_set-${i}-DELETE`);
+    if (plotId && userProfile && deleteInput){
+      userProfile.style.display = 'none';
+      deleteInput.style.display = 'none';
+      plotId.style.display = 'none';
+    }
+  } 
+  let count = 0;
+  function addImage(){
+    count += 1;
+    const form = document.querySelector(`.forms-${count}`);
+    if (form){
+      form.style.display = 'block';
+    }
+  }
+	const districtVal = document.getElementById('district');
+	const filePath = './W2AI/static/data.json';
+	const fs = require('fs'); // Ensure to require 'fs' correctly
+
+	fs.readFile(filePath, 'utf8', (err, data) => {
+  	if (err) {
+    console.error('Error reading file:', err);
+    return;
+  }
+  const jsonData = JSON.parse(data);
+});
+</script>
+{% endblock %}

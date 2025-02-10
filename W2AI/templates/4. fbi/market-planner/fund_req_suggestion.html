@@ -1,0 +1,267 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+    <title>Way2AgriIntel AI |Market Planner Fund Requirement Strategy</title>
+    <link rel="stylesheet" href="{% static 'css/nutricrops.css' %}"/>
+{% endblock %}
+{% block header %}{% endblock %}
+{% block content %}
+<div style="display:grid; grid-template-columns:1fr 1fr; width:90%; margin: auto;">
+    <img src="data:image/webp;base64,{{ plot_data }}" alt="Bar Chart">
+    <div>
+        <h3>Strategy:</h3>
+        <div>
+            {% if fund_req_jan %}
+                {% if jan_df_revenue > fund_req_jan %}
+                    {% if crops.price_outlook_jan == '1. High Inflation (Positive Trending)'  or '2. Elevated risk of price escalation (Positive Movement)' %}
+                        <ul style="text-align:justify">There are two options based on the current price trends:
+                            <br><br>
+                            <li>Selling your {{crop}} crop in <strong>January</strong> will not only fulfill your required funds <strong>Rs. {{fund_req_jan}}</strong> but also yield a profit of <strong>Rs. {{jan_df_revenue}}</strong></li><br>
+                            <li>Selling <strong>{{quantity_needed}} Kgs </strong> out of the available <strong>{{quantity_available}} Kgs</strong> of crop in <strong>January</strong> to obtain the exact required fund of <strong>Rs. {{fund_obtain}}.</strong></li>
+                        </ul>
+                        <ul style="text-align: justify;">Future Trends
+                            <br><br>
+                            <li>Hold your selling as price is trending, in future months u can get more benefits</li>
+                        </ul>
+                    {% else %}
+                        <ul>Future Trends
+                            <li>Better to sell your crops as prices are declining. </li>
+                        </ul>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        </div>
+        <div>
+            {% if fund_req_feb %}
+                {% if feb_df_revenue > fund_req_feb %}
+                    {% if crops.price_outlook_feb == '1. High Inflation (Positive Trending)'  or '2. Elevated risk of price escalation (Positive Movement)' %}
+                        <ul style="text-align:justify">There are two options based on the current price trends:
+                            <br><br>
+                            <li>Selling your {{crop}} crop in <strong>February</strong> will not only fulfill your required funds <strong>Rs. {{fund_req_feb}}</strong> but also yield a profit of <strong>Rs. {{feb_df_revenue}}</strong></li><br>
+                            <li>Selling <strong>{{quantity_needed_feb}} Kgs </strong> out of the available <strong>{{quantity_available}} Kgs</strong> of crop in <strong>February</strong> to obtain the exact required fund of <strong>Rs. {{fund_obtain_feb}}.</strong></li>
+                        </ul>
+                        <ul style="text-align: justify;">Future Trends
+                            <br><br>
+                            <li>Hold your selling as price is trending, in future months u can get more benefits</li>
+                        </ul>
+                    {% else %}
+                        <ul>Future Trends
+                            <li>Better to sell your crops as prices are declining. </li>
+                        </ul>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        </div>
+        <div>
+            {% if fund_req_mar %}
+                {% if mar_df_revenue > fund_req_mar %}
+                    {% if crops.price_outlook_mar == '1. High Inflation (Positive Trending)'  or '2. Elevated risk of price escalation (Positive Movement)' %}
+                        <ul style="text-align:justify">There are two options based on the current price trends:
+                            <br><br>
+                            <li>Selling your {{crop}} crop in <strong>March</strong> will not only fulfill your required funds <strong>Rs. {{fund_req_mar}}</strong> but also yield a profit of <strong>Rs. {{mar_df_revenue}}</strong></li><br>
+                            <li>Selling <strong>{{quantity_needed_mar}} Kgs </strong> out of the available <strong>{{quantity_available}} Kgs</strong> of crop in <strong>March</strong> to obtain the exact required fund of <strong>Rs. {{fund_obtain_mar}}.</strong></li>
+                        </ul>
+                        <ul style="text-align: justify;">Future Trends
+                            <br><br>
+                            <li>Hold your selling as price is trending, in future months u can get more benefits</li>
+                        </ul>
+                    {% else %}
+                        <ul>Future Trends
+                            <li>Better to sell your crops as prices are declining. </li>
+                        </ul>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        </div>
+        <div>
+            {% if fund_req_apr %}
+                {% if apr_df_revenue > fund_req_apr %}
+                    {% if crops.price_outlook_apr == '1. High Inflation (Positive Trending)'  or '2. Elevated risk of price escalation (Positive Movement)' %}
+                        <ul style="text-align:justify">There are two options based on the current price trends:
+                            <br><br>
+                            <li>Selling your {{crop}} crop in <strong>April</strong> will not only fulfill your required funds <strong>Rs. {{fund_req_apr}}</strong> but also yield a profit of <strong>Rs. {{apr_df_revenue}}</strong></li><br>
+                            <li>Selling <strong>{{quantity_needed_apr}} Kgs </strong> out of the available <strong>{{quantity_available}} Kgs</strong> of crop in <strong>April</strong> to obtain the exact required fund of <strong>Rs. {{fund_obtain_apr}}.</strong></li>
+                        </ul>
+                        <ul style="text-align: justify;">Future Trends
+                            <br><br>
+                            <li>Hold your selling as price is trending, in future months u can get more benefits</li>
+                        </ul>
+                    {% else %}
+                        <ul>Future Trends
+                            <li>Better to sell your crops as prices are declining. </li>
+                        </ul>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        </div>
+        <div>
+            {% if fund_req_may %}
+                {% if may_df_revenue > fund_req_may %}
+                    {% if crops.price_outlook_may == '1. High Inflation (Positive Trending)'  or '2. Elevated risk of price escalation (Positive Movement)' %}
+                        <ul style="text-align:justify">There are two options based on the current price trends:
+                            <br><br>
+                            <li>Selling your {{crop}} crop in <strong>May</strong> will not only fulfill your required funds <strong>Rs. {{fund_req_may}}</strong> but also yield a profit of <strong>Rs. {{may_df_revenue}}</strong></li><br>
+                            <li>Selling <strong>{{quantity_needed_may}} Kgs </strong> out of the available <strong>{{quantity_available}} Kgs</strong> of crop in <strong>May</strong> to obtain the exact required fund of <strong>Rs. {{fund_obtain_may}}.</strong></li>
+                        </ul>
+                        <ul style="text-align: justify;">Future Trends
+                            <br><br>
+                            <li>Hold your selling as price is trending, in future months u can get more benefits</li>
+                        </ul>
+                    {% else %}
+                        <ul>Future Trends
+                            <li>Better to sell your crops as prices are declining. </li>
+                        </ul>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        </div>
+        <div>
+            {% if fund_req_jun %}
+                {% if jun_df_revenue > fund_req_jun %}
+                    {% if crops.price_outlook_jun == '1. High Inflation (Positive Trending)'  or '2. Elevated risk of price escalation (Positive Movement)' %}
+                        <ul style="text-align:justify">There are two options based on the current price trends:
+                            <br><br>
+                            <li>Selling your {{crop}} crop in <strong>June</strong> will not only fulfill your required funds <strong>Rs. {{fund_req_jun}}</strong> but also yield a profit of <strong>Rs. {{jun_df_revenue}}</strong></li><br>
+                            <li>Selling <strong>{{quantity_needed_jun}} Kgs </strong> out of the available <strong>{{quantity_available}} Kgs</strong> of crop in <strong>June</strong> to obtain the exact required fund of <strong>Rs. {{fund_obtain_jun}}.</strong></li>
+                        </ul>
+                        <ul style="text-align: justify;">Future Trends
+                            <br><br>
+                            <li>Hold your selling as price is trending, in future months u can get more benefits</li>
+                        </ul>
+                    {% else %}
+                        <ul>Future Trends
+                            <li>Better to sell your crops as prices are declining. </li>
+                        </ul>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        </div>
+        <div>
+            {% if fund_req_jul %}
+                {% if jul_df_revenue > fund_req_jul %}
+                    {% if crops.price_outlook_jul == '1. High Inflation (Positive Trending)'  or '2. Elevated risk of price escalation (Positive Movement)' %}
+                        <ul style="text-align:justify">There are two options based on the current price trends:
+                            <br><br>
+                            <li>Selling your {{crop}} crop in <strong>July</strong> will not only fulfill your required funds <strong>Rs. {{fund_req_jul}}</strong> but also yield a profit of <strong>Rs. {{jul_df_revenue}}</strong></li><br>
+                            <li>Selling <strong>{{quantity_needed_jul}} Kgs </strong> out of the available <strong>{{quantity_available}} Kgs</strong> of crop in <strong>July</strong> to obtain the exact required fund of <strong>Rs. {{fund_obtain_jul}}.</strong></li>
+                        </ul>
+                        <ul style="text-align: justify;">Future Trends
+                            <br><br>
+                            <li>Hold your selling as price is trending, in future months u can get more benefits</li>
+                        </ul>
+                    {% else %}
+                        <ul>Future Trends
+                            <li>Better to sell your crops as prices are declining. </li>
+                        </ul>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        </div>
+        <div>
+            {% if fund_req_aug %}
+                {% if aug_df_revenue > fund_req_aug %}
+                    {% if crops.price_outlook_aug == '1. High Inflation (Positive Trending)'  or '2. Elevated risk of price escalation (Positive Movement)' %}
+                        <ul style="text-align:justify">There are two options based on the current price trends:
+                            <br><br>
+                            <li>Selling your {{crop}} crop in <strong>August</strong> will not only fulfill your required funds <strong>Rs. {{fund_req_aug}}</strong> but also yield a profit of <strong>Rs. {{aug_df_revenue}}</strong></li><br>
+                            <li>Selling <strong>{{quantity_needed_aug}} Kgs </strong> out of the available <strong>{{quantity_available}} Kgs</strong> of crop in <strong>August</strong> to obtain the exact required fund of <strong>Rs. {{fund_obtain_aug}}.</strong></li>
+                        </ul>
+                        <ul style="text-align: justify;">Future Trends
+                            <br><br>
+                            <li>Hold your selling as price is trending, in future months u can get more benefits</li>
+                        </ul>
+                    {% else %}
+                        <ul>Future Trends
+                            <li>Better to sell your crops as prices are declining. </li>
+                        </ul>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        </div>
+        <div>
+            {% if fund_req_sep %}
+                {% if sep_df_revenue > fund_req_sep %}
+                    {% if crops.price_outlook_sep == '1. High Inflation (Positive Trending)'  or '2. Elevated risk of price escalation (Positive Movement)' %}
+                        <ul style="text-align:justify">There are two options based on the current price trends:
+                            <br><br>
+                            <li>Selling your {{crop}} crop in <strong>September</strong> will not only fulfill your required funds <strong>Rs. {{fund_req_sep}}</strong> but also yield a profit of <strong>Rs. {{sep_df_revenue}}</strong></li><br>
+                            <li>Selling <strong>{{quantity_needed_sep}} Kgs </strong> out of the available <strong>{{quantity_available}} Kgs</strong> of crop in <strong>September</strong> to obtain the exact required fund of <strong>Rs. {{fund_obtain_sep}}.</strong></li>
+                        </ul>
+                        <ul style="text-align: justify;">Future Trends
+                            <br><br>
+                            <li>Hold your selling as price is trending, in future months u can get more benefits</li>
+                        </ul>
+                    {% else %}
+                        <ul>Future Trends
+                            <li>Better to sell your crops as prices are declining. </li>
+                        </ul>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        </div>
+        <div>
+            {% if fund_req_oct %}
+                {% if oct_df_revenue > fund_req_oct %}
+                    {% if crops.price_outlook_oct == '1. High Inflation (Positive Trending)'  or '2. Elevated risk of price escalation (Positive Movement)' %}
+                        <ul style="text-align:justify">There are two options based on the current price trends:
+                            <br><br>
+                            <li>Selling your {{crop}} crop in <strong>October</strong> will not only fulfill your required funds <strong>Rs. {{fund_req_oct}}</strong> but also yield a profit of <strong>Rs. {{oct_df_revenue}}</strong></li><br>
+                            <li>Selling <strong>{{quantity_needed_oct}} Kgs </strong> out of the available <strong>{{quantity_available}} Kgs</strong> of crop in <strong>October</strong> to obtain the exact required fund of <strong>Rs. {{fund_obtain_oct}}.</strong></li>
+                        </ul>
+                        <ul style="text-align: justify;">Future Trends
+                            <br><br>
+                            <li>Hold your selling as price is trending, in future months u can get more benefits</li>
+                        </ul>
+                    {% else %}
+                        <ul>Future Trends
+                            <li>Better to sell your crops as prices are declining. </li>
+                        </ul>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        </div>
+        <div>
+            {% if fund_req_nov %}
+                {% if nov_df_revenue > fund_req_nov %}
+                    {% if crops.price_outlook_nov == '1. High Inflation (Positive Trending)'  or '2. Elevated risk of price escalation (Positive Movement)' %}
+                        <ul style="text-align:justify">There are two options based on the current price trends:
+                            <br><br>
+                            <li>Selling your {{crop}} crop in <strong>November</strong> will not only fulfill your required funds <strong>Rs. {{fund_req_nov}}</strong> but also yield a profit of <strong>Rs. {{nov_df_revenue}}</strong></li><br>
+                            <li>Selling <strong>{{quantity_needed_nov}} Kgs </strong> out of the available <strong>{{quantity_available}} Kgs</strong> of crop in <strong>November</strong> to obtain the exact required fund of <strong>Rs. {{fund_obtain_nov}}.</strong></li>
+                        </ul>
+                        <ul style="text-align: justify;">Future Trends
+                            <br><br>
+                            <li>Hold your selling as price is trending, in future months u can get more benefits</li>
+                        </ul>
+                    {% else %}
+                        <ul>Future Trends
+                            <li>Better to sell your crops as prices are declining. </li>
+                        </ul>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        </div>
+        <div>
+            {% if fund_req_dec %}
+                {% if dec_df_revenue > fund_req_dec %}
+                    {% if crops.price_outlook_dec == '1. High Inflation (Positive Trending)'  or '2. Elevated risk of price escalation (Positive Movement)' %}
+                        <ul style="text-align:justify">There are two options based on the current price trends:
+                            <br><br>
+                            <li>Selling your {{crop}} crop in <strong>December</strong> will not only fulfill your required funds <strong>Rs. {{fund_req_dec}}</strong> but also yield a profit of <strong>Rs. {{dec_df_revenue}}</strong></li><br>
+                            <li>Selling <strong>{{quantity_needed_dec}} Kgs </strong> out of the available <strong>{{quantity_available}} Kgs</strong> of crop in <strong>December</strong> to obtain the exact required fund of <strong>Rs. {{fund_obtain_dec}}.</strong></li>
+                        </ul>
+                        <ul style="text-align: justify;">Future Trends
+                            <br><br>
+                            <li>Hold your selling as price is trending, in future months u can get more benefits</li>
+                        </ul>
+                    {% else %}
+                        <ul>Future Trends
+                            <li>Better to sell your crops as prices are declining. </li>
+                        </ul>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

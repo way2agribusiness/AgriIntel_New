@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+    <title>Way2AgriIntel AI | Feedback {% if title %}| {{title}} {% endif %}</title>
+    <link href="{% static 'css/feedback.css' %}" rel="stylesheet"/>
+{% endblock %}
+{% block header %}{% endblock %}
+{% block content %}
+<div class="content">
+    <h3 class="form-head">Feedback</h3>
+    <form method="POST" class="feedback-form">
+        {% csrf_token %}
+        <div class="form-group-container">
+            <div class="form-group full-width">
+                {{ feedback_form.name }}
+                <label for="{{ feedback_form.name.id_for_label }}" id="label">{{ feedback_form.name.label }}</label>
+            </div>
+            <div class="form-group full-width">
+                {{ feedback_form.mobile_no }}
+                <label for="{{ feedback_form.mobile_no.id_for_label }}" id="label">{{ feedback_form.mobile_no.label }}</label>
+            </div>
+            <div class="form-group full-width">
+                {{ feedback_form.address }}
+                <label for="{{ feedback_form.address.id_for_label }}" id="feedback">{{ feedback_form.address.label }}</label>
+            </div>
+            {{feedback_formset.management_form}}
+            {% for form in feedback_formset %}
+                <div class="form-group full-width">
+                    {{form.services_used}}
+                </div>
+                <div id="hidden-form">
+                    <div class="form-group full-width">
+                        <label for="rating" id="services">Rate Service</label>
+                        {{form.rating}}
+                    </div>
+                    <div class="form-group full-width">
+                        {{ form.feedback }}
+                        <label for="{{ form.feedback.id_for_label }}" id="feedback">{{ form.feedback.label }}</label>
+                    </div>
+                    <div class="form-group full-width">
+                        {{ form.suggestions }}
+                        <label for="{{ form.suggestions.id_for_label }}" id="feedback">{{ form.suggestions.label }}</label>
+                    </div>
+                </div><br>
+            {% endfor %}
+        </div>
+        <br><br>
+        <button class="feed-btn"><span></span><span></span><span></span><span></span>Submit Feedback</button>
+        <br><br><br>
+    </form>
+</div>
+<script>
+    const radioBtns = document.querySelectorAll("input[type='radio']");
+    let selectedBtns = [];
+    radioBtns.forEach(radioBtn =>{
+        radioBtn.addEventListener('click', function(){
+            if (selectedBtns.includes(radioBtn)) {
+                radioBtn.checked = false;
+                selectedBtns = selectedBtns.filter(btn => btn !== radioBtn);
+            }else{
+                selectedBtns.push(radioBtn);
+            }
+        });
+    });
+</script>
+{% endblock %}

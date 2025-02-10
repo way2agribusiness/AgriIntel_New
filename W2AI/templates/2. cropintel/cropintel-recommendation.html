@@ -1,0 +1,552 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+{% load static %}
+{% block head %}
+    <title>Way2AgriIntel AI | CropIntel</title>
+    <link rel="stylesheet" href="{% static 'css/nutricrops.css' %}"/>
+{% endblock %}
+{% block header %}{% endblock %}
+{% block content %}
+<h2>{{ request.user | capfirst }}</h2>
+<div class="user_input_card">
+{% for data in user_input_knowledge %}
+	{% with locations=data.recommendation.location|split_loc %}
+        {% if data.user_input.land_type == 'New Land' %}
+            {% for loc in locations %}
+                {% if data.user_input.location in loc %}
+                    {% if data.user_input.temperature|is_temp_in_range:data.recommendation.favorable_temp %}
+                        {% if data.recommendation.market_prospects == '1. High Inflation (Positive Trending)' %}
+                        <div class="prediction-item">
+                            <h1>Recommended Crop To Grow</h1>
+                            <h4>Crop Name</h4><h3>{{ data.recommendation.crop }}</h3>
+                            <h4>Crop Varieties To Grow</h4><h3>{{ data.recommendation.selected_crop_varieties }}</h3>
+                            <h4>Inter Crops To Grow:</h4><h3>{{ data.recommendation.selected_intercrops }}</h3>
+                            <h4>Cover Crops To Grow:</h4><h3>{{ data.recommendation.cover_crops }}</h3>
+                            <h4>Manure:</h4><h3>{{ data.recommendation.manure }}</h3>
+                            <h4>High Density</h4><h3>{{data.recommendation.high_density}}</h3>
+                            <h4>Favorable Temperature</h4><h3>{{data.recommendation.favorable_temp}}</h3>
+                            <h4>Relative Humidity:</h4><h3>{{data.recommendation.relative_humidity}}</h3>
+                            <h4>Rainfall Required:</h4><h3>{{data.recommendation.rainfall_req}}</h3>
+                            <h4>Wind Velocity:</h4><h3>{{data.recommendation.wind_velocity}}</h3>
+                            <h4>Mean Sea Level:</h4><h3>{{data.recommendation.mean_sea_level}}</h3>
+                            <img src="{{ data.recommendation.crop_variety_image.url }}" alt="{{ data.recommendation.crop }}-{{ data.recommendation.crop_varieties }}" loading="lazy"/>
+                            <h4>Water Required:</h4><h3>{{ data.recommendation.water_req }}</h3>
+                            <h4>Propogation Method:</h4><h3>{{ data.recommendation.propogation_method }}</h3>
+                            <h4>Recommended Space:</h4><h3>{{ data.recommendation.recommended_space }}</h3>
+                            <h4>Total Number of Plants:</h4><h3>{{ data.recommendation.no_of_plants }}</h3>
+                            <h4>Yield Potentiel:</h4><h3>{{ data.recommendation.yield_potential }}</h3>
+                            <h4>Economical Yield Starts After:</h4><h3>{{ data.recommendation.economical_yield_start }}</h3>
+                            <h4>Ideal Planting Age:</h4><h3>{{ data.recommendation.ideal_age_planting }}</h3>
+                            <h4>Harvesting:</h4><h3>{{ data.recommendation.harvest }}</h3>
+                            <h4>Area Zone:</h4><h3>{{ data.recommendation.area_zone }}</h3>
+                            <h4>Soil Ph Required:</h4><h3>{{ data.recommendation.soil_pH }}</h3>
+                            <h4>Inter Crop Space Required:</h4><h3>{{data.recommendation.inter_crop_space}}</h3>
+                            <h4>Recommended Space:</h4><h3>{{data.recommendation.recommended_space}}</h3>
+                            <h4>Market Prospects:</h4><h3>{{data.recommendation.market_prospects}}</h3>
+                            <h4>Current Month Report:</h4><h3>{{ data.recommendation.current_month_report }}</h3>
+                            <h4>Seasonal Report:</h4><h3>{{ data.recommendation.seasonal_report }}</h3>
+                        </div>
+                        {% elif data.recommendation.market_prospects == '2. Elevated risk of price escalation (Positive Movement)' %}
+                        <div class="prediction-item">
+                            <h1>Recpmmended Crop To Grow</h1>
+                            <h4>Crop Name:</h4><h3>{{data.recommendation.crop }}</h3>
+                            <h4>Crop Varieties:</h4><h3>{{ data.recommendation.selected_crop_varieties }}</h3>
+                            <h4>Inter Crops To Grow</h4><h3>{{ data.recommendation.selected_intercrops }}</h3>
+                            <h4>Cover Crops To Grow:</h4><h3>{{ data.recommendation.cover_crops }}</h3>
+                            <h4>Manure:</h4><h3>{{ data.recommendation.manure }}</h3>
+                            <h4>High Density:</h4><h3>{{data.recommendation.high_density}}</h3>
+                            <h4>Favorable Temperature:</h4><h3>{{data.recommendation.favorable_temp}}</h3>
+                            <h4>Relative Humidity</h4><h3>{{data.recommendation.relative_humidity}}</h3>
+                            <h4>Rainfall Required:</h4><h3>{{data.recommendation.rainfall_req}}</h3>
+                            <h4>Wind Velocity:</h4><h3>{{data.recommendation.wind_velocity}}</h3>
+                            <h4>Mean Sea Level</h4><h3>{{data.recommendation.mean_sea_level}}</h3>
+                            <img src="{{ data.recommendation.crop_variety_image.url }}" alt="{{ data.recommendation.crop }}z" loading="lazy"/>
+                            <h4>Water Required:</h4><h3>{{ data.recommendation.water_req }}</h3>
+                            <h4>Propogation Method:</h4><h3>{{ data.recommendation.propagation_method }}</h3>
+                            <h4>Recommended Space:</h4><h3>{{ data.recommendation.recommend_space }}</h3>
+                            <h4>Total Number Of Plants:</h4><h3>{{ data.recommendation.no_of_plants }}</h3>
+                            <h4>Yield Potentiel:</h4><h3>{{ data.recommendation.yield_potential }}</h3>
+                            <h4>Economical Yield Start:</h4><h3>{{ data.recommendation.economical_yield_start }}</h3>
+                            <h4>Ideal Planting Age:</h4><h3>{{ data.recommendation.ideal_age_planting }}</h3>
+                            <h4>Harvesting:</h4><h3>{{ data.recommendation.harvest }}</h3>
+                            <h4>Area Zone</h4><h3>{{ data.recommendation.area_zone }}</h3>
+                            <h4>Soil Ph Required:</h4><h3>{{ data.recommendation.soil_pH }}</h3>
+                            <h4>Inter Crop Space Required:</h4><h3>{{data.recommendation.inter_crop_space}}</h3>
+                            <h4>Recommended Space:</h4><h3>{{data.recommendation.recommended_space}}</h3>
+                            <h4>Market Prospects:</h4><h3>{{data.recommendation.market_prospects}}</h3>
+                            <h4>Current Month Report:</h4><h3>{{ data.recommendation.current_month_report }}</h3>
+                            <h4>Seasonal Report:</h4><h3>{{ data.recommendation.seasonal_report }}</h3>
+                        {% elif data.recommendation.market_prospects == '3. Price Convergence (High Spread)' %}
+                        <div class="prediction-item">
+                            <h1>Recommended Crop to Grow</h1>
+                            <h4>Crop Name:</h4><h3>{{ data.recommendation.crop }}</h3>
+                            <h4>Crop Varieties:</h4><h3>{{ data.recommendation.selected_crop_varieties }}</h3>
+                            <h4>Inter Crops To Grow:</h4><h3>{{ data.recommendation.selected_intercrops }}</h3>
+                            <h4>Cover Crops To Grow:</h4><h3>{{ data.recommendation.cover_crops }}</h3>
+                            <h4>Manure:</h4><h3>{{ data.recommendation.manure }}</h3>
+                            <h4>High Density</h4><h3>{{data.recommendation.high_density}}</h3>
+                            <h4>Favorable Temperature</h4><h3>{{data.recommendation.favorable_temp}}</h3>
+                            <h4>Relative Humidity:</h4><h3>{{data.recommendation.relative_humidity}}</h3>
+                            <h4>Rainfall Required:</h4><h3>{{data.recommendation.rainfall_req}}</h3>
+                            <h4>Wind Velocity:</h4><h3>{{data.recommendation.wind_velocity}}</h3>
+                            <h4>Mean Sea Level:</h4><h3>{{data.recommendation.mean_sea_level}}</h3>
+                            <img src="{{ data.recommendation.crop_variety_image.url }}" alt="{{ data.recommendation.crop }}-{{ data.recommendation.crop_varieties }}" loading="lazy"/>
+                            <h4>Water Required:</h4><h3>{{ data.recommendation.water_req }}</h3>
+                            <h4>Propogation Method:</h4><h3>{{ data.recommendation.propagation_method }}</h3>
+                            <h4>Recommended Space:</h4><h3>{{ data.recommendation.recommend_space }}</h3>
+                            <h4>Total Number of Plants:</h4><h3>{{ data.recommendation.no_of_plants }}</h3>
+                            <h4>Yield Potential:</h4><h3>{{ data.recommendation.yield_potential }}</h3>
+                            <h4>Economical Yield Starts After:</h4><h3>{{ data.recommendation.economical_yield_start }}</h3>
+                            <h4>Ideal Planting Age:</h4><h3>{{ data.recommendation.ideal_age_planting }}</h3>
+                            <h4>Harvesting:</h4><h3>{{ data.recommendation.harvest }}</h3>
+                            <h4>Area Zone:</h4><h3>{{ data.recommendation.area_zone }}</h3>
+                            <h4>Soil Ph Required:</h4><h3>{{ data.recommendation.soil_pH }}</h3>
+                            <h4>Inter Crop Space Required:</h4><h3>{{data.recommendation.inter_crop_space}}</h3>
+                            <h4>Recommended Space:</h4><h3>{{data.recommendation.recommended_space}}</h3>
+                            <h4>Market Prospects:</h4><h3>{{data.recommendation.market_prospects}}</h3>
+                            <h4>Current Month Report:</h4><h3>{{ data.recommendation.current_month_report }}</h3>
+                            <h4>Seasonal Report:</h4><h3>{{ data.recommendation.seasonal_report }}</h3>
+                        {% elif data.recommendation.market_prospects == '4. Potential risk of Decline (Negative Movement)' %}
+                        <div class="prediction-item">
+                            <h1>Recommended Crop to Grow</h1>
+                            <h4>Crop Name:</h4><h3>{{ data.recommendation.crop }}</h3>
+                            <h4>Crop Varieties:</h4><h3>{{ data.recommendation.selected_crop_varieties }}</h3>
+                            <h4>Inter Crops To Grow:</h4><h3>{{ data.recommendation.selected_intercrops }}</h3>
+                            <h4>Cover Crops To Grow:</h4><h3>{{ data.recommendation.cover_crops }}</h3>
+                            <h4>Manure:</h4><h3>{{ data.recommendation.manure }}</h3>
+                            <h4>High Density</h4><h3>{{data.recommendation.high_density}}</h3>
+                            <h4>Favorable Temperature</h4><h3>{{data.recommendation.favorable_temp}}</h3>
+                            <h4>Relative Humidity:</h4><h3>{{data.recommendation.relative_humidity}}</h3>
+                            <h4>Rainfall Required:</h4><h3>{{data.recommendation.rainfall_req}}</h3>
+                            <h4>Wind Velocity:</h4><h3>{{data.recommendation.wind_velocity}}</h3>
+                            <h4>Mean Sea Level:</h4><h3>{{data.recommendation.mean_sea_level}}</h3>
+                            <img src="{{ data.recommendation.crop_variety_image.url }}" alt="{{ data.recommendation.crop }}-{{ data.recommendation.crop_varieties }}" loading="lazy"/>
+                            <h4>Water Required:</h4><h3>{{ data.recommendation.water_req }}</h3>
+                            <h4>Propogation Method:</h4><h3>{{ data.recommendation.propagation_method }}</h3>
+                            <h4>Recommended Space:</h4><h3>{{ data.recommendation.recommend_space }}</h3>
+                            <h4>Total Number of Plants:</h4><h3>{{ data.recommendation.no_of_plants }}</h3>
+                            <h4>Yield Potential:</h4><h3>{{ data.recommendation.yield_potential }}</h3>
+                            <h4>Economical Yield Starts After:</h4><h3>{{ data.recommendation.economical_yield_start }}</h3>
+                            <h4>Ideal Planting Age:</h4><h3>{{ data.recommendation.ideal_age_planting }}</h3>
+                            <h4>Harvesting:</h4><h3>{{ data.recommendation.harvest }}</h3>
+                            <h4>Area Zone:</h4><h3>{{ data.recommendation.area_zone }}</h3>
+                            <h4>Soil Ph Required:</h4><h3>{{ data.recommendation.soil_pH }}</h3>
+                            <h4>Inter Crop Space Required:</h4><h3>{{data.recommendation.inter_crop_space}}</h3>
+                            <h4>Recommended Space:</h4><h3>{{data.recommendation.recommended_space}}</h3>
+                            <h4>Market Prospects:</h4><h3>{{data.recommendation.market_prospects}}</h3>
+                            <h4>Current Month Report:</h4><h3>{{ data.recommendation.current_month_report }}</h3>
+                            <h4>Seasonal Report:</h4><h3>{{ data.recommendation.seasonal_report }}</h3>
+                        {% else %}
+                        <div class="prediction-item">                      
+                            <h1>Recommended Crop to Grow</h1>
+                            <h4>Crop Name:</h4><h3>{{ data.recommendation.crop }}</h3>
+                            <h4>Crop Varieties:</h4><h3>{{ data.recommendation.selected_crop_varieties }}</h3>
+                            <h4>Inter Crops To Grow:</h4><h3>{{ data.recommendation.selected_intercrops }}</h3>
+                            <h4>Cover Crops To Grow:</h4><h3>{{ data.recommendation.cover_crops }}</h3>
+                            <h4>Manure:</h4><h3>{{ data.recommendation.manure }}</h3>
+                            <h4>High Density</h4><h3>{{data.recommendation.high_density}}</h3>
+                            <h4>Favorable Temperature</h4><h3>{{data.recommendation.favorable_temp}}</h3>
+                            <h4>Relative Humidity:</h4><h3>{{data.recommendation.relative_humidity}}</h3>
+                            <h4>Rainfall Required:</h4><h3>{{data.recommendation.rainfall_req}}</h3>
+                            <h4>Wind Velocity:</h4><h3>{{data.recommendation.wind_velocity}}</h3>
+                            <h4>Mean Sea Level:</h4><h3>{{data.recommendation.mean_sea_level}}</h3>
+                            <img src="{{ data.recommendation.crop_variety_image.url }}" alt="{{ data.recommendation.crop }}-{{ data.recommendation.crop_varieties }}" loading="lazy"/>
+                            <h4>Water Required:</h4><h3>{{ data.recommendation.water_req }}</h3>
+                            <h4>Propogation Method:</h4><h3>{{ data.recommendation.propagation_method }}</h3>
+                            <h4>Recommended Space:</h4><h3>{{ data.recommendation.recommend_space }}</h3>
+                            <h4>Total Number of Plants:</h4><h3>{{ data.recommendation.no_of_plants }}</h3>
+                            <h4>Yield Potential:</h4><h3>{{ data.recommendation.yield_potential }}</h3>
+                            <h4>Economical Yield Starts After:</h4><h3>{{ data.recommendation.economical_yield_start }}</h3>
+                            <h4>Ideal Planting Age:</h4><h3>{{ data.recommendation.ideal_age_planting }}</h3>
+                            <h4>Harvesting:</h4><h3>{{ data.recommendation.harvest }}</h3>
+                            <h4>Area Zone:</h4><h3>{{ data.recommendation.area_zone }}</h3>
+                            <h4>Soil Ph Required:</h4><h3>{{ data.recommendation.soil_pH }}</h3>
+                            <h4>Inter Crop Space Required:</h4><h3>{{data.recommendation.inter_crop_space}}</h3>
+                            <h4>Recommended Space:</h4><h3>{{data.recommendation.recommended_space}}</h3>
+                            <h4>Market Prospects:</h4><h3>{{data.recommendation.market_prospects}}</h3>
+                            <h4>Current Month Report:</h4><h3>{{ data.recommendation.current_month_report }}</h3>
+                            <h4>Seasonal Report:</h4><h3>{{ data.recommendation.seasonal_report }}</h3>
+                        {% endif %}
+                    {% else %}
+                    <div class="prediction-item">
+                        <h1>According To your Temperature it is not having a Average temperature required But if you still need to grow you can grow the following crops</h4>
+                        <h1>Temperature {{ data.user_input.temperature }} is  not  within the range {{ data.recommendation.favorable_temp }}</h4>
+                        {% if data.recommendation.market_prospects == '1. High Inflation (Positive Trending)' %}
+                        <h1>Recommended Crop to Grow</h1>
+                            <h4>Crop Name:</h4><h3>{{ data.recommendation.crop}}</h3>
+                            <h4>Crop Varieties:</h4><h3>{{ data.recommendation.selected_crop_varieties }}</h3>
+                            <h4>Inter Crops To Grow:</h4><h3>{{ data.recommendation.selected_intercrops }}</h3>
+                            <h4>Cover Crops To Grow:</h4><h3>{{ data.recommendation.cover_crops }}</h3>
+                            <h4>Manure:</h4><h3>{{ data.recommendation.manure }}</h3>
+                            <h4>High Density</h4><h3>{{data.recommendation.high_density}}</h3>
+                            <h4>Favorable Temperature</h4><h3>{{data.recommendation.favorable_temp}}</h3>
+                            <h4>Relative Humidity:</h4><h3>{{data.recommendation.relative_humidity}}</h3>
+                            <h4>Rainfall Required:</h4><h3>{{data.recommendation.rainfall_req}}</h3>
+                            <h4>Wind Velocity:</h4><h3>{{data.recommendation.wind_velocity}}</h3>
+                            <h4>Mean Sea Level:</h4><h3>{{data.recommendation.mean_sea_level}}</h3>
+                            <img src="{{ data.recommendation.crop_variety_image.url }}" alt="{{ data.recommendation.crop }}-{{ data.recommendation.crop_varieties }}" loading="lazy"/>
+                            <h4>Water Required:</h4><h3>{{ data.recommendation.water_req }}</h3>
+                            <h4>Propogation Method:</h4><h3>{{ data.recommendation.propagation_method }}</h3>
+                            <h4>Recommended Space:</h4><h3>{{ data.recommendation.recommend_space }}</h3>
+                            <h4>Total Number of Plants:</h4><h3>{{ data.recommendation.no_of_plants }}</h3>
+                            <h4>Yield Potential:</h4><h3>{{ data.recommendation.yield_potential }}</h3>
+                            <h4>Economical Yield Starts After:</h4><h3>{{ data.recommendation.economical_yield_start }}</h3>
+                            <h4>Ideal Planting Age:</h4><h3>{{ data.recommendation.ideal_age_planting }}</h3>
+                            <h4>Harvesting:</h4><h3>{{ data.recommendation.harvest }}</h3>
+                            <h4>Area Zone:</h4><h3>{{ data.recommendation.area_zone }}</h3>
+                            <h4>Soil Ph Required:</h4><h3>{{ data.recommendation.soil_pH }}</h3>
+                            <h4>Inter Crop Space Required:</h4><h3>{{data.recommendation.inter_crop_space}}</h3>
+                            <h4>Recommended Space:</h4><h3>{{data.recommendation.recommended_space}}</h3>
+                            <h4>Market Prospects:</h4><h3>{{data.recommendation.market_prospects}}</h3>
+                            <h4>Current Month Report:</h4><h3>{{ data.recommendation.current_month_report }}</h3>
+                            <h4>Seasonal Report:</h4><h3>{{ data.recommendation.seasonal_report }}</h3>
+                    </div>
+                        {% elif data.recommendation.market_prospects == '2. Elevated risk of price escalation (Positive Movement)' %}
+                        <div class="prediction-item">
+                            <h1>Recommended Crop to Grow</h1>
+                            <h4>Crop Name:</h4><h3>{{ data.recommendation.crop }}</h3>
+                            <h4>Crop Varieties:</h4><h3>{{ data.recommendation.selected_crop_varieties }}</h3>
+                            <h4>Inter Crops To Grow:</h4><h3>{{ data.recommendation.selected_intercrops }}</h3>
+                            <h4>Cover Crops To Grow:</h4><h3>{{ data.recommendation.cover_crops }}</h3>
+                            <h4>Manure:</h4><h3>{{ data.recommendation.manure }}</h3>
+                            <h4>High Density</h4><h3>{{data.recommendation.high_density}}</h3>
+                            <h4>Favorable Temperature</h4><h3>{{data.recommendation.favorable_temp}}</h3>
+                            <h4>Relative Humidity:</h4><h3>{{data.recommendation.relative_humidity}}</h3>
+                            <h4>Rainfall Required:</h4><h3>{{data.recommendation.rainfall_req}}</h3>
+                            <h4>Wind Velocity:</h4><h3>{{data.recommendation.wind_velocity}}</h3>
+                            <h4>Mean Sea Level:</h4><h3>{{data.recommendation.mean_sea_level}}</h3>
+                            <img src="{{ data.recommendation.crop_variety_image.url }}" alt="{{ data.recommendation.crop }}-{{ data.recommendation.crop_varieties }}" loading="lazy"/>
+                            <h4>Water Required:</h4><h3>{{ data.recommendation.water_req }}</h3>
+                            <h4>Propogation Method:</h4><h3>{{ data.recommendation.propagation_method }}</h3>
+                            <h4>Recommended Space:</h4><h3>{{ data.recommendation.recommend_space }}</h3>
+                            <h4>Total Number of Plants:</h4><h3>{{ data.recommendation.no_of_plants }}</h3>
+                            <h4>Yield Potential:</h4><h3>{{ data.recommendation.yield_potential }}</h3>
+                            <h4>Economical Yield Starts After:</h4><h3>{{ data.recommendation.economical_yield_start }}</h3>
+                            <h4>Ideal Planting Age:</h4><h3>{{ data.recommendation.ideal_age_planting }}</h3>
+                            <h4>Harvesting:</h4><h3>{{ data.recommendation.harvest }}</h3>
+                            <h4>Area Zone:</h4><h3>{{ data.recommendation.area_zone }}</h3>
+                            <h4>Soil Ph Required:</h4><h3>{{ data.recommendation.soil_pH }}</h3>
+                            <h4>Inter Crop Space Required:</h4><h3>{{data.recommendation.inter_crop_space}}</h3>
+                            <h4>Recommended Space:</h4><h3>{{data.recommendation.recommended_space}}</h3>
+                            <h4>Market Prospects:</h4><h3>{{data.recommendation.market_prospects}}</h3>
+                            <h4>Current Month Report:</h4><h3>{{ data.recommendation.current_month_report }}</h3>
+                            <h4>Seasonal Report:</h4><h3>{{ data.recommendation.seasonal_report }}</h3>
+                        </div>
+                        {% elif data.recommendation.market_prospects == '3. Price Convergence (High Spread)' %}
+                        <div class="prediction-item">
+                            <h1>Recommended Crop To Grow</h1>
+                            <h4>Crop Name:</h4><h3>{{ data.recommendation.crop }}</h3>
+                            <h4>Crop Varieties:</h4><h3>{{ data.recommendation.selected_crop_varieties }}</h3>
+                            <h4>Inter Crops To Grow:</h4><h3>{{ data.recommendation.selected_intercrops }}</h3>
+                            <h4>Cover Crops To Grow:</h4><h3>{{ data.recommendation.cover_crops }}</h3>
+                            <h4>Manure:</h4><h3>{{ data.recommendation.manure }}</h3>
+                            <h4>High Density</h4><h3>{{data.recommendation.high_density}}</h3>
+                            <h4>Favorable Temperature</h4><h3>{{ data.recommendation.favorable_temp }}</h3>
+                            <h4>Relative Humidity:</h4><h3>{{ data.recommendation.relative_humidity }}</h3>
+                            <h4>Rainfall Required:</h4><h3>{{ data.recommendation.rainfall_req }}</h3>
+                            <h4>Wind Velocity:</h4><h3>{{ data.recommendation.wind_velocity}}</h3>
+                            <h4>Mean Sea Level:</h4><h3>{{ data.recommendation.mean_sea_level }}</h3>
+                            <img src="{{ data.recommendation.crop_variety_image.url }}" alt="{{ data.recommendation.crop }}-{{ data.recommendation.crop_varieties }}" loading="lazy"/>
+                            <h4>Water Required:</h4><h3>{{ data.recommendation.water_req }}</h3>
+                            <h4>Propogation Method:</h4><h3>{{ data.recommendation.propagation_method }}</h3>
+                            <h4>Recommended Space:</h4><h3>{{ data.recommendation.recommend_space }}</h3>
+                            <h4>Total Number of Plants:</h4><h3>{{ data.recommendation.no_of_plants }}</h3>
+                            <h4>Yield Potential:</h4><h3>{{ data.recommendation.yield_potential }}</h3>
+                            <h4>Economical Yield Starts After:</h4><h3>{{ data.recommendation.economical_yield_start }}</h3>
+                            <h4>Ideal Planting Age:</h4><h3>{{ data.recommendation.ideal_age_planting }}</h3>
+                            <h4>Harvesting:</h4><h3>{{ data.recommendation.harvest }}</h3>
+                            <h4>Area Zone:</h4><h3>{{ data.recommendation.area_zone }}</h3>
+                            <h4>Soil Ph Required:</h4><h3>{{ data.recommendation.soil_pH}}</h3>
+                            <h4>Inter Crop Space Required:</h4><h3>{{data.recommendation.inter_crop_space}}</h3>
+                            <h4>Recommended Space:</h4><h3>{{ data.recommendation.recommended_space }}</h3>
+                            <h4>Market Prospects:</h4><h3>{{ data.recommendation.market_prospects }}</h3>
+                            <h4>Current Month Report:</h4><h3>{{ data.recommendation.current_month_report }}</h3>
+                            <h4>Seasonal Report:</h4><h3>{{ data.recommendation.seasonal_report }}</h3>
+                        </div>
+                        {% elif data.recommendation.market_prospects == '4. Potential risk of Decline (Negative Movement)' %}
+                        <div class="prediction-item">
+                            <h1>Recommended Crop to Grow</h1>
+                            <h4>Crop Name:</h4><h3>{{ data.recommendation.crop }}</h3>
+                            <h4>Crop Varieties:</h4><h3>{{ data.recommendation.selected_crop_varieties }}</h3>
+                            <h4>Inter Crops To Grow:</h4><h3>{{ data.recommendation.selected_intercrops }}</h3>
+                            <h4>Cover Crops To Grow:</h4><h3>{{ data.recommendation.cover_crops }}</h3>
+                            <h4>Manure:</h4><h3>{{ data.recommendation.manure }}</h3>
+                            <h4>High Density</h4><h3>{{data.recommendation.high_density}}</h3>
+                            <h4>Favorable Temperature</h4><h3>{{ data.recommendation.favorable_temp }}</h3>
+                            <h4>Relative Humidity:</h4><h3>{{ data.recommendation.relative_humidity }}</h3>
+                            <h4>Rainfall Required:</h4><h3>{{ data.recommendation.rainfall_req }}</h3>
+                            <h4>Wind Velocity:</h4><h3>{{ data.recommendation.wind_velocity }}</h3>
+                            <h4>Mean Sea Level:</h4><h3>{{ data.recommendation.mean_sea_level }}</h3>
+                            <img src="{{ data.recommendation.crop_variety_image.url }}" alt="{{ data.recommendation.crop }}-{{ data.recommendation.crop_varieties }}" loading="lazy"/>
+                            <h4>Water Required:</h4><h3>{{ data.recommendation.water_req }}</h3>
+                            <h4>Propogation Method:</h4><h3>{{ data.recommendation.propogation_method }}</h3>
+                            <h4>Recommended Space:</h4><h3>{{ data.recommendation.recommend_space }}</h3>
+                            <h4>Total Number of Plants:</h4><h3>{{ data.recommendation.no_of_plants }}</h3>
+                            <h4>Yield Potential:</h4><h3>{{ data.recommendation.yield_potential }}</h3>
+                            <h4>Economical Yield Starts After:</h4><h3>{{ data.recommendation.economical_yield_start }}</h3>
+                            <h4>Ideal Planting Age:</h4><h3>{{ data.recommendation.ideal_age_planting }}</h3>
+                            <h4>Harvesting:</h4><h3>{{ data.recommendation.harvest }}</h3>
+                            <h4>Area Zone:</h4><h3>{{ data.recommendation.area_zone }}</h3>
+                            <h4>Soil Ph Required:</h4><h3>{{ data.recommendation.soil_pH }}</h3>
+                            <h4>Inter Crop Space Required:</h4><h3>{{data.recommendation.inter_crop_space}}</h3>
+                            <h4>Recommended Space:</h4><h3>{{data.recommendation.recommended_space}}</h3>
+                            <h4>Market Prospects:</h4><h3>{{data.recommendation.market_prospects}}</h3>
+                            <h4>Current Month Report:</h4><h3>{{ data.recommendation.current_month_report }}</h3>
+                            <h4>Seasonal Report:</h4><h3>{{ data.recommendation.seasonal_report }}</h3>
+                        </div>
+                        {% else %}
+                        <div class="prediction-item">
+                            <h1>Recommended Crop to Grow</h1>
+                            <h4>Crop Name:</h4><h3>{{ data.recommendation.crop }}</h3>
+                            <h4>Crop Varieties:</h4><h3>{{ data.recommendation.crop_varieties }}</h3>
+                            <h4>Inter Crops To Grow:</h4><h3>{{ data.recommendation.selected_intercrops }}</h3>
+                            <h4>Cover Crops To Grow:</h4><h3>{{ data.recommendation.cover_crops }}</h3>
+                            <h4>Manure:</h4><h3>{{ data.recommendation.manure }}</h3>
+                            <h4>High Density</h4><h3>{{data.recommendation.high_density}}</h3>
+                            <h4>Favorable Temperature</h4><h3>{{ data.recommendation.favorable_temp }}</h3>
+                            <h4>Relative Humidity:</h4><h3>{{data.recommendation.relative_humidity}}</h3>
+                            <h4>Rainfall Required:</h4><h3>{{data.recommendation.rainfall_req}}</h3>
+                            <h4>Wind Velocity:</h4><h3>{{data.recommendation.wind_velocity}}</h3>
+                            <h4>Mean Sea Level:</h4><h3>{{data.recommendation.mean_sea_level}}</h3>
+                            <img src="{{ data.recommendation.crop_variety_image.url }}" alt="{{ data.recommendation.crop }}-{{ data.recommendation.crop_varieties }}" loading="lazy"/>
+                            <h4>Water Required:</h4><h3>{{ data.recommendation.water_req }}</h3>
+                            <h4>Propogation Method:</h4><h3>{{ data.recommendation.propagation_method }}</h3>
+                            <h4>Recommended Space:</h4><h3>{{ data.recommendation.recommend_space }}</h3>
+                            <h4>Total Number of Plants:</h4><h3>{{ data.recommendation.no_of_plants }}</h3>
+                            <h4>Yield Potential:</h4><h3>{{ data.recommendation.yield_potential }}</h3>
+                            <h4>Economical Yield Starts After:</h4><h3>{{ data.recommendation.economical_yield_start }}</h3>
+                            <h4>Ideal Planting Age:</h4><h3>{{ data.recommendation.ideal_age_planting }}</h3>
+                            <h4>Harvesting:</h4><h3>{{ data.recommendation.harvest }}</h3>
+                            <h4>Area Zone:</h4><h3>{{ data.recommendation.area_zone }}</h3>
+                            <h4>Soil Ph Required:</h4><h3>{{ data.recommendation.soil_pH }}</h3>
+                            <h4>Inter Crop Space Required:</h4><h3>{{data.recommendation.inter_crop_space}}</h3>
+                            <h4>Recommended Space:</h4><h3>{{data.recommendation.recommended_space}}</h3>
+                            <h4>Market Prospects:</h4><h3>{{data.recommendation.market_prospects}}</h3>
+                            <h4>Current Month Report:</h4><h3>{{ data.recommendation.current_month_report }}</h3>
+                            <h4>Seasonal Report:</h4><h3>{{ data.recommendation.seasonal_report}}</h3>
+                        </div>
+                        {% endif %}
+                    {% endif %}
+                {% else %}
+                    
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            {% if data.user_input.crop_grown == data.recommendation.crop and data.user_input.crop_varieties in data.recommendation.selected_crop_varieties %}
+                {% if data.user_input.spacing|multiply_spacing == data.recommendation.recommend_space|multiply_spacing %}
+                    {% if data.user_input.crop_stage == 'Young' %}
+                        {% if data.user_input.water_availability == data.recommendation.water_req %}
+                        <div class="prediction-item">
+                            <h1>Recommended Inter Crops to Grow</h1>
+                            <h4>Inter Crops To Grow:</h4><h3>{{data.recommendation.inter_crops}}<h3>
+                            <h4>Inter Crop Space Required:</h4><h3>{{data.recommendation.inter_crop_space}}</h3>
+                            <h4>Recommended Space:</h4><h3>{{data.recommendation.recommend_space}}</h3>
+                            <h4>Cover Crops can Grow : {{ data.recommendation.cover_crops }}</h4>
+                            <h4>Manure Crops can Grow : {{ data.recommendation.manure }}</h4>
+                            <h4>Crop Grown:{{data.user_input.crop_grown}}</h4>
+                            <h4>Crop Recommended:{{ data.recommendation.crop}}</h4>
+                            <img src="{{ data.recommendation.crop_variety_image.url }}" alt="{{ data.recommendation.crop }}-{{ data.recommendation.crop_varieties }}" loading="lazy"/>
+                            <h4>Market Prospects:</h4><h3>{{data.recommendation.market_prospects}}</h3>
+                            <h4>Current Month Report:</h4><h3>{{data.recommendation.current_month_report}}</h3>
+                            <h4>Seasonal Report:</h4><h3>{{data.recommendation.seasonal_report}}</h3>
+                            <h4>Propagation Mthods which can be Used:</h4><h3>{{data.recommendation.propagation_method}}</h3>
+                            <h4>Yield Potentiel:</h4><h3>{{data.recommendation.yield_potential}}</h3>
+                            <h4>Economical Yield Start:</h4><h3>{{data.recommendation.economical_yield_start}}</h3>
+                            <h4>Ideal Age Planting:</h4><h3>{{data.recommendation.ideal_age_planting}}</h3>
+                            <h4>Harvest:</h4><h3>{{data.recommendation.harvest}}</h3>
+                            <h4>Area Zone suitable:</h4><h3>{{data.recommendation.area_zone}}</h3>
+                            <h4>Soil Ph Required:</h4><h3>{{data.recommendation.soil_pH}}</h3>
+                            <h4>Soil Type Suiltable:</h4><h3>{{data.recommendation.soil_type}}</h3>
+                            <h4>Water Requirement:</h4><h3>{{data.recommendation.water_req}}</h3>
+                            <h4>Density:</h4><h3>{{data.recommendation.high_density}}</h3>
+                            <h4>Favorable Temperature For the Crop:</h4><h3>{{data.recommendation.favorable_temp}}</h3>
+                            <h4>Relative Humidity Required:</h4><h3>{{data.recommendation.relative_humidity}}</h3>
+                            <h4>RainFall Required:</h4><h3>{{data.recommendation.rainfall_req}}</h3>
+                            <h4>Wind Velocity Suitable:</h4><h3>{{data.recommendation.wind_velocity}}</h3>
+                            <h4>Mean Sea Level:</h4><h3>{{data.recommendation.mean_sea_level}}</h3>
+                            <h4>Locations Suitable:</h4><h3>{{ data.recommendation.location }}</h3>
+                            
+                            
+                        <!--{% else %}
+                            <h4>As you are following the spacing, you can grow inter crops with your main crop, but due to water scarcity we recommend you not to grow any inter crops. 
+                            Recommended Water Requirement Y:{{ data.recommendation.water_req }}for main crop {{ data.user_input.crop_grown }} and for other inter crops {{ data.recommendation.cover_crops }} and {{ data.recommendation.manure }}</h4> -->
+                        {% endif %}
+                    {% elif data.user_input.crop_stage == 'Yielding' %} 
+                        {% if data.user_input.water_availability == data.recommendation.water_req  %}
+                            <h1>Recommended Inter Crops to Grow</h1>
+                            <h4>Inter Crops To Grow:</h4><h3>{{data.recommendation.inter_crops}}<h3>
+                            <h4>Inter Crop Space Required:</h4><h3>{{data.recommendation.inter_crop_space}}</h3>
+                            <h4>Recommended Space:</h4><h3>{{data.recommendation.recommend_space}}</h3>
+                            <h4>Crop Grown:{{data.user_input.crop_grown}}</h4>
+                            <h4>Crop Recommended:{{data.recommendation.crop}}</h4>
+                            <img src="{{ data.recommendation.crop_variety_image.url }}" alt="{{ data.recommendation.crop }}-{{ data.recommendation.crop_varieties }}" loading="lazy"/>
+                            <h4>Market Prospects:</h4><h3>{{data.recommendation.market_prospects}}</h3>
+                            <h4>Current Month Report:</h4><h3>{{data.recommendation.current_month_report}}</h3>
+                            <h4>Seasonal Report:</h4><h3>{{data.recommendation.seasonal_report}}</h3>
+                            <h4>Propogation Methods:</h4><h3>{{data.recommendation.propagation_method}}</h3>
+                            <h4>Yield Potential:</h4><h3>{{data.recommendation.yield_potential}}</h3>
+                            <h4>Economical Yield Start:</h4><h3>{{data.recommendation.economical_yield_start}}</h3>
+                            <h4>Ideal Planting Age:</h4><h3>{{data.recommendation.ideal_age_planting}}</h3>
+                            <h4>Harvest:</h4><h3>{{data.recommendation.harvest}}</h3>
+                            <h4>Area Zones Suitable for the Crop:</h4><h3>{{data.recommendation.area_zone}}</h3>
+                            <h4>Soil Ph Required:</h4><h3>{{data.recommendation.soil_pH}}</h3>
+                            <h4>Soil Type Required:</h4><h3>{{data.recommendation.soil_type}}</h3>
+                            <h4>Water Required:</h4><h3>{{data.recommendation.water_req}}</h3>
+                            <h4>Density:</h4><h3>{{data.recommendation.high_density}}</h3>
+                            <h4>Favorable Temperature:</h4><h3>{{data.recommendation.favorable_temp}}</h3>
+                            <h4>Relative Humidity:</h4><h3>{{data.recommendation.relative_humidity}}</h3>
+                            <h4>Rainfall Required:</h4><h3>{{data.recommendation.rainfall_req}}</h3>
+                            <h4>Wind Velocity:</h4><h3>{{data.recommendation.wind_velocity}}</h3>
+                            <h4>Mean Sea Level:</h4><h3>{{data.recommendation.mean_sea_level}}</h3>
+                            <h4>Locations Favorable</h4><h3>{{data.recommendation.location}}</h3>
+                            <h4>Your Location is:{{ data.user_input.location }}</h4>
+                        {% else %}
+                            <h4>As you are following the spacing, you can grow inter crops with your main crop, but due to water scarcity we recommend you not to grow any inter crops. 
+                            Recommended Water Requirement: {{ data.recommendation.water_req }} for main crop {{ data.user_input.crop_grown }} and for other inter crops {{ data.recommendation.cover_crops }} and {{ data.recommendation.manure }}</h4>
+                        {% endif %}
+                    {% else %}
+                        {% if data.user_input.water_availability == data.recommendation.water_req %}
+                            <h1>Recommended Inter Crops to Grow</h1>
+                            <h4>Inter Crops To Grow:</h4><h3>{{data.recommendation.inter_crops}}<h3>
+                            <h4>Inter Crop Space Required:</h4><h3>{{data.recommendation.inter_crop_space}}</h3>
+                            <h4>Recommended Space:</h4><h3>{{data.recommendation.recommend_space}}</h3>
+                            <h4>Crop Grown:{{data.user_input.crop_grown}}</h4>
+                            <h4>Crop Recommended:{{data.recommendation.crop}}</h4>
+                            <img src="{{ data.recommendation.crop_variety_image.url }}" alt="{{ data.recommendation.crop }}-{{ data.recommendation.crop_varieties }}" loading="lazy"/>
+                            <h4>Market Prospects:</h4><h3>{{data.recommendation.market_prospects}}</h3>
+                            <h4>Current Month Report:</h4><h3>{{data.recommendation.current_month_report}}</h3>
+                            <h4>Seasonal Report:</h4><h3>{{data.recommendation.seasonal_report}}</h3>
+                            <h4>Propogation Method:</h4><h3>{{data.recommendation.propagation_method}}</h3>
+                            <h4>Yield Potential:</h4><h3>{{data.recommendation.yield_potential}}</h3>
+                            <h4>Economical Yield Start:</h4><h3>{{data.recommendation.economical_yield_start}}</h3>
+                            <h4>Ideal Age Planting:</h4><h3>{{data.recommendation.ideal_age_planting}}</h3>
+                            <h4>Harvest:</h4><h3>{{data.recommendation.harvest}}</h3>
+                            <h4>Area Zone Favorable:</h4><h3>{{data.recommendation.area_zone}}</h3>
+                            <h4>Soil Ph Required:</h4><h3>{{data.recommendation.soil_pH}}</h3>
+                            <h4>Soil Type:</h4><h3>{{data.recommendation.soil_type}}</h3>
+                            <h4>Water Required:</h4><h3>{{data.recommendation.water_req}}</h3>
+                            <h4>Density:</h4><h3>{{data.recommendation.high_density}}</h3>
+                            <h4>Favorable Temperature:</h4><h3>{{data.recommendation.favorable_temp}}</h3>
+                            <h4>Relative Humidity:</h4><h3>{{data.recommendation.relative_humidity}}</h3>
+                            <h4>Rainfall Required:</h4><h3>{{data.recommendation.rainfall_req}}</h3>
+                            <h4>Wind Velocity:</h4><h3>{{data.recommendation.wind_velocity}}</h3>
+                            <h4>Mean Sea Level:</h4><h3>{{data.recommendation.mean_sea_level}}</h3>
+                            <h4>Location Favorable:</h4><h3>{{data.recommendation.location}}</h3>
+                            <h4>Your Location is:{{data.user_input.location}}</h4>
+                        {% else %}
+                            <h4>As you are following the spacing, you can grow inter crops with your main crop, but due to water scarcity we recommend you not to grow any inter crops. 
+                            Recommended Water Requirement: {{ data.recommendation.water_req }} for main crop {{ data.user_input.crop_grown }} and for other inter crops {{ data.recommendation.cover_crops }} and {{ data.recommendation.manure }}</h4>
+                        {% endif %}
+                    {% endif %}
+                {% elif data.user_input.spacing|multiply_spacing >= data.recommendation.recommend_space|multiply_spacing %}
+                    {% if data.user_input.crop_stage == 'Young' %}
+                        {% if data.user_input.water_availability == data.recommendation.water_req %}
+                            <h1>Recommended Inter Crops to Grow</h1>
+                            <h4>Inter Crops To Grow:</h4><h3>{{ data.recommendation.inter_crops }}<h3>
+                            <h4>Inter Crop Space Required:</h4><h3>{{ data.recommendation.inter_crop_space }}</h3>
+                            <h4>Recommended Space:</h4><h3>{{data.recommendation.recommended_space}}</h3>
+                            <h4>Crop Grown:{{data.user_input.crop_grown}}</h4>
+                            <h4>Crop Recommended:{{ data.recommendation.crop}}</h4>
+                            <img src="{{ data.recommendation.crop_variety_image.url }}" alt="{{ data.recommendation.crop }}-{{ data.recommendation.crop_varieties }}" loading="lazy"/>
+                            <h4>Market Prospects:</h4><h3>{{ data.recommendation.market_prospects }}</h3>
+                            <h4>Current Month Report:</h4><h3>{{ data.recommendation.current_month_report }}</h3>
+                            <h4>Seasonal Report:</h4><h3>{{ data.recommendation.seasonal_report}}</h3>
+                            <h4>Propogation Method:</h4><h3>{{ data.recommendation.propagation_method }}</h3>
+                            <h4>Yield Potential:</h4><h3>{{data.recommendation.yield_potential}}</h3>
+                            <h4>Economical Yield Start:</h4><h3>{{ data.recommendation.economical_yield_start }}</h3>
+                            <h4>Ideal Age Planting:</h4><h3>{{ data.recommendation.ideal_age_planting }}</h3>
+                            <h4>Harvest:</h4><h3>{{ data.recommendation.harvest }}</h3>
+                            <h4>Area Zone Favorable:</h4><h3>{{ data.recommendation.area_zone }}</h3>
+                            <h4>Soil Ph Required:</h4><h3>{{ data.recommendation.soil_pH }}</h3>
+                            <h4>Soil Type:</h4><h3>{{ data.recommendation.soil_type }}</h3>
+                            <h4>Water Required:</h4><h3>{{ data.recommendation.water_req }}</h3>
+                            <h4>Density:</h4><h3>{{data.recommendation.high_density}}</h3>
+                            <h4>Favorable Temperature:</h4><h3>{{data.recommendation.favorable_temp}}</h3>
+                            <h4>Relative Humidity:</h4><h3>{{data.recommendation.relative_humidity}}</h3>
+                            <h4>Rainfall Required:</h4><h3>{{data.recommendation.rainfall_req}}</h3>
+                            <h4>Wind Velocity:</h4><h3>{{data.recommendation.wind_velocity}}</h3>
+                            <h4>Mean Sea Level:</h4><h3>{{data.recommendation.mean_sea_level}}</h3>
+                            <h4>Location Favorable:</h4><h3>{{data.recommendation.location}}</h3>
+                            <h4>Your Location is:{{ data.user_input.location }}</h4>
+                        {% else %}
+                            <h4>As you are following the spacing, you can grow inter crops with your main crop, but due to water scarcity we recommend you not to grow any inter crops. 
+                            Recommended Water Requirement: {{ data.recommendation.water_req }} litres/acre for main crop {{ data.user_input.crop_grown }} and for other inter crops {{ data.recommendation.cover_crops }} and {{ data.recommendation.manure }}</h4>
+                        {% endif %}
+                    {% elif data.user_input.crop_stage == 'Yielding' %} 
+                        {% if data.user_input.water_availability == data.recommendation.water_req  %}
+                            <h1>Recommended Inter Crops to Grow</h1>
+                            <h4>Inter Crops To Grow:</h4><h3>{{data.recommendation.inter_crops}}<h3>
+                            <h4>Inter Crop Space Required:</h4><h3>{{data.recommendation.inter_crop_space}}</h3>
+                            <h4>Recommended Space:</h4><h3>{{data.recommendation.recommend_space}}</h3>
+                            <h4>Crop Grown:{{data.user_input.crop_grown}}</h4>
+                            <h4>Crop Recommended:{{data.recommendation.crop}}</h4>
+                            <img src="{{ data.recommendation.crop_variety_image.url }}" alt="{{ data.recommendation.crop }}-{{ data.recommendation.crop_varieties }}" loading="lazy"/>
+                            <h4>Market Prospects:</h4><h3>{{data.recommendation.market_prospects}}</h3>
+                            <h4>Current Month Report:</h4><h3>{{data.recommendation.current_month_report}}</h3>
+                            <h4>Seasonal Report:</h4><h3>{{data.recommendation.seasonal_report}}</h3>
+                            <h4>Propogation Method:</h4><h3>{{data.recommendation.propagation_method}}</h3>
+                            <h4>Yield Potential:</h4><h3>{{data.recommendation.yield_potential}}</h3>
+                            <h4>Economical Yield Start:</h4><h3>{{dataa.recommendation.economical_yield_start}}</h3>
+                            <h4>Ideal Age Planting:</h4><h3>{{data.recommendation.ideal_age_planting}}</h3>
+                            <h4>Harvest:</h4><h3>{{data.recommendation.harvest}}</h3>
+                            <h4>Area Zone Favorable:</h4><h3>{{data.recommendation.area_zone}}</h3>
+                            <h4>Soil Ph Required:</h4><h3>{{data.recommendation.soil_pH}}</h3>
+                            <h4>Soil Type:</h4><h3>{{data.recommendation.soil_type}}</h3>
+                            <h4>Water Required:</h4><h3>{{data.recommendation.water_req}}</h3>
+                            <h4>Density:</h4><h3>{{data.recommendation.high_density}}</h3>
+                            <h4>Favorable Temperature:</h4><h3>{{data.recommendation.favorable_temp}}</h3>
+                            <h4>Relative Humidity:</h4><h3>{{data.recommendation.relative_humidity}}</h3>
+                            <h4>Rainfall Required:</h4><h3>{{data.recommendation.rainfall_req}}</h3>
+                            <h4>Wind Velocity</h4><h3>{{data.recommendation.wind_velocity}}</h3>
+                            <h4>Mean Sea Level:</h4><h3>{{data.recommendation.mean_sea_level}}</h3>
+                            <h4>Location Favorable:</h4><h3>{{data.recommendation.location}}</h3>
+                            <h4>Your Location is:{{data.user_input.location}}</h4>
+                            
+                        {% else %}
+                            <h4>As you are following the spacing, you can grow inter crops with your main crop, but due to water scarcity we recommend you not to grow any inter crops. 
+                            Recommended Water Requirement: {{ data.recommendation.water_req }} litres/acre for main crop {{ data.user_input.crop_grown }} and for other inter crops {{ data.recommendation.cover_crops }} and {{ data.recommendation.manure }}</h4>
+                        {% endif %}
+                    {% else %}
+                        {% if data.user_input.water_availability == data.recommendation.water_req  %}
+                            <h1>Recommended Inter Crops to Grow</h1>
+                            <h4>Inter Crops To Grow:</h4><h3>{{data.recommendation.inter_crops}}<h3>
+                            <h4>Inter Crop Space Required:</h4><h3>{{data.recommendation.inter_crop_space}}</h3>
+                            <h4>Recommended Space:</h4><h3>{{data.recommendation.recommend_space}}</h3>
+                            <h4>Crop Grown:{{data.user_input.crop_grown}}</h4>
+                            <h4>Crop Recommended:{{data.recommendation.crop}}</h4>
+                            <img src="{{ data.recommendation.crop_variety_image.url }}" alt="{{ data.recommendation.crop }}-{{ data.recommendation.crop_varieties }}" loading="lazy"/>
+                            <h4>Market Prospects:</h4><h3>{{data.recommendation.market_prospects}}</h3>
+                            <h4>Current Month Report:</h4><h3>{{data.recommendation.current_month_report}}</h3>
+                            <h4>Seasonal Report:</h4><h3>{{data.rcommendation.seasonal_report}}</h3>
+                            <h4>Propogation Method:</h4><h3>{{data.recommendation.propagation_method}}</h3>
+                            <h4>Yield Potential:</h4><h3>{{data.recommendation.yield_potential}}</h3>
+                            <h4>Economical Yield Start:</h4><h3>{{data.recommendation.economical_yield_start}}</h3>
+                            <h4>Ideal Plant Age:</h4><h3>{{data.recommendtaion.ideal_age_planting}}</h3>
+                            <h4>Harvest:</h4><h3>{{data.recommendation.harvest}}</h3>
+                            <h4>Area Zone Favorable:</h4><h3>{{data.recommendation.area_zone}}</h3>
+                            <h4>Soil Ph Required:</h4><h3>{{data.recommendation.soil_pH}}</h3>
+                            <h4>Soil Type Required:</h4><h3>{{data.recommendation.soil_type}}</h3>
+                            <h4>Water Required:</h4><h3>{{data.recommendation.water_req}}</h3>
+                            <h4>Density:</h4><h3>{{data.recommendation.high_density}}</h3>
+                            <h4>Favorable Temperature:</h4><h3>{{data.recommendation.favorable_temp}}</h3>
+                            <h4>Relative Humidity:</h4><h3>{{data.recommendation.relative_humidity}}</h3>
+                            <h4>Rainfall Required:</h4><h3>{{data.recommendation.rainfall_req}}</h3>
+                            <h4>Wind Velocity:</h4><h3>{{data.recommendation.wind_velocity}}</h3>
+                            <h4>Mean Sea Level:</h4><h3>{{data.recommendation.mean_sea_level}}</h3>
+                            <h4>Locations Favorable:</h4><h3>{{data.recommendations.location}}</h3>
+                            <h4>Your Location is:{{data.user_input.location}}</h4>
+                        {% else %}
+                            <h4>As you are following the spacing, you can grow inter crops with your main crop, but due to water scarcity we recommend you not to grow any inter crops. 
+                            Recommended Water Requirement: {{ data.recommendation.water_req }} litres/acre for main crop {{ data.user_input.crop_grown }} and for other inter crops {{ data.recommendation.cover_crops }} and {{ data.recommendation.manure }}</h4>
+                        {% endif %}
+                    {% endif %}
+                {% elif data.user_input.spacing|multiply_spacing <= data.recommendation.data.recommendation.recommend_space|multiply_spacing %}
+                    <h4>No Inter Crops can be grown as it is already High Density</h4>
+                {% endif %}
+            
+            {% endif %}
+        {% endif %}
+    {% endwith %}
+{% endfor %}
+</div>
+{% endblock %}

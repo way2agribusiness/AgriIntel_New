@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/report.css' %}"/>
+    <title>Way2AgriIntel AI | Symptom Recognition Report</title>
+{% endblock %}
+{% block header %}{% endblock %}
+{% block content %}
+    <h3>Your selected symptoms for {{infected_crop}} that is: <strong style="color:green">{{selected_symptoms | convert_list}}</strong></h3>
+    {% if recognized_disease %}
+        <h4>Recognized Disease is: <strong style="color:green">{{recognized_disease | convert}}</strong></h4>
+    {% elif recognized_deficiency %}
+        <h4>Recognized Deficiency is: <strong style="color:green">{{recognized_deficiency | convert}}</strong></h4>
+    {% else %}
+        <h4>Recognized Pests is: <strong style="color:green">{{recognized_pests | convert}}</strong></h4>
+    {% endif %}
+    {% if predicted_disease_match %}
+        <h4>The predicted disease <strong>{{ predicted_disease_match }}</strong> matches the recognized disease. 
+            <a href="{% url 'W2AI:advisor_form' %}" class="nutrient">Nutrient Recommendation</a>.</h4>
+    {% else %}
+            <h4>Your Disease Predicted by our model is {{finalpredicted_class}} But According to the Symptoms the disease is {{recognized_disease | convert}},since there is a mismatch contact us for further queries</h4>
+    {% endif %}
+{% endblock %}{% extends 'base.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/report.css' %}"/>
+    <title>Way2AgriIntel AI | Symptom Recognition Report</title>
+{% endblock %}
+{% block header %}{% endblock %}
+{% block content %}
+    <h3>Your selected symptoms for {{infected_crop}} that is: <strong style="color:green">{{selected_symptoms | convert_list}}</strong></h3>
+    {% if recognized_disease %}
+        <h4>Recognized Disease is: <strong style="color:green">{{recognized_disease | convert}}</strong></h4>
+    {% elif recognized_deficiency %}
+        <h4>Recognized Deficiency is: <strong style="color:green">{{recognized_deficiency | convert}}</strong></h4>
+    {% else %}
+        <h4>Recognized Pests is: <strong style="color:green">{{recognized_pests | convert}}</strong></h4>
+    {% endif %}
+{% endblock %}

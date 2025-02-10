@@ -1,0 +1,6 @@
+User-Agent: *
+Disallow:
+Disallow: /admin/
+Allow: /external-links/
+
+Sitemap: https://www.way2agriintel.com/sitemap.xml

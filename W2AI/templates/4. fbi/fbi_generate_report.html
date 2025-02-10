@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+    <title>Way2AgriIntel AI | Way2ABI Agri FBI</title>
+    <link rel="stylesheet" href="{% static 'css/nutricrops.css' %}"/>
+{% endblock %}
+{% block header %}{% endblock %}
+{% block content %}
+<div class="layout-container">
+    <div class="content-section">
+        {{profile.user_name}} - {{profile.crop}}
+        <h1>Current Month Report</h1>
+        {% for report in current_report %}
+            <p><strong>Market Price:</strong> {{report.market_price}}</p>
+            <p><strong>Crop Image:</strong> <img src="{{report.crop_trend}}" alt="Crop Trend" style="max-width: 100%; height: auto;"/></p>
+            <p><strong>Price Outlook:</strong> {{report.price_outlook}}</p>
+            <p><strong>ಮೂಡಲ ಬೆಲೆ ಮುನ್ಸೂಚನೆ:</strong> {{report.price_outlook_kannada}}</p>
+            <p><strong>Summary Reviews:</strong> {{report.summary_reviews}}</p>
+            <p><strong>ಸಾರಾಂಶ ವಿಮರ್ಶೆಗಳು:</strong> {{report.summary_reviews_kannada}}</p>
+            <p><strong>Bull Bear Factors:</strong> {{report.bull_bear_factors}}</p>
+            <p><strong>ಬುಲ್ ಮತ್ತು ಬೇರ್ ತತ್ವಗಳು:</strong> {{report.bull_bear_factors_kannada}}</p>
+            <p><strong>News:</strong> {{report.news}}</p>
+            <p><strong>ಇತ್ತೀಚಿನ ಸುದ್ದಿ:</strong> {{report.news_kannada}}</p>
+            <p><strong>Events:</strong> {{report.events}}</p>
+            <p><strong>ಮುಂದಿನ ಕಾರ್ಯಕ್ರಮಗಳು:</strong> {{events_kannada}}</p>
+            <p><strong>Notifications:</strong> {{report.notifications}}</p>
+            <p><strong>ಅಗತ್ಯದ ನೋಟಿಫಿಕೇಶನ್ಗಳು:</strong> {{report.notifications_kannada}}</p>
+            <p><strong>Farmer Advisor:</strong> {{report.farmer_advisor}}</p>
+            <p><strong>ಕೃಷಿಕ ಸಲಹೆಗಾರ:</strong> {{report.farmer_advisor_kannada}}</p>
+        {% endfor %}
+        <h1>Last Month Report</h1>
+        {% for report in hist_report %}
+            <p><strong>Price Outlook:</strong> {{report.price_outlook}}</p>
+            <p><strong>ಮೂಡಲ ಬೆಲೆ ಮುನ್ಸೂಚನೆ:</strong> {{report.price_outlook_kannada}}</p>
+            <p><strong>Bull Bear Factors:</strong> {{report.bull_bear_factors}}</p>
+            <p><strong>ಬುಲ್ ಮತ್ತು ಬೇರ್ ತತ್ವಗಳು:</strong> {{report.bull_bear_factors_kannada}}</p>
+            <p><strong>User Feedback:</strong> {{report.user_feedback}}</p>
+            <p><strong>ಪ್ರತ್ಯೇಕ ವ್ಯಕ್ತಿಗಳ ವಿಮರ್ಶೆ:</strong> {{report.user_feedback_kannada}}</p>
+        {% endfor %}
+        <h1>Seasonal Report</h1>
+        {% for report in season_report %}
+            <p><strong>Price Outlook:</strong> {{report.price_outlook}}</p>
+            <p><strong>ಮೂಡಲ ಬೆಲೆ ಮುನ್ಸೂಚನೆ:</strong> {{report.price_outlook_kannada}}</p>
+            <p><strong>Bull Bear Factors:</strong> {{report.bull_bear_factors}}</p>
+            <p><strong>ಬುಲ್ ಮತ್ತು ಬೇರ್ ತತ್ವಗಳು:</strong> {{report.bull_bear_factors_kannada}}</p>
+            <p><strong>User Feedback:</strong> {{report.user_feedback}}</p>
+            <p><strong>ಪ್ರತ್ಯೇಕ ವ್ಯಕ್ತಿಗಳ ವಿಮರ್ಶೆ:</strong> {{report.user_feedback_kannada}}</p>
+        {% endfor %}
+    </div>
+    <div class="button-group">
+        <button class="action-button fund-button" id="fund" onclick="formOpen()">
+            <img src="https://res.cloudinary.com/dm71xhdxd/image/upload/v1709037253/Static%20Images/gold-rupee-logo-vector-4482420_mbgb9e.jpg" alt="Fund Requirement">
+            Fund Requirement Month Wise
+        </button>
+        <button class="action-button">
+            <img src="https://res.cloudinary.com/dm71xhdxd/image/upload/v1709037562/Static%20Images/th_y2lftu.jpg" alt="Actual Sales">
+            <a href="{% url 'W2AI:actual-sales' %}">Actual Sales Details Month Wise</a>
+        </button>
+    </div>
+    <form class="form-container" method='POST' id="form">
+        <label class="profile-label">Select your Account Profile</label>
+        <select class="profile-select" onchange="useRole(event)">
+            <option value="">User Type</option>
+            <option value='Farmer'>Farmer</option>
+            <option value="Buyer">Buyer</option>
+        </select>
+    </form>
+</div>
+<script>
+    const form  = document.getElementById('form');
+    form.style.display = 'none';
+    function useRole(event){
+        let selectedValue = 'User Type';
+        selectedValue = event.target.value;
+        console.log(selectedValue);
+        if (selectedValue === 'Farmer'){
+            window.location.href = `http://127.0.0.1:8000/market-planner-fund-requirement/${selectedValue.toLowerCase()}/`;
+        }
+        else if (selectedValue === 'Buyer'){
+            window.location.href = `http://127.0.0.1:8000/qunatity-requirement-enquiry/${selectedValue.toLowerCase()}/`
+        } else{
+            event.preventDefault();
+        }
+    }
+    function formOpen(){
+        form.style.display = 'block';
+    };  
+
+</script>
+{% endblock %}

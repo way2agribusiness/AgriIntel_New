@@ -1,0 +1,355 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+    <title>Way2AgriIntel AI | NutriTracker Input Form</title>
+    <link href="{% static 'css/auth.css' %}" rel="stylesheet"/>
+{% endblock %}
+{% block header %}{% endblock %}
+{% block content %}
+<br><br>
+<div class="form-div"> 
+    <p class="note">
+      Access to the online service will be available shortly after the launch of the <strong>"NutriTracker"</strong> module. 
+      Until then, our team will call you to offer an interim solution over the phone. 
+      Kindly complete and submit the form below./ 
+      NutriTracker ಮಾಡ್ಯೂಲ್ ಸ್ವಲ್ಪ ಸಮಯದ ನಂತರ ಆನ್‌ಲೈನ್ ಸೇವೆಗೆ ಲಭ್ಯವಿರುತ್ತದೆ. ಅಲ್ಲಿಯವರೆಗೆ, ನಮ್ಮ ತಂಡವು ಫೋನ್ ಮೂಲಕ ಮಧ್ಯಂತರ ಪರಿಹಾರವನ್ನು ನೀಡಲು ನಿಮಗೆ ಕರೆ ಮಾಡುತ್ತದೆ. ದಯವಿಟ್ಟು ಕೆಳಗಿನ ಫಾರ್ಮ್ ಪೂರ್ಣಗೊಳಿಸಿ ಮತ್ತು ಸಲ್ಲಿಸಿ.
+    </p>
+    <br>
+    <h3 class="register">NutriTracker Input Form</h3> 
+      <form method="post" class="for-crop1">
+        <br>
+        {% csrf_token %}
+        <p>All <span class="valid">*</span> marked are required fields <span>(ಎಲ್ಲಾ <span class="valid">*</span> ಗೆರೆಗಳು ಅಗತ್ಯವಿದೆ)</span></p>
+        <div id="repeat-form-div">
+          {% for field in form %}
+            <div class="inside-form">
+              {% if field.label == 'Plot'%}
+                <div id = "id_plot-div">
+                  <div>
+                    <label for="{{field.id_for_label}}" >{{field.label}} <span class="valid">*</span></label>
+                    {{field}}
+                  </div>
+              {% elif field.label == 'Plot name' %}
+                <div id ="{{field.id_for_label}}-div" >
+                  {% for initial in field.field.initial %}
+                    <div id="{{field.id_for_label}}-{{forloop.counter}}">
+                      <label for="{{field.id_for_label}}-{{forloop.counter}}">{{field.label}}</label>
+                      <input type="text" name="{{ field.html_name }}" value="{{ initial|escape }}" id="{{field.id_for_label}}-{{forloop.counter}}" max_length="500">
+                    </div>
+                  {% endfor %}    
+                </div>
+              {% elif field.label == 'Crop grown' %}
+                <div id ="{{field.id_for_label}}-div" >
+                  {% for initial in field.field.initial %}
+                    <div id="{{field.id_for_label}}-{{forloop.counter}}">
+                      <label for="{{field.id_for_label}}-{{forloop.counter}}">{{field.label}}</label>
+                      <select name="{{ field.html_name }}" id="{{field.id_for_label}}-{{forloop.counter}}" max_length="500"> 
+                        {% for choice in crop_choices %}
+                          <option value="{{ choice.0 }}" {% if choice.0 == initial %}selected{% endif %}>{{choice.1}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  {% endfor %}
+                </div>
+              {% elif field.label == 'Land area'%}
+                <div id ="{{field.id_for_label}}-div">
+                  {% for initial in field.field.initial %}
+                    <div id="{{field.id_for_label}}-{{forloop.counter}}">
+                      <label for="{{field.id_for_label}}-{{forloop.counter}}">{{field.label}}</label>
+                      <input type="text" name="{{ field.html_name }}" value="{{ initial|escape }}" id="{{field.id_for_label}}-{{forloop.counter}}" max_length="500">
+                    </div>
+                  {% endfor %}
+                </div>
+              {% elif field.label == 'Soil condition' %}
+                <div id ="{{field.id_for_label}}-div">
+                  {% for initial in field.field.initial %}
+                    <div id="{{field.id_for_label}}-{{forloop.counter}}">
+                      <label for="{{field.id_for_label}}-{{forloop.counter}}">{{field.label}}</label>
+                      <select name="{{ field.html_name }}" id="{{field.id_for_label}}-{{forloop.counter}}" max_length="500"> 
+                        {% for choice in soil_condition %}
+                          <option value="{{ choice.0 }}" {% if choice.0 == initial %}selected{% endif %}>{{choice.1}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  {% endfor %}
+                </div>
+              {% elif field.label == 'Soil health' %}
+                <div id ="{{field.id_for_label}}-div">
+                  {% for initial in field.field.initial %}
+                    <div id="{{field.id_for_label}}-{{forloop.counter}}">
+                      <label for="{{field.id_for_label}}-{{forloop.counter}}">{{field.label}}</label>
+                      <select name="{{ field.html_name }}" id="{{field.id_for_label}}-{{forloop.counter}}" max_length="500"> 
+                        {% for choice in soil_health %}
+                          <option value="{{ choice.0 }}" {% if choice.0 == initial %}selected{% endif %}>{{choice.1}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  {% endfor %}
+                </div>
+              {% elif field.label == 'Soil ph' %}
+                <div id ="{{field.id_for_label}}-div">
+                  {% for initial in field.field.initial %}
+                    <div id="{{field.id_for_label}}-{{forloop.counter}}">
+                      <label for="{{field.id_for_label}}-{{forloop.counter}}">{{field.label}}</label>
+                      <select name="{{ field.html_name }}" id="{{field.id_for_label}}-{{forloop.counter}}" max_length="500"> 
+                        {% for choice in soil_ph %}
+                          <option value="{{ choice.0 }}" {% if choice.0 == initial %}selected{% endif %}>{{choice.1}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  {% endfor %}
+                </div>
+              {% elif field.label == 'Soil rich nutrients' %}
+                <div id ="{{field.id_for_label}}-div">
+                  {% for initial in field.field.initial %}
+                    <div id="{{field.id_for_label}}-{{forloop.counter}}">
+                      <label for="{{field.id_for_label}}-{{forloop.counter}}">{{field.label}}</label>
+                      <select name="{{ field.html_name }}" id="{{field.id_for_label}}-{{forloop.counter}}" max_length="500"> 
+                        {% for choice in soil_nutrients %}
+                          <option value="{{ choice.0 }}" {% if choice.0 == initial %}selected{% endif %}>{{choice.1}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  {% endfor %}
+                </div>
+              {% elif field.label == 'Soil average nutrients' %}
+                <div id ="{{field.id_for_label}}-div">
+                  {% for initial in field.field.initial %}  
+                    <div id="{{field.id_for_label}}-{{forloop.counter}}">
+                      <label for="{{field.id_for_label}}-{{forloop.counter}}">{{field.label}}</label>
+                      <select name="{{ field.html_name }}" id="{{field.id_for_label}}-{{forloop.counter}}" max_length="500"> 
+                        {% for choice in soil_nutrients %}
+                          <option value="{{ choice.0 }}" {% if choice.0 == initial %}selected{% endif %}>{{choice.1}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>                  
+                  {% endfor %}
+                </div>
+              {% elif field.label == 'Soil poor nutrients' %}
+                <div id ="{{field.id_for_label}}-div">
+                  {% for initial in field.field.initial %}
+                    <div id="{{field.id_for_label}}-{{forloop.counter}}">
+                      <label for="{{field.id_for_label}}-{{forloop.counter}}">{{field.label}}</label>
+                      <select name="{{ field.html_name }}" id="{{field.id_for_label}}-{{forloop.counter}}" max_length="500"> 
+                        {% for choice in soil_nutrients %}
+                          <option value="{{ choice.0 }}" {% if choice.0 == initial %}selected{% endif %}>{{choice.1}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  {% endfor %}
+                </div>
+              {% elif field.label == 'Water source' %}
+                <div id ="{{field.id_for_label}}-div">
+                  {% for initial in field.field.initial %}
+                    <div id="{{field.id_for_label}}-{{forloop.counter}}">
+                      <label for="{{field.id_for_label}}-{{forloop.counter}}">{{field.label}}</label>
+                      <select name="{{ field.html_name }}" id="{{field.id_for_label}}-{{forloop.counter}}" max_length="500"> 
+                        {% for choice in water_source %}
+                          <option value="{{ choice.0 }}" {% if choice.0 == initial %}selected{% endif %}>{{choice.1}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  {% endfor %}
+                </div>
+              {% elif field.label == 'Water availability' %}
+                <div id ="{{field.id_for_label}}-div">
+                  {% for initial in field.field.initial %}
+                    <div id="{{field.id_for_label}}-{{forloop.counter}}">
+                      <label for="{{field.id_for_label}}-{{forloop.counter}}">{{field.label}}</label>
+                      <select name="{{ field.html_name }}" id="{{field.id_for_label}}-{{forloop.counter}}" max_length="500"> 
+                        {% for choice in water_avail %}
+                          <option value="{{ choice.0 }}" {% if choice.0 == initial %}selected{% endif %}>{{choice.1}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  {% endfor %}
+                </div>
+                <br><br><hr style="border:1px solid gold"><br>
+              {% else %}
+                <div id = "{{field.id_for_label}}-div">
+                  <div>
+                    <label for="{{field.id_for_label}}">{{field.label}} <span class="valid">*</span></label>
+                  </div>
+                  <div>{{field}}</div><br>
+                  {% if field.errors %}
+                    <div>{{field.errors}}</div><br>
+                  {% endif %}
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+        <div id="form-count">{{fertilizer_formset.management_form}}</div>
+        <center><h4>Enter Fertilizer Purhcase Specific Information</h4></center>
+        <div id="plot-forms" class="inside-form"> 
+            {% for form in fertilizer_formset %}
+              <div class="forms-{{forloop.counter}}">
+                {% for field in form %}
+                  <div id="{{field.id_for_label}}">
+                    <label for ="{{field.id_for_label}}-label" >{{field.label}}</label>
+                    {{field}}
+                  </div><br>
+                {% endfor %}<hr style="width:80%; margin:auto; margin-top:-50px;border:1px solid gold"><br>
+              </div>
+            {% endfor %}
+        </div>
+        <button type="button" id="add-plot-form" onclick="addImage()">Add Purchase Info</button>
+        <br><br><br>
+        <div class="button-div"><button type="submit">Input</button></div><br><br>
+      </form>
+</div>
+<br>
+<script>
+  for(let i=0; i < 10; i++){
+    const plotId = document.querySelector(`#id_ntfertilizerpurchase_set-${i}-id`);
+    const newUser = document.querySelector(`#id_ntfertilizerpurchase_set-${i}-new_user_info`);
+    const deleteInput = document.querySelector(`#id_ntfertilizerpurchase_set-${i}-DELETE`);
+    if (plotId && deleteInput && newUser){
+      deleteInput.style.display = 'none';
+      plotId.style.display = 'none';
+      newUser.style.display = 'none';
+    }
+  } 
+
+  for(let i=1; i<10; i++){
+    const form = document.querySelector(`.forms-${i}`);
+    if(form){
+      form.style.display = 'none';
+    }
+  }
+
+  let count = 0;
+  function addImage(){
+    count += 1;
+    console.log(count)
+    const form = document.querySelector(`.forms-${count}`);
+    if (form){
+      form.style.display = 'block';
+    }
+  }
+
+  const plotName = document.getElementById('id_plot_name-div');
+  const cropGrown = document.getElementById('id_crop_grown-div');
+  const landArea = document.getElementById('id_land_area-div');
+  const soilCondition = document.getElementById('id_soil_condition-div');
+  const soilHealth = document.getElementById('id_soil_health-div');
+  const soilPh = document.getElementById('id_soil_ph-div');
+  const soilRich = document.getElementById('id_soil_rich_nutrients-div');
+  const soilAvg = document.getElementById('id_soil_average_nutrients-div');
+  const soilPoor = document.getElementById('id_soil_poor_nutrients-div');
+  const waterSource = document.getElementById('id_water_source-div');
+  const waterAvail = document.getElementById('id_water_availability-div');
+  const nitrogenVal = document.getElementById('id_nitrogen-div');
+  const potassiumVal = document.getElementById('id_potassium-div');
+  const phosphorousVal = document.getElementById('id_phosphorous-div');
+  const secondaryNut = document.getElementById('id_secondary_nutrients-div');
+  const microNut = document.getElementById('id_micro_nutrients-div');
+  const organicNut = document.getElementById('id_organic_carbon-div');
+  const other = document.getElementById('id_other_irrigation-div');
+  const str = document.getElementById('id_str-div');
+  const irrigationSelect = document.getElementById('id_irrigation_method-div');
+  function displayHide(ele){
+    ele.style.display='none';
+  }
+  function displayBlock(ele){
+    ele.style.display='block';
+  }
+  displayHide(plotName);
+  displayHide(cropGrown);
+  displayHide(landArea);
+  displayHide(soilCondition);
+  displayHide(soilHealth);
+  displayHide(soilPh);
+  displayHide(soilRich);
+  displayHide(soilAvg);
+  displayHide(soilPoor);
+  displayHide(waterSource);
+  displayHide(waterAvail);
+  displayHide(other);
+  for(let i=0; i<irrigationSelect.children.length;i++){
+    for(let j=0; j<irrigationSelect.children[i].children.length;j++){
+      if(irrigationSelect.children[i].children[j].id === 'id_irrigation_method'){
+        irrigationSelect.children[i].children[j].addEventListener('change',function(event){
+          if(event.target.value==='Other Irrigation Method'){
+            displayBlock(other);
+          }else{
+            displayHide(other);
+          };
+        });
+      };
+    };
+  };
+  const plotDiv=document.querySelector('#id_plot-div');
+  const plotChild = plotDiv.children;
+  const plotH1 = document.createElement('h4');
+  plotH1.innerText="Do you want to edit the plot info? if not leave it as it is";
+  plotH1.style.display='none';
+  plotH1.style.color='darkblue';
+  plotH1.style.textAlign='center';
+  plotH1.style.fontFamily='math';
+  plotDiv.appendChild(plotH1)
+  for (let i = 0; i < plotChild.length; i++) {
+    plotChild[i].addEventListener('change', function(event) {
+      for(let j=0; j< plotChild[i].children.length; j++){
+        count=parseInt(event.target.id.split('_')[2]);
+        for(let k=0; k<plotName.children.length;k++){
+          count1=parseInt(plotName.children[k].id.split('-')[1])
+          plotName.children[k].style.display='none';
+          cropGrown.children[k].style.display='none';
+          landArea.children[k].style.display='none';
+          soilCondition.children[k].style.display='none';
+          soilHealth.children[k].style.display='none';
+          soilPh.children[k].style.display='none';
+          soilRich.children[k].style.display='none';
+          soilAvg.children[k].style.display='none';
+          soilPoor.children[k].style.display='none';
+          waterSource.children[k].style.display='none';
+          waterAvail.children[k].style.display='none';
+          if(count+1 === count1){
+            plotH1.style.display='block';
+            const plotOpenDiv = document.getElementById(`${plotName.children[k].id}`);
+            const plotOpenDiv1 = document.getElementById(`${cropGrown.children[k].id}`);
+            const plotOpenDiv2 = document.getElementById(`${landArea.children[k].id}`);
+            const plotOpenDiv3 = document.getElementById(`${soilCondition.children[k].id}`);
+            const plotOpenDiv4 = document.getElementById(`${soilHealth.children[k].id}`);
+            const plotOpenDiv5 = document.getElementById(`${soilPh.children[k].id}`);
+            const plotOpenDiv6 = document.getElementById(`${soilRich.children[k].id}`);
+            const plotOpenDiv7 = document.getElementById(`${soilAvg.children[k].id}`);
+            const plotOpenDiv8 = document.getElementById(`${soilPoor.children[k].id}`);
+            const plotOpenDiv9 = document.getElementById(`${waterSource.children[k].id}`);
+            const plotOpenDiv10 = document.getElementById(`${waterAvail.children[k].id}`);
+            if (plotOpenDiv.parentNode.id.split('-')[0] === plotName.children[k].id.split('-')[0]){
+              if(plotOpenDiv.parentNode.style.display === 'none'){
+                plotOpenDiv.parentNode.style.display='block';
+                plotOpenDiv1.parentNode.style.display='block';
+                plotOpenDiv2.parentNode.style.display='block';
+                plotOpenDiv3.parentNode.style.display='block';
+                plotOpenDiv4.parentNode.style.display='block';
+                plotOpenDiv5.parentNode.style.display='block';
+                plotOpenDiv6.parentNode.style.display='block';
+                plotOpenDiv7.parentNode.style.display='block';
+                plotOpenDiv8.parentNode.style.display='block';
+                plotOpenDiv9.parentNode.style.display='block';
+                plotOpenDiv10.parentNode.style.display='block';
+              }else{
+                plotOpenDiv.style.display='block';
+                plotOpenDiv1.style.display='block';
+                plotOpenDiv2.style.display='block';
+                plotOpenDiv3.style.display='block';
+                plotOpenDiv4.style.display='block';
+                plotOpenDiv5.style.display='block';
+                plotOpenDiv6.style.display='block';
+                plotOpenDiv7.style.display='block';
+                plotOpenDiv8.style.display='block';
+                plotOpenDiv9.style.display='block';
+                plotOpenDiv10.style.display='block';
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+  
+</script>
+{% endblock %}

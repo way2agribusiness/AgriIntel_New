@@ -1,0 +1,248 @@
+body{
+    background-color:whitesmoke;
+  }
+  .contact-form-div{
+    background-color: #215d0e;
+    box-shadow: 5px 3px 10px 3px rgba(0, 80, 0, 1.5);
+    margin-left:230px;
+    margin-top:10px;
+    margin-bottom:30px;
+    width:500px;
+    padding:10px;
+    display:flex;
+    gap:10px;
+  }
+  .contact-form h2{
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    color:goldenrod;
+    margin-left:40px;
+    font-size:x-large !important;
+    font-weight: bold;
+  }
+  .contact-form label{
+    width:100%;
+    display:block;
+    text-align:left;
+    margin-left:50px;
+    font-size:15px;
+    font-weight:bold;
+    color:goldenrod;
+    font-family: 'Times New Roman', Times, serif;
+  }
+  .contact-form input{
+    width:350px;
+    height:30px;
+    border-radius:5px;
+    border:1px solid #215d0e;
+    margin-bottom:15px;
+    padding-left:10px;
+    margin-left:50px;
+    background-color: rgb(211, 226, 240);
+  }
+  .contact-form textarea{
+    width:350px;
+    border-radius:5px;
+    border:1px solid #215d0e;
+    margin-bottom:15px;
+    padding-left:10px;
+    height:130px !important;
+    margin-left:50px;
+    background-color: rgb(211, 226, 240);
+  }
+  .contact-form button{
+    background-color:goldenrod;
+    padding:10px;
+    width:150px;
+    margin-bottom:20px;
+    color:black;
+    border-radius:5px;
+    margin-left:40px;
+    font-weight:bold;
+    font-family: 'Times New Roman', Times, serif;
+  }
+  .contact-form{
+    text-align:center;
+    padding:10px;
+    flex-basis:50%;
+    height:480px;
+  }
+  .contact-info{
+    flex-basis:50%;
+    height:450px;
+  }
+  .contact-info h2{
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    color:#215d0e;
+    margin-left:200px;
+    font-size:x-large !important;
+    font-weight: bold;
+  }
+  .contact-info-div{
+    display:block;
+  }
+  .icons{
+    margin-left:100px;
+    width:350px;
+    margin-top:10px;
+    background-color:rgb(193, 240, 201);
+    padding:10px;
+    box-shadow: 5px 5px 5px 5px rgba(0, 80, 0, 0.5);
+    border-radius:20px;
+  }
+  .icons1{
+    margin-left:100px;
+    width:350px;
+    margin-top:10px;
+    background-color:rgb(193, 240, 201);
+    padding:10px;
+    box-shadow: 5px 5px 5px 5px rgba(0, 80, 0, 0.5);
+    border-radius:20px;
+  }
+  .icons2{
+    margin-left:100px;
+    width:350px;
+    margin-top:10px;
+    background-color:rgb(193, 240, 201);
+    padding:10px;
+    box-shadow: 5px 5px 5px 5px rgba(0, 80, 0, 0.5);
+    border-radius:20px;
+  }
+  .icons address{
+    text-align:center;
+    margin-top:10px;
+    font-size:14px;
+    font-family: 'Times New Roman', Times, serif;
+  }
+  .icons address a{
+    text-decoration: none;
+  }
+  .icons1 p{
+    text-align:center;
+    margin-top:10px;
+    font-size:14px;
+    text-align:center;
+    padding:0;
+    font-family: 'Times New Roman', Times, serif;
+  }
+  .icons2 p{
+    text-align:center;
+    margin-top:10px;
+    font-size:14px;
+    font-family: 'Times New Roman', Times, serif;
+  }
+  .icons i{
+    color:white;
+    border-radius:50%;
+    background-color:#215d0e;
+    padding:10px;
+    margin-left:140px;
+  }
+  .icons1 i{
+    color:white;
+    border-radius:50%;
+    background-color:#215d0e;
+    padding:10px;
+    margin-left:140px;
+  }
+  .icons1 a i{
+    margin-left:80px;
+  }
+  .icons2 i{
+    color:white;
+    border-radius:50%;
+    background-color:#215d0e;
+    padding:10px;
+    margin-left:140px;
+  }
+  .icons address a:hover{
+    color:#215d0e !important;
+    font-weight:bolder;
+    font-size:14px;
+  }
+  .icons1 p a:hover{
+    color:#215d0e !important;
+    font-weight:bolder;
+    font-size:14px;
+  }
+  .icons2 p a:hover{
+    color:#215d0e !important;
+    font-weight:bolder;
+    font-size:14px;
+  }
+  .chat{
+      display: flex;
+      align-items:center;
+      padding-left: 0;
+      gap:20px;
+  }
+  .chat a{
+    text-decoration: none;
+  }
+  .icons1 p a{
+    text-decoration: none;
+  }
+  .chat a i:first-child {
+    margin-right: 0; 
+  }
+  .icons2 p a{
+    text-decoration: none;
+  }
+  @media (max-width: 768px) {
+    .icons{
+      margin-left:-7px;
+      width:99%;
+      flex-basis: 33%;
+    }
+    .icons1{
+      margin-left:-7px;
+      width:99%;
+      flex-basis: 33%;
+    }
+    .icons2{
+      margin-left:-7px;
+      width:99%;
+      flex-basis: 33%;
+    }
+    .contact-form-div{
+      flex-direction: column;
+      width: 90%;
+      margin-left: 15px;
+    }
+    .contact-form {
+      height: auto;
+    }
+    .contact-info {
+      height: auto;
+    }
+    .contact-info h2{
+      color:goldenrod;
+    }
+    .contact-form-div{
+      display:block;
+      width:90%;
+      margin-left:10px;
+      flex-direction: row;
+      height: auto;
+    }
+    .contact-form input{
+      width:90%;
+      margin-left:0;
+    }
+    .contact-form textarea{
+      width:90%;
+      margin-left:0;
+    }
+    .contact-form label{
+      margin-left:15px;
+    }
+    .contact-form h2{
+      margin-left:0;
+    }
+    .contact-form button{
+      margin-left:0;
+    }
+    .contact-info h2{
+      margin-left:0;
+      text-align:center;
+    }
+  }

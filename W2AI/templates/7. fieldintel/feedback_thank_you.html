@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+    <title>Way2AgriIntel AI | Feedback Success</title>
+    <link href="{% static 'css/feedback.css' %}" rel="stylesheet"/>
+{% endblock %}
+{% block header %}{% endblock %}
+{% block content %}
+<br><br>
+<div class="popup-form">
+    <center><img src="https://res.cloudinary.com/dm71xhdxd/image/upload/v1715414912/Static%20Images/depositphotos_12065279-stock-photo-green-check-mark-symbol_bfddel.jpg" alt="success-logo" loading="lazy"></center>
+    <h4 style="line-height:50px; font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;text-align:center">Thank You &#128512; !!! Your Valuable Response has been Submitted Successfully.<br>Will Contact you Soon!</h4>
+    <center><button><a href="{% url 'W2AI:field-intel' %}">Back</a></button></center>
+</div>
+<br><br>
+{% endblock %}

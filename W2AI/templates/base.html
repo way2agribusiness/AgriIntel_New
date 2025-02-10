@@ -1,0 +1,307 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="https://res.cloudinary.com/dm71xhdxd/image/upload/v1699439977/Static%20Images/Way2AgriIntel_AI_tg4k8y.webp"/>
+    <meta name="description" content="{{ desc }}">
+   	<link rel="canonical" href="{{canonical}}"/>
+  	<link rel="stylesheet" href="{% static 'css/nav.css' %}" />
+  	<link rel="stylesheet" href="{% static 'css/f.css' %}" />
+    <script async src="https://kit.fontawesome.com/b0b94c956e.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+ 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+  	<!-- Google tag (gtag.js) -->
+  	<script type="text/javascript">
+      window.$crisp=[];window.CRISP_WEBSITE_ID="655bf52b-7dd0-460f-8232-4b3718aaa92e";
+      (function(){
+          d=document;s=d.createElement("script");
+          s.src="https://client.crisp.chat/l.js";
+          s.async=1;
+          d.getElementsByTagName("head")[0].appendChild(s);
+      })();
+      </script>
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-63YR3PV6QP"></script>
+	<script>
+  		window.dataLayer = window.dataLayer || [];
+  		function gtag(){dataLayer.push(arguments);}
+  		gtag('js', new Date());
+
+  		gtag('config', 'G-63YR3PV6QP');
+	</script>
+    {% block head %}{% endblock %}
+  </head>
+  <body>
+    <nav class="menu">
+      <div class="logo">
+        <img src="https://res.cloudinary.com/dm71xhdxd/image/upload/v1699439977/Static%20Images/Way2AgriIntel_AI_tg4k8y.webp" alt="Way2AgriIntel Logo" loading="lazy"/>
+        <a href="https://www.way2agriintel.com/" target="_blank" rel="noopener">www.way2agriintel.com</a>
+      </div>
+      <div class="navs">
+          <a href="/"><i class="material-icons">home</i>Home</a>
+      	  <a href="{% url 'W2AI:aboutus' %}"><i class="material-icons">info</i>About Us</a>
+      	  <a href="{% url 'W2AI:field-intel' %}"><i class="material-icons">agriculture</i>FieldIntel</a>
+      	  <a href="{% url 'W2AI:ats'%}"><i class="material-icons">shopping_cart_checkout</i>Agritech Mart</a>
+      	  <a href="{% url 'W2AI:contactus' %}"><i class="material-icons">call</i>Contact Us</a>
+        {% if user.is_authenticated %}
+          <a href="{% url 'W2AI:dashboard' %}"><i class="material-icons">dashboard</i>Dashboard</a>
+          <a href="{% url 'W2AI:logout' %}"><i class="material-icons">lock</i>Logout</a>
+        {% else %}
+          <a href="{% url 'W2AI:login_url' %}"><i class="material-icons">lock_open</i>Login</a>
+        {% endif %}
+      </div>
+      <i class="material-icons mobile-menu-icon" style="display: none" id="mobile-menu">menu</i>
+    </nav>
+    <div id="desktop-menu">
+       	  <a href="/"><i class="material-icons">home</i>Home</a>
+      	  <a href="{% url 'W2AI:aboutus' %}"><i class="material-icons">info</i>About Us</a>
+      	  <a href="{% url 'W2AI:field-intel' %}"><i class="material-icons">agriculture</i>FieldIntel</a>
+    	  <a href="{% url 'W2AI:ats'%}"><i class="material-icons">shopping_cart_checkout</i>Agritech Mart</a>
+      	  <a href="{% url 'W2AI:contactus' %}"><i class="material-icons">call</i>Contact Us</a>
+        {% if user.is_authenticated %}
+          <a href="{% url 'W2AI:dashboard' %}"><i class="material-icons">dashboard</i>Dashboard</a>
+          <a href="{% url 'W2AI:logout' %}"><i class="material-icons">lock</i>Logout</a>
+        {% else %}
+          <a href="{% url 'W2AI:login_url' %}"><i class="material-icons">lock_open</i>Login</a>
+        {% endif %}
+    </div>
+    {% block nav %}{% endblock %}
+    <br>
+    {% block header %}
+    <header>
+      <div><a href="{% url 'W2AI:cropintel' %}"><i class="material-icons">pan_tool_alt</i>CropIntel</a></div>
+      <div><a href="{% url 'W2AI:agmachinex' %}"><i class="material-icons">pan_tool_alt</i>AgMachineX</a></div>
+      <div><a href="{% url 'W2AI:agri-fbi' %}"><i class="material-icons">pan_tool_alt</i>Agri FBI</a></div>
+      <div><a href="{% url 'W2AI:agriclinic' %}"><i class="material-icons">pan_tool_alt</i>Agri Clinic</a></div>
+      <div><a href="{% url 'W2AI:nutritracker' %}"><i class="material-icons">pan_tool_alt</i>NutriTracker</a></div>
+    </header>
+    {% endblock %} 
+    {% block banner %}{% endblock %}
+    {% block content %}{% endblock %}
+    <br>
+    <footer class="footer fchange">
+      <div class="footer1">
+        <div>
+          <h1>Way2AgriIntel AI</h1>
+        </div>
+        <div class="share-links">
+          <a href="https://www.facebook.com/way2agribusiness" target="_blank" rel="noopener"><i class="fa fa-facebook-square"></i></a>
+          <a href="https://twitter.com/Way2agribusines" target="_blank" rel="noopener"><i class="fa fa-twitter"></i></a>
+          <a href="https://in.pinterest.com/Way2Agritech/_saved/" target="_blank" rel="noopener"><i class="fa fa-pinterest"></i></a>
+          <a href="https://www.youtube.com/channel/UCEpkh59M-MDOj0TH6lxRpMg" target="_blank" rel="noopener"><i class="fa fa-youtube"></i></a>
+          <a href="https://www.instagram.com/way2agribusiness/" target="_blank" rel="noopener"><i class="fa fa-instagram"></i></a>
+          <a href="https://www.linkedin.com/feed/?trk=homepage-basic_signin-form_submit" target="_blank" rel="noopener"><i class="fa fa-linkedin"></i></a>
+        </div>
+      </div>
+      <hr />
+      <div class="footer_info">
+        <div class="footer_info-div">
+          <h3>Contact Us</h3>
+          <div class="contact_div">
+            <div class="place_div">
+              <i class="material-icons">place</i>
+              <a href="https://www.google.com/maps/place/Way2Agribusiness+India+Pvt+Ltd/@13.015956,77.54541,15z/data=!4m6!3m5!1s0x3bae234a43de2765:0x4dc2c8416831cc0!8m2!3d13.0159559!4d77.5454099!16s%2Fg%2F11b6llkwn7?hl=en&entry=ttu" rel="noopener" target="_blank">
+                <address class="text_font">
+                  ಕೃಷಿ ಮಿತ್ರ/ Krushi Mithra # 636, BDA Block 2,
+                  APMC (RMC) Yard, Yeshwanthpura, Bengaluru - 560022<br />
+                </address>
+              </a>
+            </div>
+            <div class="phone_div">
+              <form method="post" action="/" class="form-fm">
+                {% csrf_token %}
+                <label for="Phone_number" class="form-label">Enter Your Number We Will Contact You</label><br>
+                <input type="tel" name="number"  class="form-control" value="{{ number }}">
+                <button type="submit" class="btn-submit">Submit</button>
+              </form>
+              <i class="material-icons">phone</i>
+              <div>
+                <a href="tel:+91-9449004956" target="_blank" rel="noopener">9449004956</a>
+                <a href="tel:+91-8277078435" target="_blank" rel="noopener">8277078435</a>
+                <a href="tel:+91-8095000388" target="_blank" rel="noopener">8095000388</a>
+                <a href="tel:+080 24484173" target="_blank" rel="noopener">08024484173</a>
+              </div>
+            </div>
+            <div class="mail_div">
+              <i class="material-icons">mail</i>
+              <div>
+                <a href="mailto:way2agritech@way2agribusiness.com" target="_blank" rel="noopener">way2agritech@way2agribusiness.com</a>
+                <a href="mailto:contact@way2agribusiness.com" target="_blank" rel="noopener">contact@way2agribusiness.com</a>
+                <a href="mailto:way2agritech@gmail.com" target="_blank" rel="noopener">way2agritech@gmail.com</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="loc_div">
+          <h3>Location</h3>
+          <div>
+            <iframe
+              class="loc"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3783.3813621730765!2d77.5419863!3d13.0165838!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae3d16cdf05995%3A0x3710354fdabf9e1b!2sWay2Agribusiness+India+Pvt+LTD!5e0!3m2!1sen!2sin!4v1675401016892!5m2!1sen!2sin" 
+              frameborder="0"
+              allowfullscreen="" target="_blank" rel="noopener" title="Way2Agribusiness Google Map">
+            </iframe>
+          </div>
+        </div>
+        <div class="services_div">
+          <center>
+            <h4 class="services_heading">Our Online Services</h4>
+          </center>
+          <div class="services_content">
+            <ul>
+              <li>
+              	<div class="footer-div">
+                	<i class="material-icons">business</i>
+                	<a href="https://www.way2agribusiness.com/" class="list" target="_blank" rel="noopener">Corporate Website</a><br />
+              	</div>
+                <a href="https://www.way2agribusiness.com/" class="link" target="_blank" rel="noopener">www.way2agribusiness.com</a><br />
+              </li>
+              <li>
+              	<div class="footer-div">
+                	<i class="material-icons">psychology</i>
+                	<a href="https://www.way2agriintel.com/" class="list" target="_blank" rel="noopener">Agri Intelligence</a><br />
+              	</div>
+                <a href="https://www.way2agriintel.com/" class="link" target="_blank" rel="noopener">www.way2agriintel.com</a><br />
+              </li>
+              <li>
+              	<div class="footer-div">
+              		<i class="fa-solid fa-apple-whole"></i>
+                	<a href="https://www.way2foods.in/" class="list" target="_blank" rel="noopener">Agri Output Brand</a><br />
+              	</div>
+                <a href="https://www.way2foods.in/" class="link" target="_blank" rel="noopener">www.way2foods.in</a><br />
+              </li>
+              <li>
+              	<div class="footer-div">
+                	<i class="material-icons">diversity_3</i>
+                	<a href="https://www.karnatakaagribusiness.com/" class="list" target="_blank" rel="noopener">Agribiz Platform</a><br />
+              	</div>
+                <a href="https://www.karnatakaagribusiness.com/" class="link" target="_blank" rel="noopener">www.karnatakaagribusiness.com</a><br />
+              </li>
+            </ul>
+            <ul>
+              <li>
+              	<div class="footer-div">
+                	<i class="fa-solid fa-truck"></i>
+                	<a href="https://www.way2agritech.com/" class="list" target="_blank" rel="noopener">Agri Input Brand</a><br />
+              	</div>
+                <a href="https://www.way2agritech.com/" class="link" target="_blank" rel="noopener">www.way2agritech.com</a><br />
+              </li>
+              <li>
+              	<div class="footer-div">
+                	<i class="fa-solid fa-seedling"></i>
+               		<a href="https://www.drsoilhealth.com/" class="list" target="_blank" rel="noopener">Fertilizer & Pesticides</a><br />
+              	</div>
+                <a href="https://www.drsoilhealth.com/" class="link" target="_blank" rel="noopener">www.drsoilhealth.com</a><br />
+              </li>
+              <li>
+              	<div class="footer-div">
+                	<i class="fa-solid fa-carrot"></i>
+                	<a href="https://www.way2vegetables.com/" class="list" target="_blank" rel="noopener">Vegetables Online</a><br />
+              	</div>
+                <a href="https://www.way2vegetables.com/" class="link" target="_blank" rel="noopener">www.way2vegetables.com</a><br />
+              </li>
+              <li>
+              	<div class="footer-div">
+                	<i class="material-icons">store</i>
+                	<a href="https://www.farmneedz.com/" class="list" target="_blank" rel="noopener">IndiaMart Platform</a><br />
+             	</div>
+                <a href="https://www.farmneedz.com/" class="link" target="_blank" rel="noopener">www.farmneedz.com</a><br />
+              </li>
+            </ul>
+            <ul>
+              <li>
+              	<div class="footer-div">
+                	<i class="fa-solid fa-robot"></i>
+                	<a href="https://www.way2smartfarmer.com/" class="list" target="_blank" rel="noopener">Compare & Select</a><br />
+              	</div>
+                <a href="https://www.way2smartfarmer.com/" class="link" target="_blank" rel="noopener">www.way2smartfarmer.com</a><br />
+              </li>
+              <li>
+              	<div class="footer-div">
+                	<i class="material-icons">agriculture</i>
+                	<a href="https://www.powertiller.in/" class="list" rel="noopener" target="_blank">Agritech & Machinery</a><br />
+              	</div>
+                <a href="https://www.powertiller.in/" class="link" rel="noopener" target="_blank">www.powertiller.in</a><br />
+              </li>
+              <li>
+              	<div class="footer-div">
+                	<i class="material-icons">yard</i>
+                	<a href="https://www.urbanagriculture.in/" class="list" target="_blank" rel="noopener">Terrace Gardening</a><br />
+              	</div>
+                <a href="https://www.urbanagriculture.in/" class="link" target="_blank" rel="noopener">www.urbanagriculture.in</a><br />
+              </li>
+              <li>
+              	<div class="footer-div">
+                	<i class="fa-solid fa-mobile-screen"></i>
+                	<a href="https://play.google.com/store/apps/details?id=com.way2abi.way2abi" class="list" target="_blank" rel="noopener">Way2ABI Agri FBI App</a><br />
+              	</div>
+                <a href="https://play.google.com/store/apps/details?id=com.way2abi.way2abi" class="link" target="_blank" rel="noopener">play.google.com/store/apps/...</a><br />
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <hr style="margin: 10px 0" />
+      <div class="legal">
+        <p>
+          CopyRight &copy; 2023 Way2Agribusines India Pvt Ltd. All Rights
+          Reserved
+        </p>
+      </div>
+    </footer>
+  </body>
+  <script>
+    const currentPath = window.location.pathname;
+    const navLinks = document.querySelectorAll('.navs a');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const deskMenu = document.getElementById('desktop-menu');
+	const headerDiv = document.querySelectorAll('header div a');
+    function hideDesktopMenu() {
+      deskMenu.style.display = 'none';
+    }
+    window.addEventListener('scroll', function() {
+      deskMenu.style.display = 'none';
+    });
+  
+    navLinks.forEach((link) => {
+      if (link.getAttribute('href') === currentPath) {
+        link.classList.add('active');
+      }
+    });
+  
+  	headerDiv.forEach(nav =>{
+      if(nav.getAttribute('href') === currentPath ){
+        nav.classList.add('active');
+        nav.parentNode.style.backgroundColor = 'gold';
+      	nav.style.fontWeight='bold';
+      	nav.style.color="darkblue";
+      }
+    });
+    mobileMenu.addEventListener('click', function () {
+      if (deskMenu.style.display === 'block') {
+        deskMenu.style.display = 'none';
+      } else {
+        deskMenu.style.display = 'block';
+      }
+    });
+    window.addEventListener('popstate', hideDesktopMenu);
+    for (let i=0; i < navLinks.length;i++){
+      if(navLinks[i].className === 'active'){
+        if (navLinks[i].baseURI === window.location.href){
+          navLinks[i].style.borderBottom = '2px solid darkblue';
+        }
+      }
+    }
+    document.querySelector('.form-control').addEventListener('input',function(){
+        this.value=this.value.replace(/[^0-9]/g,'');
+        if (this.value.length > 10){
+          this.value=this.value.slice(0,10);
+        }
+    });
+
+  </script>
+</html>
