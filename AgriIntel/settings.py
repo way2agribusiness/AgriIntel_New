@@ -23,7 +23,7 @@ TEMPLATES_FARMER_DIRS = os.path.join(BASE_DIR, 'W2AI', 'templates')
 # Security settings
 SECRET_KEY = 'django-insecure-%tg&u^#fkfa#$)ysimk*g1(5!&ian9m7p!2g97dcr&eia%08px'
 DEBUG = True
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'way2agriintel.com', 'www.way2agriintel.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'way2Agriintel.com', 'www.way2agriintel.com', '192.168.1.48']
 
 # Application definition
 INSTALLED_APPS = [
@@ -100,24 +100,24 @@ TIME_ZONE = 'Asia/Kolkata'
 USE_I18N = True
 USE_TZ = True
 
-# Static & media files settings
-# URL to use when referring to static files
+# Static files (CSS, JavaScript, Images)
+STATIC_ROOT = '/Users/dell/Desktop/AgriIntel/W2AI/static/'
 STATIC_URL = '/static/'
 
 # Directories where Django will search for additional static files
 STATICFILES_DIRS = [
-    BASE_DIR / 'static',
+    os.path.join(BASE_DIR, 'W2AI', 'static'),
 ]
 
-# Directory where static files will be collected
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+# Directory where collectstatic will store files
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+# Media files (Uploaded files)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
-# Default primary key field type
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# Default file storage (For local development)
+DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
 # Cloudinary configuration
 cloudinary.config(
@@ -126,6 +126,7 @@ cloudinary.config(
     api_secret='owidtLZTC0HQngNZBBo-wUzy7CU',
     secure=True,
 )
+WEATHER_API_KEY = '6249320d11d4bc13fe46a32d29695afb'
 
 # Project metadata
 PROJECT_NAME = "AgriIntel"
@@ -135,8 +136,11 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtpout.secureserver.net'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
 EMAIL_HOST_USER = 'agriclinic@way2agribusiness.com'
 EMAIL_HOST_PASSWORD = 'Way2abi5*CLINIC'
+
+
 
 
 

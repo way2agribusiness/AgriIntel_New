@@ -1,19 +1,20 @@
 from django.contrib import admin
-from  .models import Contact,UserProfile,Plot, NewFarmerPurchaseHistory,ContactNumber, Crop, Advisor, ProductPurchased, NutriTracker,ExistingUserProfile, AgMachineSpecifications, AgMachineXUserInput, CurrentMonthReport, LastMonthReport, SeasonalReport, AgriFBI, FBIEnquiry, CropIntelKnowledge, CropIntelInput, NutriTrackerSchedule, Feedback, AddedServices, FundRequirement, MarketPlannerStrategy, DiseaseRecognition, ACProductNPK, SymptomRecognitionKnowledge, SymptomsRecognitionInput, Highlights, ATSInfo, ATSContactInfo,ATSContactProductInfo,ATSContactProductImages,ATSIntro,ATSSeller, ATSSellerProductImage, ATSRoadmap, ServiceFeedback, SeoContent, Brands, Credentials,NotificationRecord,IntroTextDescription
+from  .models import Contact,UserProfile,Plot,ContactNumber, Crop, Advisor, FBI,  NutriTracker, AgMachineSpecifications, AgMachineXUserInput, CurrentMonthReport, LastMonthReport, SeasonalReport, AgriFBI, FBIEnquiry, CropIntelKnowledge, CropIntelInput, Feedback, AddedServices, FundRequirement, MarketPlannerStrategy, DiseaseRecognition, ACProductNPK, SymptomRecognitionKnowledge, SymptomsRecognitionInput, Highlights, ServiceFeedback, SeoContent, Brands, Credentials,IntroTextDescription
 from django.utils.safestring import mark_safe
 from django.templatetags.static import static
 from django.db import models
 from django.forms import TextInput
 from .forms import CropIntelKnowledgeForm
 from django.contrib.sites.models import Site
+from django.contrib import admin
 
+# admin name "http://way2agriintel.com/admin/master-console-npcs6"
 
 class IntroTextDescriptionAdmin(admin.ModelAdmin):
     list_display = ['Englishdescription','Kannadadescription']
 
 class ContactNumberAdmin(admin.ModelAdmin):
     list_display = ['phone_number','Time']
-
 
 class ContactAdmin(admin.ModelAdmin):
 	list_display = ['name','place','phone','comments','date','is_seen']
@@ -50,92 +51,25 @@ class AgriFBIAdmin(admin.ModelAdmin):
     inlines = [CurrenMonthReportInline, LastMonthReportInline, SeasonalReportInline]
     list_display = ['crop']
 
-class ProductPurchasedInline(admin.TabularInline):
-    model = ProductPurchased
-    extra = 1
-    formfield_overrides = {
-        models.CharField: {'widget': TextInput(attrs={'size':'30'})},
-    }
 
-class NutriTrackerAdmin(admin.ModelAdmin):
-    inlines = [ProductPurchasedInline]
-    list_display = ['name','whatsapp_no','product_purchase_info']
+class FBIEnquiryAdmin(admin.ModelAdmin):
+    list_display = ['user_name', 'phone_no', 'get_crop']
 
-    def product_purchase_info(self, obj):
-        products = ProductPurchased.objects.filter(customer=obj)
-        product_dict = {}
-        for product in products:
-            if product.date:
-                formatted_date = product.date.strftime('%d-%m-%Y')
-                if formatted_date in product_dict:
-                    product_dict[formatted_date].append((product.product_name, product.quantity))
-                else:
-                    product_dict[formatted_date] = [(product.product_name, product.quantity)]
-            else:
-                formatted_date = 'No Date'
-        table = '<table>'
-        for date, products in product_dict.items():
-            product_rows = ''.join(f"<tr style='display:flex; justify-content: space-between; width: 80%;'><td>{product[0]}</td><td>{product[1]}</td></tr>" for product in products)
-            table += f"<tr><td><strong style='font-family:times new roman; font-size:15px'>{date}</strong></td><td>{product_rows}</td></tr>"
-        table += '</table>'
-        return mark_safe(table) if table != '<table></table>' else '-'
-    product_purchase_info.short_description = 'Purchase-Info'   
+    def get_crop(self, obj):
+        return obj.crop
+    get_crop.short_description = 'Selected Crops'
 
-class NewFarmerPurchaseHistoryAdmin(admin.ModelAdmin):
-    list_display = ['name','whatsapp_no','get_email','purchase_info']
 
-    def get_email(self, obj):
-        if obj.email:
-            return obj.email
-        else:
-            return ''
-    get_email.short_description = 'Email'
-
-    def purchase_info(self, obj):
-        fertilizer_fields = [
-            ('crop1','crop_stage1','fertilizer1', 'quantity1', 'purchase_date1'),
-            ('crop2','crop_stage2','fertilizer2', 'quantity2', 'purchase_date2'),
-            ('crop3','crop_stage3','fertilizer3', 'quantity3', 'purchase_date3'),
-            ('crop4','crop_stage4','fertilizer4', 'quantity4', 'purchase_date4'),
-            ('crop5','crop_stage5','fertilizer5', 'quantity5', 'purchase_date5'),
-        ]
-        fertilizer_data = {}
-        for crop, crop_stage, fertilizer, quantity, purchase_date in fertilizer_fields:
-            crop = getattr(obj, crop)
-            crop_stage = getattr(obj, crop_stage)
-            fertilizer_name = getattr(obj, fertilizer)
-            quantity_value = getattr(obj, quantity)
-            purchase_date_value = getattr(obj, purchase_date)
-
-            if crop and crop_stage and fertilizer_name and quantity_value and purchase_date_value:
-                formatted_date = purchase_date_value.strftime('%d-%m-%Y')
-                if formatted_date in fertilizer_data:
-                    fertilizer_data[formatted_date].append((crop, crop_stage,fertilizer_name, quantity_value))
-                else:
-                    fertilizer_data[formatted_date] = [(crop, crop_stage, fertilizer_name, quantity_value)]
-        table = '<table>'
-        for date, products in fertilizer_data.items():
-            table += f"<tr><td rowspan='{len(products)}'><strong>{date}</strong></td>"
-            for index, (crop, crop_stage, fertilizer_name, quantity_value) in enumerate(products):
-                if index > 0:
-                    table += "<tr>"
-                table += (
-                    f"<td>{crop}</td><td>{crop_stage}</td><td>{fertilizer_name}</td><td>{quantity_value}</td></tr>"
-                )
-        table += '</table>'
-        return mark_safe(table) if table != '<table></table>' else '-'
-
-    purchase_info.short_description = 'Purchase-Info'   
-
-@admin.register(Crop)
-class CropAdmin(admin.ModelAdmin):
-    list_display = ['name','blanket_n_value','blanket_p_value','blanket_k_value','stage_one_n_value','stage_one_p_value','stage_one_k_value','stage_two_n_value','stage_two_p_value','stage_two_k_value','stage_three_n_value','stage_three_p_value','stage_three_k_value']
-
+from .models import Advisor
 
 @admin.register(Advisor)
 class AdvisorAdmin(admin.ModelAdmin):
-    list_display = ['name','whatsapp_no','crop','crop_area', 'available_of_str', 'ph_value',
-                    'n_value', 'p_value', 'k_value','nitrogen', 'phosphorus', 'potassium','crop_stage']
+    list_display = ['full_name', 'whatsapp_no', 'crop', 'crop_area', 
+                    'ph_value', 'n_value', 'p_value', 'k_value', 'crop_stage']
+    search_fields = ['full_name', 'whatsapp_no', 'crop', 'village', 'district', 'state']
+    list_filter = ['crop', 'crop_stage', 'district', 'state']
+    ordering = ['full_name']
+
 
 class ExistingUserProfileAdmin(admin.ModelAdmin):
     list_display = ['customer_name','username','password']
@@ -146,18 +80,22 @@ class ExistingUserProfileAdmin(admin.ModelAdmin):
 class AgMachineSpecificationsAdmin(admin.ModelAdmin):
     list_display = ['product_name', 'crop', 'land_extent', 'price', 'soil_condition', 'unit']
 
+# class AgMachineXUserInputAdmin(admin.ModelAdmin):
+#     list_display = ['machinery_req', 'full_name', 'whatsapp_no']
+
 class AgMachineXUserInputAdmin(admin.ModelAdmin):
-    list_display = ['machinery_req', 'full_name', 'whatsapp_no']
-
-class FBIEnquiryAdmin(admin.ModelAdmin):
-    list_display = ['user_name', 'phone_no', 'get_crop']
-
-    def get_crop(self, obj):
-        return obj.crop
-    get_crop.short_description = 'Selected Crops'
-
-class NutriTrackerScheduleAdmin(admin.ModelAdmin):
-    list_display = ['crops','crop_types', 'crop_stage', 'scheduling_period']
+    list_display = [
+        'full_name', 'whatsapp_no', 'email_id', 'village', 'taluk', 'district', 'state', 
+        'zip_code', 'land_area', 'zone', 'soil_condition', 'labours_employed', 'crop', 
+        'crop_stage', 'machinery_req', 'soil_type', 'machine_available', 'irrigation_type', 
+        'water_source', 'water_availability', 'current_irrigation_method', 
+        'other_current_irrigation', 'irrigation_req', 'budget', 'vegetation_type'
+    ]  
+    search_fields = ['full_name', 'whatsapp_no', 'email_id', 'village', 'district']
+    list_filter = ['machinery_req', 'budget', 'crop_stage', 'irrigation_type']
+    ordering = ['full_name']
+    list_editable = ['machinery_req', 'budget']
+    list_display_links = ['full_name']
 
 class ServiceFeedbackInline(admin.StackedInline):
     model = ServiceFeedback
@@ -270,60 +208,196 @@ class CropIntelKnowlegeAdmin(admin.ModelAdmin):
 class ACProductNPKAdmin(admin.ModelAdmin):
     list_display = ['category','product_name']
 
-class ATSContactProductImagesInline(admin.StackedInline):
-      model = ATSContactProductImages
-      extra = 1
 
-class ATSContactProductInfoInline(admin.StackedInline):
-      model = ATSContactProductInfo
-      extra = 1
-      
-class ATSContactInfoAdmin(admin.ModelAdmin):
-      inlines = [ATSContactProductInfoInline, ATSContactProductImagesInline]
-      list_display = ['category','contact_company_name','contact_name','contact_email']
+from django.contrib import admin
+from .models import NutriTracker
 
-class ATSSellerProductImageInline(admin.StackedInline):
-      model=ATSSellerProductImage
-      extra=0
-      
-class ATSSellerAdmin(admin.ModelAdmin):
-	inlines=[ATSSellerProductImageInline]
-	list_display = ['seller_name','seller_company','seller_email_id']
+class NutriTrackerAdmin(admin.ModelAdmin):
+    fieldsets = [
+        ('Your Information', {
+            'fields': [
+                'name',
+                'whatsapp_number',
+                'district',
+                'taluk',
+                'address',
+                'extent_of_land'
+            ]
+        }),
+        ('Plot Information', {
+            'fields': [
+                'plot_name',
+                'crop_grown',
+                'land_area',
+                'crop_density'
+            ]
+        }),
+        ('Soil Information', {
+            'fields': [
+                'soil_condition',
+                'soil_health',
+                'soil_ph',
+                'water_source',
+                'water_availability',
+                'soil_rich_nutrients',
+                'soil_avg_nutrients',
+                'soil_poor_nutrients'
+            ]
+        }),
+        ('Cultivation Information', {
+            'fields': [
+                'sowing_month',
+                'harvesting_month',
+                'irrigation_method',
+                'nutrient_application_times'
+            ]
+        }),
+        ('Soil Test Report Values', {
+            'fields': [
+                'nitrogen_value',
+                'potassium_value',
+                'phosphorous_value',
+                'secondary_nutrients_value',
+                'micronutrients_value',
+                'organic_carbon_value'
+            ]
+        }),
+        ('Fertilizer Purchase Details', {
+            'fields': [
+                'crop_fertilizer_applied',
+                'crop_stage',
+                'fertilizer_name',
+                'nutrient_deficiency',
+                'fertilizer_type',
+                'manufacturer_name',
+                'fertilizer_quantity',
+                'fertilizer_purchase_date'
+            ]
+        }),
+    ]
+
+    # List view configuration
+    list_display = [
+        'name',
+        'whatsapp_number',
+        'district',
+        'plot_name',
+        'crop_grown',
+        'land_area',
+        'soil_health',
+        'fertilizer_name',
+        'fertilizer_purchase_date'
+    ]
+
+    # Search configuration
+    search_fields = [
+        'name',
+        'whatsapp_number',
+        'district',
+        'taluk',
+        'plot_name',
+        'crop_grown',
+        'fertilizer_name',
+        'manufacturer_name'
+    ]
+
+    # Filter configuration
+    list_filter = [
+        'district',
+        'taluk',
+        'crop_grown',
+        'soil_condition',
+        'soil_health',
+        'irrigation_method',
+        'fertilizer_type'
+    ]
+    date_hierarchy = 'fertilizer_purchase_date'
 
 
-class ATSInfoAdmin(admin.ModelAdmin):
-      list_display = ['category_name']
-      prepopulated_fields={'category_slug':('category_name', )}
+from .models import FBI, CropDetail
+class CropDetailInline(admin.TabularInline):
+    model = CropDetail
+    extra = 1  
+
+class FBIAdmin(admin.ModelAdmin):
+    fieldsets = [
+        ('Your Information', {
+            'fields': [
+                'name',
+                'whatsapp_number',
+                'district',
+                'taluk',
+                'address',
+                'land_extent'
+            ]
+        }),
+        ('Agri FBI Info', {
+            'fields': [
+                'user_type',
+            ]
+        }),
+    ]
+
+    inlines = [CropDetailInline]  # Include the CropDetail inline
+
+    # List view configuration
+    list_display = [
+        'name',
+        'whatsapp_number',
+        'district',
+        'user_type',
+        'land_extent',
+        'get_crops'
+    ]
+
+    # Search configuration
+    search_fields = [
+        'name',
+        'whatsapp_number',
+        'district',
+        'taluk',
+        'crop_details__crop_name',
+        'crop_details__crop_variety'
+    ]
+
+    # Filter configuration
+    list_filter = [
+        'user_type',
+        'district',
+        'taluk',
+        'crop_details__crop_name'
+    ]
+
+    def get_crops(self, obj):
+        """Return a comma-separated list of crops for this FBI entry"""
+        return ", ".join([f"{crop.crop_name} ({crop.crop_quantity} qt)" for crop in obj.crop_details.all()])
+    
+    get_crops.short_description = 'Crops'
+
+#------------------------------------------- Above is Crop Intel --------------------------------------
 
 admin.site.register(MarketPlannerStrategy)
 admin.site.register(FundRequirement)
 admin.site.register(Feedback, FeedbackAdmin)
 admin.site.register(AddedServices, AddedServiceAdmin)
 admin.site.register(UserProfile, UserProfileAdmin) 
-admin.site.register(NewFarmerPurchaseHistory,NewFarmerPurchaseHistoryAdmin)
 admin.site.register(NutriTracker, NutriTrackerAdmin)
-admin.site.register(ExistingUserProfile, ExistingUserProfileAdmin)
+admin.site.register(FBI, FBIAdmin)
+admin.site.register(CropDetail)
 admin.site.register(AgMachineSpecifications, AgMachineSpecificationsAdmin)
 admin.site.register(AgMachineXUserInput,AgMachineXUserInputAdmin)
 admin.site.register(AgriFBI, AgriFBIAdmin)
 admin.site.register(FBIEnquiry, FBIEnquiryAdmin)
 admin.site.register(CropIntelKnowledge, CropIntelKnowlegeAdmin)
 admin.site.register(CropIntelInput)
-admin.site.register(NutriTrackerSchedule, NutriTrackerScheduleAdmin)
 admin.site.register(DiseaseRecognition)
 admin.site.register(ACProductNPK, ACProductNPKAdmin)
 admin.site.register(SymptomRecognitionKnowledge)
 admin.site.register(SymptomsRecognitionInput)
 admin.site.register(Highlights)
-admin.site.register(ATSIntro)
-admin.site.register(ATSInfo, ATSInfoAdmin)
-admin.site.register(ATSContactInfo, ATSContactInfoAdmin)
-admin.site.register(ATSSeller, ATSSellerAdmin)
-admin.site.register(ATSRoadmap)
 admin.site.register(Contact,ContactAdmin)
 admin.site.register(SeoContent)
 admin.site.register(Brands)
 admin.site.register(Credentials)
-admin.site.register(NotificationRecord)
 admin.site.register(IntroTextDescription,IntroTextDescriptionAdmin)
 admin.site.register(ContactNumber,ContactNumberAdmin)

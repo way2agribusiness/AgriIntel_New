@@ -2,6 +2,117 @@
 {% load static %}
 {% block head %}
     <title>Way2AgriIntel AI | FieldIntel {% if title %}| {{title}} {% endif %}</title>
+    <style>
+        body {
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+        }
+
+        .intro {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            text-align: justify;
+            padding: 20px;
+        }
+
+        .div1, .div2 {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .div1 img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: auto;
+        }
+
+        .intro1 {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .intro1 ul {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+            list-style: none;
+            background: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .intro1 h6 {
+        display: inline-block;
+        background: darkgreen; 
+        color: white; 
+        padding: 10px 15px;
+        border-radius: 5px;
+        font-size: 18px;
+        font-weight: bold;
+        text-align: center;
+        white-space: nowrap;
+    }
+
+        .intro1 li {
+            margin-bottom: 10px;
+            padding-left: 15px;
+            position: relative;
+            text-align: justify;
+        }
+
+        .intro1 li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #007BFF;
+            font-size: 18px;
+            line-height: 1.5;
+        }
+
+        /* Centering Buttons */
+        .feedback {
+            display: flex;
+            justify-content: center; /* Centers button horizontally */
+            margin-top: 15px;
+        }
+
+        .feedback button {
+            background-color: goldenrod;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .feedback button a {
+            color: white;
+            text-decoration: none;
+        }
+
+        /* Responsive Design for Mobile */
+        @media (max-width: 768px) {
+            .intro, .intro1 {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .intro1 ul {
+                width: 100%;
+                padding: 15px;
+            }
+
+            .intro1 li {
+                text-align: left;
+            }
+        }
+    </style>
 {% endblock %}
 {% block content %}
     <br><br><br>
@@ -11,39 +122,39 @@
         </div>
         <div class="div2">
             <h3>About FieldIntel</h3>
-            <p>"FieldIntel - Farm Mgt Solutions (FIFMS)" represents Way2Agribusiness India Pvt. Ltd.'s commitment to assisting in the transition from farming to agribusiness. Our core mission is to be the comprehensive solution provider for commercial farms, enhancing competitiveness and sustainability through a diverse range of products and services. We primarily operate within a 250 km radius of Bengaluru. This innovative initiative covers a range of offerings, including expert-led farm visits, ongoing support for crop management, supply of nutrients, plant protection products, farm machinery, and more. We provide strategic mentoring to ensure the sustained success of farming activities. FIFMS also ensures access to cutting-edge equipment, along with the reliable supply of saplings and plants to meet diverse agricultural needs.  </p>
+            <p>"FieldIntel - Farm Mgt Solutions (FIFMS)" represents Way2Agribusiness India Pvt. Ltd.'s commitment to assisting in the transition from farming to agribusiness. Our core mission is to be the comprehensive solution provider for commercial farms, enhancing competitiveness and sustainability through a diverse range of products and services. We primarily operate within a 250 km radius of Bengaluru. This innovative initiative covers a range of offerings, including expert-led farm visits, ongoing support for crop management, supply of nutrients, plant protection products, farm machinery, and more. We provide strategic mentoring to ensure the sustained success of farming activities. FIFMS also ensures access to cutting-edge equipment, along with the reliable supply of saplings and plants to meet diverse agricultural needs.</p>
             <p>Acknowledging the significance of on-farm support and off-farm strategies, this service caters to both new and established commercial farms. The target customer base includes forward-thinking conventional farmers, non-conventional farmers entering commercial operations, companies with owned agricultural land, and farmhouses grappling with crop management challenges. Our initiative strengthened by the integration of Way2AgriIntel AI and selected modules, providing farmers with direct access to a comprehensive suite of services. By empowering farmers with the tools and support needed to navigate the complexities of modern agriculture, FIFMS aims to drive sustained growth, competitiveness, and prosperity within the agricultural landscape.</p>
             <br>
         </div>
     </div> 
     <div class="intro1">
         <ul>
-            <h4>Salient Features</h4>
-            <li>On-farm support and off-farm strategies for operations betterment  </li>
-            <li>Periodical field visits by KABPC & other team members  </li>
-            <li>Leveraging Way2AgriIntel AI advanced modules effectively  </li>
-            <li>Supply of right nutrients, plant protection products & farm machineries </li>
-            <li>Application of technology led solutions to address farming challenges   </li>
-            <li>Output marketing support incl. primary processing  </li>
-            <li>Assisting the farm owners in transition from farming to agribusiness </li>
+            <h6>Salient Features</h6>
+            <li>On-farm support and off-farm strategies for operations betterment</li>
+            <li>Periodical field visits by KABPC & other team members</li>
+            <li>Leveraging Way2AgriIntel AI advanced modules effectively</li>
+            <li>Supply of right nutrients, plant protection products & farm machineries</li>
+            <li>Application of technology-led solutions to address farming challenges</li>
+            <li>Output marketing support including primary processing</li>
+            <li>Assisting the farm owners in transition from farming to agribusiness</li>
             <li>Promote and encourage sustainable agricultural practices</li>
-        	<div class="feedback">
-        		<button><i class="material-icons">feedback</i><a href="{% url 'W2AI:feedback' %}">For Your Feedback</a></button>
-    		</div>
+            <div class="feedback">
+                <button><i class="material-icons">feedback</i><a href="{% url 'W2AI:feedback' %}">For Your Feedback</a></button>
+            </div>
         </ul>
         <ul>
-            <h4>Steps to access FieldIntel solutions </h4>
-            <li>Field visit – Service needs & challenges assessment </li>
+            <h6>Steps to Access FieldIntel Solutions</h6>
+            <li>Field visit – Service needs & challenges assessment</li>
             <li>MoU – Establishing partnership with defining scope of services</li>
-            <li>Decision enabling system & technology application support </li>
-            <li>Off-farm strategies: Step-by-step approach for execution </li>
-            <li>On-farm support: Periodic visits, PoP adoption & expert advice </li>
-            <li>Products supply – PGR, PPP, Farm Machinery & Implements  </li>
-        	<li>Tele Support – Remote assistance and advice for instant solutions</li>
-        	<li>Retainer Services – Ongoing consultation for sustainable success</li>
-        	<div class="feedback">
-        		<button><i class="material-icons">health_and_safety</i><a href="{% url 'W2AI:custom-service' %}">Sign up now for farm management solutions</a></button>
-    	   </div>
+            <li>Decision enabling system & technology application support</li>
+            <li>Off-farm strategies: Step-by-step approach for execution</li>
+            <li>On-farm support: Periodic visits, PoP adoption & expert advice</li>
+            <li>Products supply – PGR, PPP, Farm Machinery & Implements</li>
+            <li>Tele Support – Remote assistance and advice for instant solutions</li>
+            <li>Retainer Services – Ongoing consultation for sustainable success</li>
+            <div class="feedback">
+                <button><i class="material-icons">health_and_safety</i><a href="{% url 'W2AI:custom-service' %}">Sign up now for farm management solutions</a></button>
+            </div>
         </ul>
     </div>
 {% endblock %}

@@ -72,6 +72,7 @@ hr{
 .mail_div {
   display: flex;
   margin-top: 20px;
+  flex-direction: column;
   gap: 10px;
 }
 .mail_div div {

@@ -1,49 +1,31 @@
 body::-webkit-scrollbar{
 	display: none;
 }
+
 body {
- margin: auto;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
-.menu {
-  display: flex;
-  justify-content: space-between;
-  border-bottom: 5px solid rgb(9, 83, 9);
-  width: 100%;
-  box-shadow: 0 0 10px gray;
-}
+
 .logo {
   display: flex;
-  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
 }
+
 .logo img {
-  width: 100px;
-  height: 95px;
-  margin: 5px;
-  filter: brightness(100%);
-  box-shadow: 0 0 5px 3px rgba(255, 255, 255, 0.5);
-  border-radius:50%;
-  border:1px solid darkgreen;
+  width: 50px;
+  height: auto;
+  border-radius: 50%;
 }
-.logo a{
-  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-  font-size: 16px;
-  margin: auto;
-  border-radius: 50px;
-  padding: 8px 10px;
-  color: darkgreen;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+
+.logo a {
+  color: #40724b;
   text-decoration: none;
-  transition: background-color 0.3s;
-  animation: blink 2s ease-in-out infinite;
 }
-@keyframes blink{
-	0% {box-shadow:0 0.5px 0.5px gray; background-image:linear-gradient(45deg,#ffc100,wheat,#ffc100); border:rgb(24, 150, 55)}
-	50% {box-shadow:2px 2.5px 2.5px gray; background-image:linear-gradient(45deg,wheat,#ffc100,wheat); border: 2px solid darkgreen}
-	100%{box-shadow:0 0.5px 0.5px gray; background-image:linear-gradient(45deg,#ffc100,wheat,#ffc100); border:2px solid rgb(24, 150, 55)}
-}
-.logo a:hover{
-  background-color: #f0f0f0;
-}
+
 .intro1{
   display: flex;
   justify-content: center;
@@ -57,21 +39,7 @@ body {
   color:darkgreen;
   font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 }
-.intro1 ul h4{
-  text-align: center;
-  font-size:18px;
-  font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-  background-color:rgb(11, 11, 165);
-  color:white;
-  border-radius:10px;
-  width:300px;
-  clip-path: polygon( 0 0, 0 0, 100% 0, 100% 0, 100% calc(100% - 20px), calc(100% - 37px) 100%, 15px 100%, 0 100% );
-  background-image:linear-gradient(180deg, darkblue,transparent,darkblue);
-  box-shadow:2px 3px 5px black;
-  text-shadow: 2px 2px black;
-  letter-spacing: 4px;
-  word-spacing:10px;
-}
+
 .intro1 ul li {
   list-style-type:none;
 }
@@ -401,9 +369,6 @@ header span {
   height: 300px;
   margin-left: 60px;
 }
-#desktop-menu {
-  display: none;
-}
 .entry{
   width:50%;
   margin:auto;
@@ -470,26 +435,7 @@ header span {
   .navs {
     display: none;
   }
-  #desktop-menu {
-    display: none;
-    width: 150px;
-    height: 150px;
-    background-color: white;
-    border-radius: 10px;
-    z-index: 9999;
-    position: fixed;
-    margin-left: 220px;
-    box-shadow: 3px 3px 3px rgb(9, 83, 9);
-  }
-  #desktop-menu a {
-    display: block;
-    white-space: nowrap;
-    padding: 5px 10px;
-    margin-right: 200px;
-    text-align: center;
-    text-decoration: none;
-    color: green;
-  }
+
   header a {
     font-size: 11px;
     margin: auto;

@@ -1,8 +1,43 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block head %}
-    <link href="{% static 'css/auth.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/register1.css' %}" rel="stylesheet"/>
     <title>Way2AgriIntel AI | Login</title>
+    <style>
+        #register-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        #register-btn i {
+            margin-right: 5px;
+        }
+
+        #register-btn a {
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+            color: #1f0236;
+        }
+
+        #register-btn a:hover {
+            text-decoration: underline;
+        }
+
+        form {
+            box-shadow: 3px 10px 10px 5px rgb(20 19 19 / 0%);
+            background-color: #afafca00;
+        }
+        form label {
+            color: darkgreen;
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            font-size: medium;
+            /* text-shadow: 1px 0.5px black; */
+            display: block;
+        }
+    </style>
 	<script>
         function getLocation() {
             if (navigator.geolocation) {
@@ -120,7 +155,11 @@
                 {% endfor %}
                 <div class="button-div"><button>Login</button></div>
                 <br><br>
-        		<div id="register-btn"><i class="material-icons">group_add</i><a href="{% url 'W2AI:register_url' %}" >Create New Account</a></div>
+        		<!-- <div id="register-btn"><i class="material-icons">group_add</i><a href="{% url 'W2AI:register_url' %}" >Create New Account</a></div><br> -->
+                <div id="register-btn">
+                    <i class="material-icons">group_add</i>
+                    <a href="{% url 'W2AI:register_url' %}">Create New Account</a>
+                </div>
                 <br><br>
         </form>
         {% if form.errors %}

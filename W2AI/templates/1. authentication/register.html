@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block head %}
-    <link href="{% static 'css/auth.css' %}" rel="stylesheet"/>
-    <title>Way2AgriIntel AI | Registeration</title>
+    <link href="{% static 'css/register1.css' %}" rel="stylesheet"/>
+    <title>Way2AgriIntel AI | Registration</title>
 {% endblock %}
 {% block header %}{% endblock %}
 {% block content %}
@@ -12,30 +12,30 @@
         <form method="POST" class="for-crop1">
             <br>
             {% csrf_token %}
-                <p>All <span class="valid">*</span> marked are required fields <span>(ಎಲ್ಲಾ <span class="valid">*</span> ಗೆರೆಗಳು ಅಗತ್ಯವಿದೆ)</span></p>
+                <p>All <span class="valid">*</span> marked fields are required <span>(ಎಲ್ಲಾ <span class="valid">*</span> ಗೆರೆಗಳು ಅಗತ್ಯವಿದೆ)</span></p>
+
                 {% for field in form %}
                     <div class="inside-form">
-                         <!--<div>
-                           {% if field.id_for_label == 'id_email' %}
-                                <label for="{{field.id_for_label}}">{{field.label}}</label>
-                            {% else %}
-                                <label for="{{field.id_for_label}}">{{field.label}} <span class="valid">*</span></label>
-                            {% endif %}
-                        </div>-->
-                        <div>{{field}} </div>
-                        <div>{{field.errors}}</div>
+                        <label for="{{ field.id_for_label }}">
+                            {{ field.label }} 
+                            {% if field.field.required %}<span class="valid">*</span>{% endif %}
+                        </label>
+                        <div>{{ field }}</div>
+                        <div class="error-message">{{ field.errors }}</div>
                         <br>
                     </div>
                 {% endfor %}
-                <ul>
-                    <h5>Instruction for password</h5>
-                    <li>Password should not contain username and your name /(ಪಾಸ್‌ವರ್ಡ್‌ನಲ್ಲಿ ಬಳಕೆದಾರ ಹೆಸರು ಮತ್ತು ನಿಮ್ಮ ಪೂರ್ಣ ಹೆಸರು ಇರಬಾರದು.)</li>
-                    <li>Password min length should be 8/(ಪಾಸ್ವರ್ಡ್‌ಗೆ ಕನಿಷ್ಠ ಉದ್ದವು 8 ಆಗಿರಬೇಕು.)</li>
-                    <li>Password should contain combination of alphabets and numbers/(ಪಾಸ್ವರ್ಡ್‌ನಲ್ಲಿ ಅಕ್ಷರಗಳು ಮತ್ತು ಸಂಖ್ಯೆಗಳ ಮಿಶ್ರಣ ಇರಬೇಕು.)</li>
+
+                <ul class="password-instructions">
+                    <h5>Password Instructions:</h5>
+                    <li>Password should not contain username or your name (ಪಾಸ್‌ವರ್ಡ್‌ನಲ್ಲಿ ಬಳಕೆದಾರ ಹೆಸರು ಮತ್ತು ನಿಮ್ಮ ಪೂರ್ಣ ಹೆಸರು ಇರಬಾರದು.)</li>
+                    <li>Minimum password length is 8 characters (ಪಾಸ್ವರ್ಡ್‌ಗೆ ಕನಿಷ್ಠ ಉದ್ದವು 8 ಆಗಿರಬೇಕು.)</li>
+                    <li>Password must include a combination of letters and numbers (ಪಾಸ್ವರ್ಡ್‌ನಲ್ಲಿ ಅಕ್ಷರಗಳು ಮತ್ತು ಸಂಖ್ಯೆಗಳ ಮಿಶ್ರಣ ಇರಬೇಕು.)</li>
                 </ul>
                 <br>
+
                 <div class="button-div">
-                    <button>Register</button>
+                    <button type="submit">Register</button>
                 </div>
                 <br><br>
         </form>

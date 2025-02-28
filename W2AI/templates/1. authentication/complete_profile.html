@@ -1,91 +1,235 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block head %}
-    <link href="{% static 'css/auth.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/register1.css' %}" rel="stylesheet"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
     <title>Way2AgriIntel AI | Update Profile</title>
+    <style>
+        .plot-item {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        #plots-modal {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        .plot-details {
+            margin: 10px 0;
+        }
+        .plot-actions {
+            margin-top: 10px;
+        }
+        .plot-actions button {
+            margin-right: 10px;
+        }
+    </style>
 {% endblock %}
 {% block header %}{% endblock %}
 {% block content %}
 <br><br>
 <div class="form-div"> 
     <h3 class="register">Update Profile</h3> 
-      <form method="post" class="for-crop1">
+    <form method="post" class="for-crop1">
         <br>
         {% csrf_token %}
         <p>All <span class="valid">*</span> marked are required fields <span>(ಎಲ್ಲಾ <span class="valid">*</span> ಗೆರೆಗಳು ಅಗತ್ಯವಿದೆ)</span></p>
-      	{% if message %}
-          <p class="message">{{message}}</p>
+        {% if message %}
+            <p class="message">{{message}}</p>
         {% endif %}
         <input type="hidden" value="{{user_data.district}}" id="district">
         {% for field in form %}
-          <div class="inside-form">
-            {% if field.id_for_label %}
-            <div id="{{field.id_for_label}}-div">
-              <label for="{{field.id_for_label}}">{{field.label}} <span class="valid">*</span></label>
-              <div>{{field}}</div>
-              <br>
+            <div class="inside-form">
+                {% if field.id_for_label %}
+                <div id="{{field.id_for_label}}-div">
+                    <label for="{{field.id_for_label}}">{{field.label}} <span class="valid">*</span></label>
+                    <div>{{field}}</div>
+                    <br>
+                </div>
+                {% endif %}
             </div>
-            {% endif %}
-          </div>
         {% endfor %}
         <center><h4>Plot Specific Information</h4></center><br>
         <div id="form-count">{{ plot_formset.management_form }}</div>
         <div id="plot-forms">
-          {% for form in plot_formset %}
-            <div class="forms-{{forloop.counter}}">
-              {% for field in form %}
-                <div id="{{field.id_for_label}}">
-                  <label for ="{{field.id_for_label}}" >{{field.label}}</label>
-                  {{field}}
+            {% for form in plot_formset %}
+                <div class="forms-{{forloop.counter}}">
+                    {% for field in form %}
+                        <div id="{{field.id_for_label}}">
+                            <label for ="{{field.id_for_label}}" >{{field.label}}</label>
+                            {{field}}
+                        </div>
+                    {% endfor %}
                 </div>
-              {% endfor %}
-            </div>
-          {% endfor %}
+            {% endfor %}
         </div>
         <button type="button" id="add-plot-form" onclick="addImage()">Add New Plot</button>
+        <button type="button" id="view-plots-button" onclick="viewPlots()">View Existing Plots</button>
+        <div id="plots-modal" style="display:none;">
+          <h4>Existing Plots</h4>
+          <div id="plots-list">
+              {% for plot in user_data.plot_set.all %}
+              <div class="plot-item" data-plot-id="{{ plot.id }}">
+                  <div class="plot-details">
+                      <p><strong>Plot Name:</strong> <span data-field="plot_name">{{ plot.plot_name }}</span></p>
+                      <!-- <p><strong>Area:</strong> <span data-field="area">{{ plot.area }}</span> acres</p>
+                      <p><strong>Crop:</strong> <span data-field="crop">{{ plot.crop }}</span></p> -->
+                  </div>
+                  <div class="plot-actions">
+                      <button type="button" class="edit-btn" onclick="editPlot({{ plot.id }})">Edit</button>
+                      <button type="button" class="delete-btn" onclick="deletePlot({{ plot.id }})">Delete</button>
+                  </div>
+              </div>
+              {% endfor %}
+          </div>
+      </div>
         <br><br>
         <div class="button-div"><button type="submit">Update Profile</button></div><br><br>
-      </form>
+    </form>
 </div>
 <br>
 <script>
-  for(let i=1; i < 5; i++){
-    const form = document.querySelector(`.forms-${i}`);
-    if (form){
-      form.style.display = 'none';
-    }
+  function viewPlots() {
+      const modal = document.getElementById('plots-modal');
+      if (modal.style.display === 'none') {
+          modal.style.display = 'block';
+      } else {
+          modal.style.display = 'none';
+      }
   }
-
-  for(let i=0; i < 5; i++){
-    const plotId = document.querySelector(`#id_plot_set-${i}-id`);
-    const userProfile = document.querySelector(`#id_plot_set-${i}-user_profile`);
-    const deleteInput = document.querySelector(`#id_plot_set-${i}-DELETE`);
-    if (plotId && userProfile && deleteInput){
-      userProfile.style.display = 'none';
-      deleteInput.style.display = 'none';
-      plotId.style.display = 'none';
-    }
-  } 
+  
+  function editPlot(plotId) {
+      const plotItem = document.querySelector(`[data-plot-id="${plotId}"]`);
+      if (!plotItem) {
+          console.error('Plot item not found');
+          return;
+      }
+  
+      const plotData = {
+          plot_name: plotItem.querySelector('[data-field="plot_name"]').textContent.trim(),
+          area: plotItem.querySelector('[data-field="area"]').textContent.trim().replace(' acres', ''),
+          crop: plotItem.querySelector('[data-field="crop"]').textContent.trim()
+      };
+  
+      // Find the first available form
+      let emptyFormIndex = -1;
+      for(let i = 0; i < 5; i++) {
+          const form = document.querySelector(`.forms-${i+1}`);
+          if (form && (form.style.display === 'none' || form.querySelector(`[id$="-id"]`).value == plotId)) {
+              emptyFormIndex = i;
+              form.style.display = 'block';
+              break;
+          }
+      }
+  
+      if (emptyFormIndex === -1) {
+          alert('Maximum number of plots reached. Please delete some plots first.');
+          return;
+      }
+  
+      // Update the form fields
+      const formPrefix = `id_plot_set-${emptyFormIndex}`;
+      document.getElementById(`${formPrefix}-plot_name`).value = plotData.plot_name;
+      document.getElementById(`${formPrefix}-area`).value = plotData.area;
+      document.getElementById(`${formPrefix}-crop`).value = plotData.crop;
+      document.getElementById(`${formPrefix}-id`).value = plotId;
+  
+      // Hide the modal and scroll to the form
+      document.getElementById('plots-modal').style.display = 'none';
+      document.querySelector(`.forms-${emptyFormIndex+1}`).scrollIntoView({ behavior: 'smooth' });
+      
+      // Update form count if necessary
+      updateFormCount();
+  }
+  
+  function updateFormCount() {
+      const totalForms = document.getElementById('id_plot_set-TOTAL_FORMS');
+      const visibleForms = document.querySelectorAll('[class^="forms-"]:not([style*="display: none"])').length;
+      if (parseInt(totalForms.value) < visibleForms) {
+          totalForms.value = visibleForms;
+      }
+  }
+  
+  function deletePlot(plotId) {
+      if (confirm('Are you sure you want to delete this plot?')) {
+          fetch(`/delete-plot/${plotId}/`, {
+              method: 'POST',
+              headers: {
+                  'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+              }
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.status === 'success') {
+                  const plotElement = document.querySelector(`[data-plot-id="${plotId}"]`);
+                  if (plotElement) {
+                      plotElement.remove();
+                  }
+                  // Clear any form that might have been editing this plot
+                  clearPlotForm(plotId);
+              } else {
+                  alert('Error deleting plot');
+              }
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              alert('Error deleting plot');
+          });
+      }
+  }
+  
+  function clearPlotForm(plotId) {
+      for(let i = 0; i < 5; i++) {
+          const form = document.querySelector(`.forms-${i+1}`);
+          const idField = form?.querySelector(`#id_plot_set-${i}-id`);
+          if (idField && idField.value == plotId) {
+              form.style.display = 'none';
+              idField.value = '';
+              form.querySelector(`[id$="-plot_name"]`).value = '';
+              form.querySelector(`[id$="-area"]`).value = '';
+              form.querySelector(`[id$="-crop"]`).value = '';
+              break;
+          }
+      }
+  }
+  
+  // Initialize form display
+  document.addEventListener('DOMContentLoaded', function() {
+      // Hide all forms initially except those with existing data
+      for(let i = 0; i < 5; i++) {
+          const form = document.querySelector(`.forms-${i+1}`);
+          const idField = form?.querySelector(`#id_plot_set-${i}-id`);
+          if (form && (!idField || !idField.value)) {
+              form.style.display = 'none';
+          }
+      }
+  
+      // Hide system fields
+      for(let i = 0; i < 5; i++) {
+          const plotId = document.querySelector(`#id_plot_set-${i}-id`);
+          const userProfile = document.querySelector(`#id_plot_set-${i}-user_profile`);
+          const deleteInput = document.querySelector(`#id_plot_set-${i}-DELETE`);
+          if (plotId && userProfile && deleteInput) {
+              userProfile.style.display = 'none';
+              deleteInput.style.display = 'none';
+              plotId.style.display = 'none';
+          }
+      }
+  });
+  
   let count = 0;
-  function addImage(){
-    count += 1;
-    const form = document.querySelector(`.forms-${count}`);
-    if (form){
-      form.style.display = 'block';
-    }
+  function addImage() {
+      count += 1;
+      const form = document.querySelector(`.forms-${count}`);
+      if (form) {
+          form.style.display = 'block';
+          updateFormCount();
+      }
   }
-	const districtVal = document.getElementById('district');
-	const filePath = './W2AI/static/data.json';
-	const fs = require('fs'); // Ensure to require 'fs' correctly
-
-	fs.readFile(filePath, 'utf8', (err, data) => {
-  	if (err) {
-    console.error('Error reading file:', err);
-    return;
-  }
-  const jsonData = JSON.parse(data);
-});
-</script>
-{% endblock %}
+  </script>
+  {% endblock %}

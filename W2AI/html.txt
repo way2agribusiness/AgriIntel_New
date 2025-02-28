@@ -1,0 +1,252 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+    <title>Way2AgriIntel AI | NutriTracker Input Form</title>
+    <link href="{% static 'css/cropforms.css' %}" rel="stylesheet"/>
+    <style>
+        fieldset {
+            border: 2px solid #40724b;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+
+        legend {
+            font-weight: bold;
+            font-size: 1.3em;
+            color: #40724b;
+            padding: 5px 10px;
+            border-radius: 5px;
+            background-color: #eaf5ea;
+        }
+
+        .radio {
+            margin: 10px 0;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<br><br>
+<div class="form-div"> 
+    <p class="note">
+        Access to the online service will be available shortly after the launch of the <strong>"NutriTracker"</strong> module. 
+        Until then, our team will call you to offer an interim solution over the phone. 
+        Kindly complete and submit the form below.</p>
+    <p class="note"> 
+        NutriTracker ಮಾಡ್ಯೂಲ್ ಸ್ವಲ್ಪ ಸಮಯದ ನಂತರ ಆನ್‌ಲೈನ್ ಸೇವೆಗೆ ಲಭ್ಯವಿರುತ್ತದೆ. ಅಲ್ಲಿಯವರೆಗೆ, ನಮ್ಮ ತಂಡವು ಫೋನ್ ಮೂಲಕ ಮಧ್ಯಂತರ ಪರಿಹಾರವನ್ನು ನೀಡಲು ನಿಮಗೆ ಕರೆ ಮಾಡುತ್ತದೆ. ದಯವಿಟ್ಟು ಕೆಳಗಿನ ಫಾರ್ಮ್ ಪೂರ್ಣಗೊಳಿಸಿ ಮತ್ತು ಸಲ್ಲಿಸಿ.
+    </p>
+    <br>
+    <h4 class="form-heading">NutriTracker Input Form</h4><br>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <!-- Plot Selection -->
+        <label>Select which Plot you want to do Cultivation: <span class="required">*</span></label><br>
+        {% for plot in plots %}
+            <div class="radio">
+                <input type="radio" 
+                       id="id_plot_{{forloop.counter}}" 
+                       name="selected_plot" 
+                       value="{{plot.plot_name}}" 
+                       onchange="fillPlotData(event)"
+                       required>
+                <label for="id_plot_{{forloop.counter}}">{{plot.plot_name}}</label>
+            </div>
+        {% endfor %}
+        <br>
+
+        <!-- Plot Information -->
+        <fieldset>
+            <legend>Plot Information</legend>
+            <br>
+            <label for="plot_name">Plot Name:</label>
+            <input type="text" id="plot_name" name="plot_name" readonly required><br>
+
+            <label for="crop_grown">Crop Grown:</label>
+            <input type="text" id="crop_grown" name="crop_grown" readonly required><br>
+
+            <label for="land_area">Land Area (Acres):</label>
+            <input type="number" id="land_area" name="land_area" step="0.01" readonly required><br>
+
+            <label for="crop_density">Crop Density (No. of Plants/Acre):</label>
+            <input type="number" id="crop_density" name="crop_density" required><br>
+        </fieldset>
+
+        <!-- Soil Information -->
+        <fieldset>
+            <legend>Soil Information</legend>
+            <br>
+            <label for="soil_condition">Soil Condition:</label>
+            <input type="text" id="soil_condition" name="soil_condition" readonly required><br>
+
+            <label for="soil_health">Soil Health:</label>
+            <input type="text" id="soil_health" name="soil_health" readonly required><br>
+
+            <label for="soil_ph">Soil pH:</label>
+            <input type="text" id="soil_ph" name="soil_ph" readonly required><br>
+
+            <label for="water_source">Water Source:</label>
+            <input type="text" id="water_source" name="water_source" readonly required><br>
+
+            <label for="water_availability">Water Availability:</label>
+            <input type="text" id="water_availability" name="water_availability" readonly required><br>
+
+            <label for="soil_rich_nutrients">Soil Rich Nutrients:</label>
+            <input type="text" id="soil_rich_nutrients" name="soil_rich_nutrients" readonly><br>
+
+            <label for="soil_avg_nutrients">Soil Average Nutrients:</label>
+            <input type="text" id="soil_avg_nutrients" name="soil_avg_nutrients" readonly><br>
+
+            <label for="soil_poor_nutrients">Soil Poor Nutrients:</label>
+            <input type="text" id="soil_poor_nutrients" name="soil_poor_nutrients" readonly><br>
+        </fieldset>
+
+        <!-- Cultivation Information -->
+        <fieldset>
+            <legend>Cultivation Information</legend>
+            <br>
+            <label for="sowing_month">Select Sowing/Planting Month:</label>
+            <input type="text" id="sowing_month" name="sowing_month" required><br>
+
+            <label for="harvesting_month">Select Expected Harvesting Month:</label>
+            <input type="text" id="harvesting_month" name="harvesting_month" required><br>
+
+            <label for="irrigation_method">Select Irrigation Method Adopted:</label>
+            <input type="text" id="irrigation_method" name="irrigation_method" required><br>
+
+            <label for="nutrient_application_times">No. of Times Nutrients Applied (per Year):</label>
+            <input type="number" id="nutrient_application_times" name="nutrient_application_times" required><br>
+        </fieldset>
+
+        <!-- Soil Test Report Values -->
+        <fieldset>
+            <legend>Soil Test Report Values</legend>
+            <br>
+            <label for="nitrogen_value">Enter Nitrogen (N) Value:</label>
+            <input type="number" id="nitrogen_value" name="nitrogen_value" step="0.01" required><br>
+
+            <label for="potassium_value">Enter Potassium (P) Value:</label>
+            <input type="number" id="potassium_value" name="potassium_value" step="0.01" required><br>
+
+            <label for="phosphorous_value">Enter Phosphorous (K) Value:</label>
+            <input type="number" id="phosphorous_value" name="phosphorous_value" step="0.01" required><br>
+
+            <label for="secondary_nutrients_value">Enter Secondary Nutrients Value:</label>
+            <input type="number" id="secondary_nutrients_value" name="secondary_nutrients_value" step="0.01" required><br>
+
+            <label for="micronutrients_value">Enter Micronutrients Value:</label>
+            <input type="number" id="micronutrients_value" name="micronutrients_value" step="0.01" required><br>
+
+            <label for="organic_carbon_value">Enter Organic Carbon (C) Value:</label>
+            <input type="number" id="organic_carbon_value" name="organic_carbon_value" step="0.01" required><br>
+        </fieldset>
+
+        <!-- Fertilizer Purchase Details -->
+        <fieldset>
+            <legend>Fertilizer Purchase Details</legend>
+            <br>
+            <label for="crop_fertilizer_applied">Select Crop for which Fertilizer Applied:</label>
+            <input type="text" id="crop_fertilizer_applied" name="crop_fertilizer_applied" required><br>
+
+            <label for="crop_stage">Select Crop Stage at which Fertilizer Applied:</label>
+            <input type="text" id="crop_stage" name="crop_stage" required><br>
+
+            <label for="fertilizer_name">Enter Fertilizer Name:</label>
+            <input type="text" id="fertilizer_name" name="fertilizer_name" required><br>
+
+            <label for="nutrient_deficiency">Select for which nutrient deficiency Fertilizer Applied:</label>
+            <input type="text" id="nutrient_deficiency" name="nutrient_deficiency" required><br>
+
+            <label for="fertilizer_type">Select Which Type of Fertilizer Applied:</label>
+            <input type="text" id="fertilizer_type" name="fertilizer_type" required><br>
+
+            <label for="manufacturer_name">Enter Manufacturer Name:</label>
+            <input type="text" id="manufacturer_name" name="manufacturer_name" required><br>
+
+            <label for="fertilizer_quantity">Enter Quantity of Fertilizer Applied:</label>
+            <input type="number" id="fertilizer_quantity" name="fertilizer_quantity" step="0.01" required><br>
+
+            <label for="fertilizer_purchase_date">Select Date of Purchase:</label>
+            <input type="date" id="fertilizer_purchase_date" name="fertilizer_purchase_date" required><br>
+        </fieldset>
+
+        <button type="submit">Submit</button>
+    </form>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Plot data mapping
+    const plotData = {
+        {% for plot in plots %}
+            "{{plot.plot_name}}": {
+                "plot_name": "{{plot.plot_name}}",
+                "crop_grown": "{{plot.crop_grown}}",
+                "land_area": "{{plot.land_area}}",
+                "soil_condition": "{{plot.soil_condition}}",
+                "soil_health": "{{plot.soil_health}}",
+                "soil_ph": "{{plot.soil_ph}}",
+                "soil_rich_nutrients": "{{plot.soil_rich_nutrients}}",
+                "soil_avg_nutrients": "{{plot.soil_average_nutrients}}",
+                "soil_poor_nutrients": "{{plot.soil_poor_nutrients}}",
+                "water_source": "{{plot.water_source}}",
+                "water_availability": "{{plot.water_availability}}"
+            },
+        {% endfor %}
+    };
+
+    // Function to fill plot data when radio button is selected
+    window.fillPlotData = function(event) {
+        const plotName = event.target.value;
+        const data = plotData[plotName];
+
+        if (data) {
+            document.getElementById('plot_name').value = data.plot_name;
+            document.getElementById('crop_grown').value = data.crop_grown;
+            document.getElementById('land_area').value = data.land_area;
+            document.getElementById('soil_condition').value = data.soil_condition;
+            document.getElementById('soil_health').value = data.soil_health;
+            document.getElementById('soil_ph').value = data.soil_ph;
+            document.getElementById('soil_rich_nutrients').value = data.soil_rich_nutrients;
+            document.getElementById('soil_avg_nutrients').value = data.soil_avg_nutrients;
+            document.getElementById('soil_poor_nutrients').value = data.soil_poor_nutrients;
+            document.getElementById('water_source').value = data.water_source;
+            document.getElementById('water_availability').value = data.water_availability;
+        }
+    };
+
+    // Form validation
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const selectedPlot = document.querySelector('input[name="selected_plot"]:checked');
+            if (!selectedPlot) {
+                e.preventDefault();
+                alert('Please select a plot before submitting.');
+                return;
+            }
+
+            const requiredFields = form.querySelectorAll('[required]');
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value) {
+                    isValid = false;
+                    field.classList.add('error');
+                } else {
+                    field.classList.remove('error');
+                }
+            });
+
+            if (!isValid) {
+                e.preventDefault();
+                alert('Please fill in all required fields.');
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

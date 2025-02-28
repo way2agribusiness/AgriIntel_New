@@ -1,7 +1,6 @@
 from django.contrib.sitemaps import Sitemap
 import datetime
 from django.urls import reverse
-from .models import ATSContactInfo
 from django.utils.text import slugify
 
 class HomePageSitemap(Sitemap):
@@ -156,33 +155,6 @@ class AddedServicesPageSitemap(Sitemap):
     
     def lastmod(self,obj):
         return datetime.datetime.today()
-
-class AgritechMartPageSitemap(Sitemap):
-    changefreq = 'daily'
-    priority = 1.0
-    
-
-    def items(self):
-        return ['agritech-mart']
-
-    def location(self, item):
-        return reverse('W2AI:ats') 
-    
-    def lastmod(self,obj):
-        return datetime.datetime.today()
-
-class AgritechMartCountryCategoryPageSitemap(Sitemap):
-	changefreq = 'daily'
-	priority = 1.0
-
-	def items(self):
-		return ATSContactInfo.objects.all()
-
-	def location(self, obj):
-		return reverse('W2AI:ats-category-company', args=[obj.category.category_slug, slugify(obj.contact_company_name)]) 
-
-	def lastmod(self,obj):
-		return datetime.date.today()
 
 class RegisterPageSitemap(Sitemap):
     changefreq = 'daily'

@@ -3,9 +3,11 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
-from . models import Advisor,Plot, NewFarmerPurchaseHistory, AgMachineXUserInput,AgMachineSpecifications, CropIntelInput, Feedback, AddedServices, FundRequirement, ActualSales, QtyRequirement, DiseaseRecognition, SymptomsRecognitionInput, NTFertilizerPurchase, ATSSeller, ATSSellerProductImage, Contact, ServiceFeedback, CropIntelKnowledge
+from . models import Advisor,Plot,NutriTracker, AgriFBI, AgMachineXUserInput,AgMachineSpecifications, CropIntelInput, Feedback, AddedServices, FundRequirement, ActualSales, QtyRequirement, DiseaseRecognition, SymptomsRecognitionInput, Contact, ServiceFeedback, CropIntelKnowledge
 from django.core.exceptions import ValidationError
 from django.forms import inlineformset_factory,BaseInlineFormSet, RadioSelect
+from django.forms import formset_factory
+from .models import FBI, CropDetail
 
 class ContactForm(forms.ModelForm):
 	class Meta:
@@ -80,76 +82,91 @@ class CustomPasswordChangeForm(PasswordChangeForm):
 class AdvisorForm(forms.ModelForm):
     class Meta:
         model = Advisor
-        exclude = ['name','whatsapp_no','email']
+        exclude = ['user']  # Exclude the 'user' field as it's handled programmatically
         labels = {
-            'crop_area':'Land Area (in Acre)',
-            'crop':'Select Crop',
-            'available_of_str':mark_safe('<p>Have <strong>Soil Test Report ?<strong> <strong style="font-size:12px;">ನೀವು ಮಣ್ಣಿನ ಪರೀಕ್ಷೆ ವರದಿ ಹೊಂದಿದ್ದೀರಾ?</strong></p>'),
-            'ph_value':'pH Value n Soil Test Report',
-            'n_value':'N Value in Soil Test Report',
-            'p_value':'P Value in Soil Test Report',
-            'k_value':'K Value in Soil Test Report',
-            'crop_stage':'Crop Stage',
+            'full_name': 'Full Name',
+            'whatsapp_no': 'WhatsApp Number',
+            'email': 'Email Address',
+            'crop_area': 'Land Area (in Acres)',
+            'crop': 'Select Crop',
+            'ph_value': 'pH Value in Soil Test Report',
+            'n_value': 'N Value in Soil Test Report',
+            'p_value': 'P Value in Soil Test Report',
+            'k_value': 'K Value in Soil Test Report',
+            'crop_stage': 'Crop Stage',
+            'village': 'Village',
+            'taluk': 'Taluk',
+            'district': 'District',
+            'state': 'State',
+            'zip_code': 'Zip Code',
+            'land_area': 'Land Area',
+            'zone': 'Agricultural Zone',
+        }
+        widgets = {
+            'crop': forms.Select(attrs={'class': 'form-control'}),
+            'crop_stage': forms.Select(attrs={'class': 'form-control'}),
+            'ph_value': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1'}),
+            'n_value': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1'}),
+            'p_value': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1'}),
+            'k_value': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1'}),
+            'full_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'whatsapp_no': forms.TextInput(attrs={'class': 'form-control', 'maxlength': '10'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'village': forms.TextInput(attrs={'class': 'form-control'}),
+            'taluk': forms.TextInput(attrs={'class': 'form-control'}),
+            'district': forms.TextInput(attrs={'class': 'form-control'}),
+            'state': forms.TextInput(attrs={'class': 'form-control'}),
+            'zip_code': forms.TextInput(attrs={'class': 'form-control'}),
+            'land_area': forms.TextInput(attrs={'class': 'form-control'}),
+            'zone': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
-class NewFarmerPurchaseHistoryForm(forms.ModelForm):
-    plot = forms.ChoiceField(widget=forms.RadioSelect)
-    class Meta:
-        model= NewFarmerPurchaseHistory
-        fields = ['planting_month','harvesting_month','nutrients_freq','irrigation_method','other_irrigation',
-                  'crop_density','nitrogen','potassium','phosphorous','secondary_nutrients','micro_nutrients',
-                  'organic_carbon','plot','plot_name','crop_grown','land_area','soil_condition','soil_health','soil_ph',
-                  'soil_rich_nutrients','soil_average_nutrients','soil_poor_nutrients','water_source',
-                  'water_availability']
-        labels={
-            'crop_density':'Crop Density (No. of Plants/Acre)',
-            'planting_month':'Select Sowing/Planting Month',
-            'harvesting_month':'Select Expected Harvesting Month',
-            'nitrogen':'Enter Nitrogen (N) Value as per Soil Test Report',
-            'potassium':'Enter Potassium (P) Value as per Soil Test Report',
-            'phosphorous':'Enter Phosphorous (K) Value as per Soil Test Report',
-            'secondary_nutrients':'Enter Secondary Nutrients Value as per Soil Test Report',
-            'micro_nutrients':'Enter Micronutrients Value as per Soil Test Report',
-            'organic_carbon':'Enter Organic Carbon (C) Value as per Soil Test Report',
-            'irrigation_method':'Select Irrigation Method Adopted',
-            'other_irrigation':'Please specify Other Irrigation Method Adopted',
-            'nutrients_freq':'No. of Times Nutrients Applied (per Year)',
-        }
 
-    def __init__(self, *args, **kwargs):
-        request = kwargs.pop('request', None)
-        super().__init__(*args, **kwargs)
-        if request is not None:
-            profile = UserProfile.objects.get(user=request.user)
-            plots = Plot.objects.filter(user_profile=profile)
-            initial_values={}
-            for field in self.Meta.fields[14:]:
-                initial_values[field]=[getattr(plot, field) for plot in plots]
-            for field_name, initial in initial_values.items():
-                self.fields[field_name].initial = initial
-        
-NTFertilizerPurchaseFormSet = inlineformset_factory(
-    NewFarmerPurchaseHistory,
-    NTFertilizerPurchase,
-    fields = ['crop','crop_stage','fertilizer','nutrients','fertilizer_type','brand','quantity','purchase_date'],
-    extra = 10,
-    can_delete = True,
-    labels = {
-        'crop':'Select Crop for which Fertilizer Applied',
-        'crop_stage':'Select Crop Stage at which Fertilizer Applied',
-        'fertilizer':'Enter Fertilizer Name which has been applied',
-        'nutrients':'Select for which nutrient deficiency Fertilizer Applied',
-        'fertilizer_type':'Select Which Type of Fertilizer Applied',
-        'brand':'Enter the Manufacturer name of the Fertilizer Applied',
-        'quantity':'Enter Quantity of Fertilizer Applied',
-        'purchase_date':'Select Date of purchase of Fertilizer Applied',
-    }
-)
+# class AgMachineXUserInputForm(forms.ModelForm):
+# 	class Meta:
+# 		model = AgMachineXUserInput
+# 		fields = ['machinery_req','land_area','machine_available', 'labours_employed', 'irrigation_req','other_current_irrigation','water_source','water_availability', 'soil_condition','budget','vegetation_type']
+from django import forms
+from .models import AgMachineXUserInput
 
 class AgMachineXUserInputForm(forms.ModelForm):
-	class Meta:
-		model = AgMachineXUserInput
-		fields = ['machinery_req','land_area','machine_available', 'labours_employed', 'irrigation_req','other_current_irrigation','water_source','water_availability', 'soil_condition','budget','vegetation_type']
+    class Meta:
+        model = AgMachineXUserInput
+        fields = [
+            'full_name', 'whatsapp_no', 'email_id', 'village', 'taluk', 'district', 'state', 'zip_code',
+            'land_area', 'zone', 'soil_condition', 'labours_employed', 'crop', 'crop_stage',
+            'machinery_req', 'soil_type', 'machine_available', 'irrigation_type', 'water_source',
+            'water_availability', 'current_irrigation_method', 'other_current_irrigation',
+            'irrigation_req', 'budget', 'vegetation_type'
+        ]
+        
+        widgets = {
+            'full_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter full name'}),
+            'whatsapp_no': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter WhatsApp number'}),
+            'email_id': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Enter email'}),
+            'village': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter village'}),
+            'taluk': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter taluk'}),
+            'district': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter district'}),
+            'state': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter state'}),
+            'zip_code': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter ZIP code'}),
+            'land_area': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter land area'}),
+            'zone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter zone'}),
+            'soil_condition': forms.Select(attrs={'class': 'form-control'}),
+            'labours_employed': forms.NumberInput(attrs={'class': 'form-control'}),
+            'crop': forms.Select(attrs={'class': 'form-control'}),
+            'crop_stage': forms.Select(attrs={'class': 'form-control'}),
+            'machinery_req': forms.Select(attrs={'class': 'form-control'}),
+            'soil_type': forms.Select(attrs={'class': 'form-control'}),
+            'machine_available': forms.Select(attrs={'class': 'form-control'}),
+            'irrigation_type': forms.Select(attrs={'class': 'form-control'}),
+            'water_source': forms.TextInput(attrs={'class': 'form-control'}),
+            'water_availability': forms.TextInput(attrs={'class': 'form-control'}),
+            'current_irrigation_method': forms.Select(attrs={'class': 'form-control'}),
+            'other_current_irrigation': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'irrigation_req': forms.Select(attrs={'class': 'form-control'}),
+            'budget': forms.Select(attrs={'class': 'form-control'}),
+            'vegetation_type': forms.Select(attrs={'class': 'form-control'}),
+        }
 
 class AgMachinexFilterForm(forms.Form):
     def __init__(self, *args, **kwargs):
@@ -208,12 +225,12 @@ class CropIntelUserInputForm(forms.ModelForm):
             'crop_varieties': forms.Select(choices=[('', 'Select Crop Varieties')] + list(CropIntelInput.VARIETIES)),
             'no_of_plants': forms.NumberInput(attrs={'placeholder': 'Enter The Number Of Plants.'}),
             'spacing':forms.TextInput(attrs={'placeholder': 'Enter the Spacing eg:19*19.'}),            
-            'crop_stage': forms.Select(choices=[('', 'Select crop stage')] + list(CropIntelInput.stages)),
-            'land_preparation': forms.Select(choices=[('', 'Select if land preparation is needed')] + list(CropIntelInput.Land_Prepration)),
+            'crop_stage': forms.Select(choices=[('', 'Select crop stage')] + list(CropIntelInput.STAGES)),
+            'land_preparation': forms.Select(choices=[('', 'Select if land preparation is needed')] + list(CropIntelInput.LAND_PREPARATION)),
             'inter_crops': forms.Select(choices=[('', 'Select Intercrop you are planning')] + list(CropIntelInput.CROPS)),
             'crop_yield': forms.NumberInput(attrs={'placeholder': 'Enter the expected crop yield (quantity in kgs).'}),
-            'pests': forms.Select(choices=[('', 'Any Pests In Crop')] + list(CropIntelInput.Pests)),
-            'diseases': forms.Select(choices=[('', 'Any Diseases in crop')] + list(CropIntelInput.Diseases)),
+            'pests': forms.Select(choices=[('', 'Any Pests In Crop')] + list(CropIntelInput.PESTS)),
+            'diseases': forms.Select(choices=[('', 'Any Diseases in crop')] + list(CropIntelInput.DISEASES)),
             'planting_date': forms.DateInput(attrs={'placeholder': 'Select The Date When Planting Was Done.'}),
            
 	}
@@ -377,29 +394,6 @@ class CustomPlaceholderTextarea(forms.Textarea):
         super().__init__(*args, **kwargs)
         self.attrs['style'] = 'font-size: 13px;'
         
-class ATSSellerForm(forms.ModelForm):
-    class Meta:
-        model = ATSSeller
-        fields = '__all__'
-        widgets = {
-            'seller_name': CustomPlaceholderTextInput(attrs={'placeholder': 'Enter your Full Name'}),
-            'seller_company': CustomPlaceholderTextInput(attrs={'placeholder': "Enter Your 10-digit Whatsapp No."}),
-            'seller_email_id': CustomPlaceholderTextInput(attrs={'placeholder': "Enter your Email ID"}),
-            'seller_address': CustomPlaceholderTextarea(attrs={'placeholder': "Enter Your Address"}),
-            'seller_plan': CustomPlaceholderTextarea(attrs={'placeholder': "Brief about the product planning to sell" }),
-        }
-        labels = {
-            'seller_product_avail':'Products currently available or not in the market? (Tick if yes)',
-        }
-
-ATSSellerProductImageFormSet = inlineformset_factory(
-    ATSSeller,
-    ATSSellerProductImage,
-    fields=['seller_product_images'],
-    extra=10,
-    can_delete=True,
-)
-
 
 class CropIntelKnowledgeForm(forms.ModelForm):
 	class Meta:
@@ -412,3 +406,107 @@ class CropIntelKnowledgeForm(forms.ModelForm):
 		self.fields['propagation_method'].widget.attrs.update({'class': 'horizontal-multiselect'})
 		self.fields['soil_type'].widget.attrs.update({'class': 'horizontal-multiselect'})
 		self.fields['inter_crops'].widget.attrs.update({'class': 'horizontal-multiselect'})
+          
+
+class NutriTrackerForm(forms.Form):
+    # Your Information
+    name = forms.CharField(label="Your Name", max_length=100)
+    whatsapp_number = forms.CharField(label="WhatsApp Number", max_length=15)
+    district = forms.CharField(label="District", max_length=100)
+    taluk = forms.CharField(label="Taluk", max_length=100)
+    address = forms.CharField(label="Address", widget=forms.Textarea(attrs={'rows': 3}))
+    extent_of_land = forms.FloatField(label="Extent of Land (in Acres)")
+
+    # Plot Information
+    plot_name = forms.CharField(label="Plot Name", max_length=100)
+    crop_grown = forms.ChoiceField(label="Crop Grown", choices=NutriTracker.CROP_CHOICES)
+    land_area = forms.FloatField(label="Land Area (Acres)")
+    crop_density = forms.IntegerField(label="Crop Density (No. of Plants/Acre)")
+
+    # Soil Information
+    soil_condition = forms.ChoiceField(label="Soil Condition", choices=NutriTracker.SOIL_CONDITION_CHOICES)
+    soil_health = forms.ChoiceField(label="Soil Health", choices=NutriTracker.SOIL_HEALTH_CHOICES)
+    soil_ph = forms.FloatField(label="Soil pH")
+    water_source = forms.ChoiceField(label="Water Source", choices=NutriTracker.WATER_SOURCE_CHOICES)
+    water_availability = forms.ChoiceField(label="Water Availability", choices=NutriTracker.WATER_AVAILABILITY_CHOICES)
+    soil_rich_nutrients = forms.ChoiceField(label="Soil Rich Nutrients", choices=NutriTracker.NUTRIENT_CHOICES, required=False)
+    soil_avg_nutrients = forms.ChoiceField(label="Soil Average Nutrients", choices=NutriTracker.NUTRIENT_CHOICES, required=False)
+    soil_poor_nutrients = forms.ChoiceField(label="Soil Poor Nutrients", choices=NutriTracker.NUTRIENT_CHOICES, required=False)
+
+    # Cultivation Information
+    sowing_month = forms.ChoiceField(label="Select Sowing/Planting Month", choices=NutriTracker.MONTH_CHOICES)
+    harvesting_month = forms.ChoiceField(label="Select Expected Harvesting Month", choices=NutriTracker.MONTH_CHOICES)
+    irrigation_method = forms.ChoiceField(label="Select Irrigation Method Adopted", choices=NutriTracker.IRRIGATION_METHOD_CHOICES)
+    nutrient_application_times = forms.IntegerField(label="No. of Times Nutrients Applied (per Year)")
+
+    # Soil Test Report Values
+    nitrogen_value = forms.FloatField(label="Enter Nitrogen (N) Value")
+    potassium_value = forms.FloatField(label="Enter Potassium (P) Value")
+    phosphorous_value = forms.FloatField(label="Enter Phosphorous (K) Value")
+    secondary_nutrients_value = forms.FloatField(label="Enter Secondary Nutrients Value")
+    micronutrients_value = forms.FloatField(label="Enter Micronutrients Value")
+    organic_carbon_value = forms.FloatField(label="Enter Organic Carbon (C) Value")
+
+    # Fertilizer Purchase Details
+    crop_fertilizer_applied = forms.ChoiceField(label="Select Crop for which Fertilizer Applied", choices=NutriTracker.CROP_CHOICES)
+    crop_stage = forms.ChoiceField(label="Select Crop Stage at which Fertilizer Applied", choices=NutriTracker.CROP_STAGE_CHOICES)
+    fertilizer_name = forms.CharField(label="Enter Fertilizer Name", max_length=100)
+    nutrient_deficiency = forms.ChoiceField(label="Select for which nutrient deficiency Fertilizer Applied", choices=NutriTracker.NUTRIENT_CHOICES)
+    fertilizer_type = forms.ChoiceField(label="Select Which Type of Fertilizer Applied", choices=NutriTracker.FERTILIZER_TYPE_CHOICES)
+    manufacturer_name = forms.CharField(label="Enter Manufacturer Name", max_length=100)
+    fertilizer_quantity = forms.FloatField(label="Enter Quantity of Fertilizer Applied")
+    fertilizer_purchase_date = forms.DateField(
+        label="Select Date of Purchase",
+        widget=forms.DateInput(attrs={'type': 'date'})
+    )
+
+
+class NutriTrackerModelForm(forms.ModelForm):
+    class Meta:
+        model = NutriTracker
+        fields = '__all__'
+        widgets = {
+            'address': forms.Textarea(attrs={'rows': 3}),
+            'fertilizer_purchase_date': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+class FBIForm(forms.ModelForm):
+    class Meta:
+        model = FBI
+        fields = [
+            'name', 'whatsapp_number', 'district', 'taluk', 
+            'address', 'land_extent', 'user_type'
+        ]
+        labels = {
+            'name': 'Name',
+            'whatsapp_number': 'WhatsApp Number',
+            'district': 'District',
+            'taluk': 'Taluk',
+            'address': 'Address',
+            'land_extent': 'Extent of Land',
+            'user_type': 'User'
+        }
+        widgets = {
+            'address': forms.Textarea(attrs={'rows': 3, 'style': 'width: 100%;'}),
+            'user_type': forms.Select(choices=FBI.USER_CHOICES)
+        }
+
+class CropDetailForm(forms.ModelForm):
+    class Meta:
+        model = CropDetail
+        fields = ['crop_name', 'crop_quantity', 'crop_variety']
+        labels = {
+            'crop_name': 'Crop Name',
+            'crop_quantity': 'Quantity (Quintal)',
+            'crop_variety': 'Crop Variety Name'
+        }
+        widgets = {
+            'crop_name': forms.Select(choices=CropDetail.CROP_CHOICES)
+        }
+
+# Create a formset for handling multiple crop details
+CropDetailFormSet = formset_factory(
+    CropDetailForm,
+    extra=1,  # Start with one form
+    can_delete=True  # Allow deletion of forms
+)

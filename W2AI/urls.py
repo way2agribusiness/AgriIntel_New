@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib import admin 
 from django.urls import path, include
 from . import views 
 from django.contrib.auth.views import LogoutView
@@ -14,17 +15,12 @@ router.register(r'feedback',views.FeedbackViewSet, basename='feedback')
 router.register(r'custom-service',views.addedServiceViewSet, basename='custom-service')
 router.register(r'agmachinex-user-input',views.AgMachineXUserInputViewSet, basename='agmachinex-user-input')
 router.register(r'agmachinex-specifications',views.AgMachineSpecificationsView, basename='agmachinex-specifications')
-router.register(r'nutritracker-existing-purchase-info',views.ExistingUserPurchaseHistoryView, basename='nutritracker-existing-purchase-info')
 router.register(r'crop-intel-knowledge',views.CropIntelKnowledgeView, basename='crop-intel-knowledge')
 router.register(r'fbi-report',views.FBIReportsView, basename='fbi-report')
-router.register(r'ats-intro', views.ATSIntroViewSet, basename='atsintro')
-router.register(r'ats-info',views.ATSInfoViewSet, basename="atsinfo")
-router.register(r'ats-contact-info',views.ATSContactInfoViewSet, basename="atscontactinfo")
-router.register(r'ats-contact-product-info',views.ATSContactProductInfoViewSet, basename="atscontactproductinfo")
-router.register(r'ats-contact-product-images',views.ATSContactProductImagesViewSet, basename="atscontactproductimages")
 router.register(r'contact-us-messages',views.contactusViewSet, basename='contact-us')
 
 urlpatterns = [
+    path("admin/", admin.site.urls),
     path('api/',include(router.urls)),
     path('', views.HomeView,name="home"),
     path('about-us/', views.AboutView,name="aboutus"),
@@ -38,23 +34,27 @@ urlpatterns = [
     path('update-user-profile/', views.user_profile_view, name='update-user-profile'),
     path('change-password/',views.changePasswordView, name='change_password'),
     path('change-password/done/',views.password_change_done, name='password_change_done'),
+    path('delete-plot/<int:plot_id>/', views.delete_plot, name='delete_plot'),
+    path('submit-contact/', views.handle_contact_form, name='submit_contact'),
     path('nutri-tracker/', views.NutriTrackerView,name="nutritracker"),
-    path('nutri-tracker-input-form/', views.new_user_purchase_history,name='nutri-tracker-input-form'),
+    # path('nutri-tracker-input-form/', views.new_user_purchase_history,name='nutri-tracker-input-form'),
+    path('nutritracker_form/', views.new_user_purchase_history,name='nutritracker_form'),
     path('ag-machine-x/', views.AgMachineXView,name="agmachinex"),
     path('agmachinex-input-form/', views.agmachinex_user_input_view, name='agmachinex-input-form'),
     path('agmachinex-recommendation/<int:instance_id>/', views.agmachinex_recommendation_view, name='agmachinex-recommendation'),
     path('market-planner-fund-requirement/<str:user_type>/', views.fund_requirement, name="fund-requirement"),
 	path('external-links/',views.BacklinksView,name='external-links'),
+
+
     #CropIntel URLs
     path('crop-intel/', views.CropIntelView,name="cropintel"),
     path('crop-intel-user-input-Form/', views.crop_intel_feeding_form, name='crop-intel-form'),
     path('crop-intel-recommendation',views.crop_intel_recommendation, name='crop-intel-recommendation'),
-    
     path('agri-clinic/', views.AgriClinicView,name="agriclinic"),
     path('advisor_form/',views.advisor_view,name='advisor_form'),
     path('nutrient-recommended/<str:crop_name>/<int:id>/',views.amt_of_nutrient,name='nutrient-recommendation'),
 	path('agri-fbi/', views.FBIView,name="agri-fbi"),  
-    path('agri-fbi-crop-select/', views.fbi_crop_selection, name='fbi-crop-selection'),
+    path('agri-fbi-crop-select/', views.fbi_form, name='fbi-crop-selection'),
     path('agri-fbi-report-generation/<int:instance_id>/', views.fbi_report_generate, name='fbi-report-generation'),
     path('fund-requirement-enquiry',views.fund_requirement, name='fund-requirement'),
     path('qunatity-requirement-enquiry',views.qty_requirement, name='qty-requirement'),
@@ -71,9 +71,6 @@ urlpatterns = [
     path('user-feedback/',views.feedback_view, name='feedback'),
 	path('feedback-success/',views.feedback_success_view, name="feedback-success"),
     path('farm-management-solutions/',views.added_service_view, name='custom-service'),
-	path('agritech-mart/',views.ats_view, name="ats"),
-	path('agritech-mart/<slug:category_slug>/<slug:company_slug>/', views.ats_category_company, name="ats-category-company"),
-    path('agritech-mart-seller-enquiry-success/', views.seller_enquiry_success_view,name="atm-seller-success"),
 	path('enquiry-success-message/', views.form_submission_success_message_view, name='form-message')
 ]
 

@@ -2,7 +2,32 @@
 {% load static %}
 {% block head %}
     <title>Way2AgriIntel AI | AgMachineX Input Form</title>
-    <link href="{% static 'css/auth.css' %}" rel="stylesheet"/>
+    <link href="{% static 'css/register1.css' %}" rel="stylesheet"/>
+    <style>
+      /* Styling for fieldsets */
+      fieldset {
+          border: 2px solid #40724b;
+          border-radius: 8px;
+          padding: 15px;
+          margin-bottom: 20px;
+          background-color: #f9f9f9;
+      }
+      /* Styling for legends */
+      legend {
+          font-weight: bold;
+          font-size: 1.3em;
+          color: #40724b;
+          padding: 5px 10px;
+          border-radius: 5px;
+          background-color: #eaf5ea;
+      }
+      .errorlist {
+          color: #d9534f;
+          list-style-type: none;
+          padding-left: 0;
+          margin-top: 5px;
+      }
+  </style>
 {% endblock %}
 {% block header %}{% endblock %}
 {% block content %}
@@ -11,16 +36,17 @@
     <br>
     <p class="note">
       Access to the online service will be available shortly after the launch of the <strong>"AgMachineX"</strong> module. 
-      Until then, our team will call you to offer an interim solution over the phone. 
-      Kindly complete and submit the form below./ 
-      AgMachineX ಮಾಡ್ಯೂಲ್ ಸ್ವಲ್ಪ ಸಮಯದ ನಂತರ ಆನ್‌ಲೈನ್ ಸೇವೆಗೆ ಲಭ್ಯವಿರುತ್ತದೆ. ಅಲ್ಲಿಯವರೆಗೆ, ನಮ್ಮ ತಂಡವು ಫೋನ್ ಮೂಲಕ ಮಧ್ಯಂತರ ಪರಿಹಾರವನ್ನು ನೀಡಲು ನಿಮಗೆ ಕರೆ ಮಾಡುತ್ತದೆ. ದಯವಿಟ್ಟು ಕೆಳಗಿನ ಫಾರ್ಮ್ ಪೂರ್ಣಗೊಳಿಸಿ ಮತ್ತು ಸಲ್ಲಿಸಿ.
-    </p>
+      Until then, our team will call you to offer an interim solution over the phone.
+      Kindly complete and submit the form below.</p>
+    <p class="note">
+      AgMachineX ಮಾಡ್ಯೂಲ್ ಸ್ವಲ್ಪ ಸಮಯದ ನಂತರ ಆನ್‌ಲೈನ್ ಸೇವೆಗೆ ಲಭ್ಯವಿರುತ್ತದೆ. ಅಲ್ಲಿಯವರೆಗೆ, ನಮ್ಮ ತಂಡವು ಫೋನ್ ಮೂಲಕ ಮಧ್ಯಂತರ ಪರಿಹಾರವನ್ನು ನೀಡಲು ನಿಮಗೆ ಕರೆ ಮಾಡುತ್ತದೆ. ದಯವಿಟ್ಟು ಕೆಳಗಿನ ಫಾರ್ಮ್ ಪೂರ್ಣಗೊಳಿಸಿ ಮತ್ತು ಸಲ್ಲಿಸಿ.</p>
     <br>
     <h3 class="register">AgMachineX Input Form</h3> 
       <form method="post" class="for-crop1">
         <br>
         {% csrf_token %}
         <p>All <span class="valid">*</span> marked are required fields <span>(ಎಲ್ಲಾ <span class="valid">*</span> ಗೆರೆಗಳು ಅಗತ್ಯವಿದೆ)</span></p>
+
         <div id="repeat-form-div">
           {% for field in form %}
             <div class="inside-form">
@@ -102,8 +128,4 @@
 
   });
 </script>
-
-
-
-
 {% endblock %}

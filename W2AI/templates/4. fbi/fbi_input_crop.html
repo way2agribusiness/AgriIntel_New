@@ -1,33 +1,251 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block head %}
-    <title>Way2AgriIntel AI | Way2ABI Agri FBI</title>
-    <link rel="stylesheet" href="{% static 'css/nutricrops.css' %}"/>
+    <title>Way2AgriIntel AI | AgriFBI Input Form</title>
+    <link href="{% static 'css/cropforms.css' %}" rel="stylesheet"/>
+    <style>
+        /* Styling for fieldsets */
+        fieldset {
+            border: 2px solid #40724b;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+
+        /* Styling for legends */
+        legend {
+            font-weight: bold;
+            font-size: 1.3em;
+            color: #40724b;
+            padding: 5px 10px;
+            border-radius: 5px;
+            background-color: #eaf5ea;
+        }
+        
+        /* Styling for the crop table */
+        .crop-table {
+            width: 100%;
+            margin-bottom: 15px;
+            border-collapse: collapse;
+        }
+        
+        .crop-table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+        
+        .crop-table select, .crop-table input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        
+        .add-crop-btn {
+            background-color: #40724b;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+        
+        .add-crop-btn:hover {
+            background-color: #335d3c;
+        }
+
+        .delete-row {
+            text-align: right;
+            margin-top: 5px;
+            margin-bottom: 15px;
+        }
+
+        .delete-row label {
+            margin-left: 5px;
+            color: #d9534f;
+        }
+
+        .black-label {
+            color: #000000; /* Blue color */
+        }
+
+        .errorlist {
+            color: #d9534f;
+            list-style-type: none;
+            padding-left: 0;
+            margin-top: 5px;
+        }
+
+        .crop-form {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #ddd;
+        }
+    </style>
 {% endblock %}
-{% block header %}{% endblock %}
+
 {% block content %}
+<br><br>
+<div class="form-div"> 
     <p class="note">
-        Access to the online service will be available shortly after the launch of the <strong>"Agri FBI"</strong> module. 
+        Access to the online service will be available shortly after the launch of the <strong>"AgriFBI"</strong> module. 
         Until then, our team will call you to offer an interim solution over the phone. 
-        Kindly complete and submit the form below./ 
-        Agri FBI ಮಾಡ್ಯೂಲ್ ಸ್ವಲ್ಪ ಸಮಯದ ನಂತರ ಆನ್‌ಲೈನ್ ಸೇವೆಗೆ ಲಭ್ಯವಿರುತ್ತದೆ. ಅಲ್ಲಿಯವರೆಗೆ, ನಮ್ಮ ತಂಡವು ಫೋನ್ ಮೂಲಕ ಮಧ್ಯಂತರ ಪರಿಹಾರವನ್ನು ನೀಡಲು ನಿಮಗೆ ಕರೆ ಮಾಡುತ್ತದೆ. ದಯವಿಟ್ಟು ಕೆಳಗಿನ ಫಾರ್ಮ್ ಪೂರ್ಣಗೊಳಿಸಿ ಮತ್ತು ಸಲ್ಲಿಸಿ.
+        Kindly complete and submit the form below.</p>
+    <p class="note"> 
+        AgriFBI ಮಾಡ್ಯೂಲ್ ಸ್ವಲ್ಪ ಸಮಯದ ನಂತರ ಆನ್‌ಲೈನ್ ಸೇವೆಗೆ ಲಭ್ಯವಿರುತ್ತದೆ. ಅಲ್ಲಿಯವರೆಗೆ, ನಮ್ಮ ತಂಡವು ಫೋನ್ ಮೂಲಕ ಮಧ್ಯಂತರ ಪರಿಹಾರವನ್ನು ನೀಡಲು ನಿಮಗೆ ಕರೆ ಮಾಡುತ್ತದೆ. ದಯವಿಟ್ಟು ಕೆಳಗಿನ ಫಾರ್ಮ್ ಪೂರ್ಣಗೊಳಿಸಿ ಮತ್ತು ಸಲ್ಲಿಸಿ.
     </p>
     <br>
-	<h1 id="select-crop">Select Crop</h1>
-    <br>
-    <form method="POST" id="crop-form">
+<br><br>
+
+    <h4 class="form-heading">AgriFBI Input Form</h4><br>
+
+    <form method="post">
         {% csrf_token %}
-        <div  class="crops">
-            {% for crop in crops %}
-                <div class="selected-crops">
-                    <div>
-                        <img src="{{crop.crop_image.url}}" alt="{{crop.crop}}" loading="lazy">
-                        <p>{{crop.crop}}</p>
+        
+        <!-- Your Information -->
+        <fieldset>
+            <legend>Your Information</legend>
+            <br>
+            {{ fbi_form.non_field_errors }}
+            
+            <label for="{{ fbi_form.name.id_for_label }}">Name:</label>
+            {{ fbi_form.name }}
+            {{ fbi_form.name.errors }}
+            <br>
+            
+            <label for="{{ fbi_form.whatsapp_number.id_for_label }}">WhatsApp Number:</label>
+            {{ fbi_form.whatsapp_number }}
+            {{ fbi_form.whatsapp_number.errors }}
+            <br>
+            
+            <label for="{{ fbi_form.district.id_for_label }}">District:</label>
+            {{ fbi_form.district }}
+            {{ fbi_form.district.errors }}
+            <br>
+            
+            <label for="{{ fbi_form.taluk.id_for_label }}">Taluk:</label>
+            {{ fbi_form.taluk }}
+            {{ fbi_form.taluk.errors }}
+            <br>
+            
+            <label for="{{ fbi_form.address.id_for_label }}">Address:</label>
+            {{ fbi_form.address }}
+            {{ fbi_form.address.errors }}
+            <br>
+            
+            <label for="{{ fbi_form.land_extent.id_for_label }}">Extent of Land:</label>
+            {{ fbi_form.land_extent }}
+            {{ fbi_form.land_extent.errors }}
+            <br>
+        </fieldset>
+        <br>
+
+        <!-- Agri FBI Info -->
+        <fieldset>
+            <legend>Agri FBI Info</legend>
+            <br>
+            <label for="{{ fbi_form.user_type.id_for_label }}">User:</label>
+            {{ fbi_form.user_type }}
+            {{ fbi_form.user_type.errors }}
+            <br><br>
+            
+            <label>Crop Details:</label>
+            {{ crop_formset.management_form }}
+            
+            <div id="crop-formset">
+                {% for form in crop_formset %}
+                    <div class="crop-form">
+                        {{ form.non_field_errors }}
+                        <table class="crop-table">
+                            <tr>
+                                <td width="60%">
+                                    <label for="{{ form.crop_name.id_for_label }}"class="black-label">Crop Name:</label>
+                                    {{ form.crop_name }}
+                                    {{ form.crop_name.errors }}
+                                </td>
+                                <td width="40%">
+                                    <label for="{{ form.crop_quantity.id_for_label }}"class="black-label">Crop Quantity (in Quintal):</label>
+                                    {{ form.crop_quantity }}
+                                    {{ form.crop_quantity.errors }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <label for="{{ form.crop_variety.id_for_label }}" class="black-label">Crop Variety:</label>
+                                    {{ form.crop_variety }}
+                                    {{ form.crop_variety.errors }}
+                                </td>
+                            </tr>
+                        </table>
+                        {% if crop_formset.can_delete %}
+                            <div class="delete-row">
+                                {{ form.DELETE }}
+                                <label for="{{ form.DELETE.id_for_label }}">Delete</label>
+                            </div>
+                        {% endif %}
                     </div>
-                    <input type="checkbox" name="crops" value="{{crop.crop}}" id="{{crop.crop}}">
-                </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
+            
+            <button type="button" id="add-crop-btn" class="add-crop-btn">+ Add Crop</button>
+        </fieldset>
+
+        <div style="text-align: center; margin-top: 10px;">
+            <button type="submit">Submit</button>
         </div>
-        <button class="btn">Submit</button>
     </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const addButton = document.getElementById('add-crop-btn');
+        const formsetContainer = document.getElementById('crop-formset');
+        
+        if (addButton && formsetContainer) {
+            addButton.addEventListener('click', function() {
+                // Get the total form count from the management form
+                const totalFormsInput = document.getElementById('id_crops-TOTAL_FORMS');
+                const currentFormCount = parseInt(totalFormsInput.value);
+                
+                // Clone the first form (as a template)
+                const formTemplate = formsetContainer.querySelector('.crop-form').cloneNode(true);
+                
+                // Update the form index
+                updateElementIndices(formTemplate, 'crops-0-', `crops-${currentFormCount}-`);
+                
+                // Clear the input values
+                formTemplate.querySelectorAll('input, select').forEach(input => {
+                    if (input.type !== 'hidden' && input.name !== `crops-${currentFormCount}-DELETE`) {
+                        input.value = '';
+                    }
+                });
+                
+                // Append the new form
+                formsetContainer.appendChild(formTemplate);
+                
+                // Update the total form count
+                totalFormsInput.value = currentFormCount + 1;
+            });
+        }
+        
+        // Helper function to update the indices in the form
+        function updateElementIndices(element, oldPrefix, newPrefix) {
+            // Update the IDs and names
+            element.querySelectorAll('*').forEach(el => {
+                if (el.id && el.id.startsWith(oldPrefix)) {
+                    el.id = el.id.replace(oldPrefix, newPrefix);
+                }
+                if (el.name && el.name.startsWith(oldPrefix)) {
+                    el.name = el.name.replace(oldPrefix, newPrefix);
+                }
+                if (el.htmlFor && el.htmlFor.startsWith(oldPrefix)) {
+                    el.htmlFor = el.htmlFor.replace(oldPrefix, newPrefix);
+                }
+            });
+        }
+    });
+</script>
 {% endblock %}

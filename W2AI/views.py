@@ -3,16 +3,16 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import HttpResponseRedirect
 from rest_framework import status
-from .forms import CustomUserCreationForm, PlotFormSet, LoginForm, CustomPasswordChangeForm, AdvisorForm, NewFarmerPurchaseHistoryForm, ContactForm
-from .forms import  ATSSellerForm,ATSSellerProductImageFormSet, get_feedback_formset
+from .forms import CustomUserCreationForm, FBIForm, PlotFormSet, LoginForm, CustomPasswordChangeForm, AdvisorForm,  ContactForm
+from .forms import  get_feedback_formset
 from .forms import AgMachineXUserInputForm, UserProfileForm, CropIntelUserInputForm, FeedbackForm, AddedServiceForm
-from .forms import FundRequirementForm, ActualSalesForm, QtyRequirementForm, DiseaseRecognitionForm, SymptomRecognitionForm, AgMachinexFilterForm, NTFertilizerPurchaseFormSet
-from .models import SeoContent, ContactNumber,UserProfile, Plot,Brands, Credentials, Contact, Advisor, Crop, ProductPurchased
-from .models import NutriTracker, AgMachineSpecifications, AgMachineXUserInput, AgriFBI, FBIEnquiry, CurrentMonthReport
-from .models import LastMonthReport, SeasonalReport, CropIntelInput, Feedback, AddedServices, NewFarmerPurchaseHistory
+from .forms import FundRequirementForm, ActualSalesForm, QtyRequirementForm, DiseaseRecognitionForm, SymptomRecognitionForm, AgMachinexFilterForm
+from .models import SeoContent, ContactNumber,UserProfile, Plot,Brands, Credentials, Contact, Advisor, Crop
+from .models import NutriTracker, AgMachineSpecifications, AgMachineXUserInput,FBI, AgriFBI, FBIEnquiry, CurrentMonthReport
+from .models import LastMonthReport, SeasonalReport, CropIntelInput, Feedback, AddedServices
 from .models import CropIntelKnowledge, FundRequirement, MarketPlannerStrategy, QtyRequirement, DiseaseRecognition, SymptomsRecognitionInput
-from .models import SymptomRecognitionKnowledge, ACProductNPK, NutriTrackerSchedule, NotificationRecord, Highlights, NTFertilizerPurchase
-from .models import ATSInfo, ATSContactInfo, ATSIntro, ATSContactProductInfo,ATSSeller,ATSContactProductImages, ATSRoadmap,ServiceFeedback,IntroTextDescription
+from .models import SymptomRecognitionKnowledge, ACProductNPK,  Highlights
+from .models import ServiceFeedback,IntroTextDescription
 from django.http import HttpResponse
 from django.contrib.auth import login, authenticate, logout
 from django.urls import reverse
@@ -29,7 +29,7 @@ import pytz
 import os
 from django.conf import settings
 from .notifications import send_notification
-from .serializers import FeedbackSerializer, AddedServicesSerializer, ContactSerializer, AgMachineXUserInputSerializer,NewFarmerPurchaseHistorySerializer, AgMachineSpecificationsSerializer, ExistingFarmerPurchaseHistorySerializer, CropIntelKnowledgeSerializer, FBISerializer
+from .serializers import FeedbackSerializer, AddedServicesSerializer, ContactSerializer, AgMachineXUserInputSerializer, AgMachineSpecificationsSerializer, CropIntelKnowledgeSerializer, FBISerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -42,25 +42,24 @@ import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
 from scipy import stats
-#from .ml_utils import load_pretrained_model
-#from keras.losses import SparseCategoricalCrossentropy
-#import tensorflow as tf
-#from keras.optimizers import SGD
-#from keras.preprocessing.image import load_img, img_to_array
-#from keras.preprocessing import image_dataset_from_directory
+from .ml_utils import load_pretrained_model
+# from keras.losses import SparseCategoricalCrossentropy
+# import tensorflow as tf
+# from keras.optimizers import SGD
+# from keras.preprocessing.image import load_img, img_to_array
+# from keras.preprocessing import image_dataset_from_directory
 import requests
 from datetime import datetime, timedelta, date, timezone
 from django.http import JsonResponse
 from rest_framework import viewsets
-from .serializers import ATSSerializer, ATSContactSerializer, ATSIntroSerializer, ATSContactProductSerializer, ATSContactProductImagesSerializer
 import phonenumbers
-#import socket
-#from ip2geotools.databases.noncommercial import DbIpCity
-#from geopy.geocoders import Nominatim
+import socket
+from ip2geotools.databases.noncommercial import DbIpCity
+from geopy.geocoders import Nominatim
 from django import forms
 from django.db.models import Count, Avg
-from django.utils import timezone
 
+#----------------------- Below are the fucntion to fetch the IP, Location ------------------------------
 def getIP(request):
 	x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
 	if x_forwarded_for:
@@ -93,6 +92,9 @@ def get_location(request):
 		return JsonResponse({'success': True})
 	return JsonResponse({'success': False})
 
+#----------------------- Above are the fucntions to fetch the IP, Location ------------------------------
+
+#----------------------- Below are the fucntions for SEO and  Success From ------------------------------
 @login_required
 def form_submission_success_message_view(request):
 	return render(request,'form-success-message.html')
@@ -103,7 +105,9 @@ def BacklinksView(request):
 	unique_links = [list(set(sublist)) for sublist in links_list]
 	return render(request, 'external_link.html',{'links_list':unique_links})
 
-#General Views
+#----------------------- Above are the fucntions for SEO and  Success From ------------------------------
+
+#------------------------------------ Below is Home Page View -------------------------------------------
 def HomeView(request):
 	title=''
 	desc=''
@@ -150,6 +154,9 @@ def HomeView(request):
 	return render(request,'home.html', {'title':title,'desc':desc,'canonical':url, 'highlight':highlight,
 									 'feedbacks':feedbacks,'avg_rating':avg_rating,'total_review':total_reviews,'per5':percentage5,'per4':percentage4,'per3':percentage3,'per2':percentage2,'per1':percentage1})
 
+#------------------------------------ Above is Home Page View -------------------------------------------
+
+#------------------------------------- Below is About Us View -------------------------------------------
 def AboutView(request):
 	title=''
 	desc=''
@@ -165,6 +172,10 @@ def AboutView(request):
 	for key, group in groupby(c_images, key=lambda x: x.get_type_of_image_display()):
 		grouped_images.append({'type_of_image': key, 'images': list(group)})
 	return render(request,'aboutus.html',{'brands':brands,'grouped_images':grouped_images,'title':title,'desc':desc,'canonical':url})
+
+#------------------------------------- Above is About Us View -------------------------------------------
+
+#------------------------------------- Below is Feedback Form View in Field Intel -------------------------------------------
 
 def feedback_view(request):
 	url = request.build_absolute_uri(request.path)
@@ -207,6 +218,9 @@ class FeedbackViewSet(ModelViewSet):
 		feedback_form = FeedbackForm()
 		return render(request, '7. fieldintel/feedback-form.html', {'feedback_form': feedback_form})
 	
+#------------------------------------- Above is Feedback Form View in Field Intel -------------------------------------------
+
+#------------------------------------- Below is Farm Management Solution Form  -------------------------------------------
 def added_service_view(request):
 	url = request.build_absolute_uri(request.path)
 	service_form = AddedServiceForm()
@@ -245,6 +259,9 @@ class addedServiceViewSet(ModelViewSet):
 def feedback_success_view(request):
 	return render(request,'7. fieldintel/feedback_thank_you.html')
 
+#------------------------------------- Above is Farm Management Solution Form  -------------------------------------------
+
+#----------------------- Below is Contact and message form in main page ------------------------------
 def contact(request):
 	url = request.build_absolute_uri(request.path)
 	highlight = Highlights.objects.all()
@@ -292,6 +309,46 @@ def contact(request):
 class contactusViewSet(ModelViewSet):
 	queryset = Contact.objects.all()
 	serializer_class = ContactSerializer
+#----------------------- Above is Contact and message form in main page ------------------------------
+
+#----------------------- Below is Contact number entering in footer ------------------------------
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.core.validators import RegexValidator
+from .models import ContactNumber
+
+def handle_contact_form(request):
+    if request.method == 'POST':
+        phone_number = request.POST.get('number')
+
+        # Validate phone number (exactly 10 digits)
+        if phone_number and len(phone_number) == 10 and phone_number.isdigit():
+            # Get user IP
+            ip_address = getIP(request)  
+
+            # Fetch location data
+            location_data = get_ip_location(ip_address)
+            location_data = json.loads(location_data)  # Convert to JSON
+
+            # Extract city and region
+            city = location_data.get('city', '')  
+            region = location_data.get('region', '')
+
+            # Save to database
+            ContactNumber.objects.create(
+                phone_number=phone_number,
+                city=city,
+                region=region
+            )
+
+            messages.success(request, f"Thank you! We will contact you soon. Location: {city}, {region}")
+        else:
+            messages.error(request, "Please enter a valid 10-digit phone number.")
+
+        return redirect(request.META.get('HTTP_REFERER', '/'))
+
+    return redirect('/')
+#----------------------- Contact number entering in footer above ------------------------------
 
 def thankyou(request):
 	return render(request,'contactus_thankyou.html')
@@ -357,92 +414,115 @@ def logout_view(request):
 	url = reverse('W2AI:login_url')
 	return redirect(url)
 
-
-@login_required	
+@login_required
 def dashboardView(request):
-	user_data = UserProfile.objects.get(user=request.user)
-	latitude = request.session.get('latitude')
-	longitude = request.session.get('longitude')
-	city = request.session.get('city') #this will give district value and not city value
-	country = request.session.get('country')
-	region = request.session.get('region')
-	postal_code = request.session.get('postal_code')
-	if not latitude or not longitude or not city or not country or not region or not postal_code:
-		return render(request, '1. authentication/dashboard.html', {'error': 'Location not provided'})
-	weather_api_key = '6249320d11d4bc13fe46a32d29695afb'
-	units='metric'
-	weather_data = get_agromonitoring_weather(weather_api_key, latitude, longitude, units)
-	description = weather_data['weather'][0]['description']
-	icon = weather_data['weather'][0]['icon']
-	main = weather_data['weather'][0]['main']
-	temp = weather_data['main']['temp']
-	humid = weather_data['main']['humidity']
-	feels_like = weather_data['main']['feels_like']
-	csv_url = "https://res.cloudinary.com/dm71xhdxd/raw/upload/v1724061927/Static%20Images/FinalAlldistricts_wlqjel.csv"  # Replace with your Cloudinary URL
-	response = requests.get(csv_url)
-	content = response.content.decode('utf-8').splitlines()
-	csv_reader = csv.DictReader(content)
-	for row in csv_reader:
-		if row['district'] == request.session.get('city'):
-			temp = row['tempavg']
-			humid = row['humidityavg']
-			pressure = row['sealevelpressureavg']
-			wind = row['windspeedavg']
-			wind_deg = weather_data['wind']['deg']
-			cloud = row['cloudcoveravg']
-	sunrise = weather_data['sys']['sunrise']
-	sunset = weather_data['sys']['sunset']
-	day = date.today()
-	sunrise_datetime_utc = datetime.fromtimestamp(sunrise, tz=timezone.utc)
-	sunset_datetime_utc = datetime.fromtimestamp(sunset, tz=timezone.utc)
-	chennai_timezone = pytz.timezone('Asia/Kolkata')
-	sunrise_datetime_chennai = sunrise_datetime_utc.replace(tzinfo=pytz.utc).astimezone(chennai_timezone)
-	sunset_datetime_chennai = sunset_datetime_utc.replace(tzinfo=pytz.utc).astimezone(chennai_timezone)
-	sunrise_time_chennai = sunrise_datetime_chennai.strftime('%I:%M %p')
-	sunset_time_chennai = sunset_datetime_chennai.strftime('%I:%M %p')
-	user_data.state = region
-	if user_data.state != 'Karnataka':
-		user_data.city = city
-	else:
-		user_data.district = city
-	user_data.save()
-	plots = Plot.objects.filter(user_profile=user_data).first()
-	context={
-		'country':country,
-		'region': region,
-		'city':city,
-		'postal_code':postal_code,
-		'longitude':longitude,
-		'latitude':latitude,
-		'description': description,
-		'icon':icon,
-		'temp':temp,
-		'humid':humid,
-		'wind_deg':wind_deg,
-    	'wind':wind,
-		'cloud':cloud,
-		'sunrise':sunrise_time_chennai,
-		'sunset':sunset_time_chennai,
-		'day':day,
-		'main':main,
-		'feels_like':feels_like,
-		'pressure':pressure,
-		'user_data':user_data,
-    	'plots':plots,
-	}
-	return render(request,'1. authentication/dashboard.html',context)
+    user_data = UserProfile.objects.filter(user=request.user).first()
+    
+    if not user_data:
+        return render(request, '1. authentication/dashboard.html', 
+                      {'error': 'User profile not found. Please create a profile.'})
+
+    latitude = request.session.get('latitude')
+    longitude = request.session.get('longitude')
+    city = request.session.get('city')
+    country = request.session.get('country')
+    region = request.session.get('region')
+    postal_code = request.session.get('postal_code')
+
+    if not all([latitude, longitude, city, country, region, postal_code]):
+        return render(request, '1. authentication/dashboard.html', 
+                      {'error': 'Location not provided'})
+
+    weather_api_key = '6249320d11d4bc13fe46a32d29695afb'
+    units = 'metric'
+    weather_data = get_agromonitoring_weather(weather_api_key, latitude, longitude, units)
+
+    # Extract weather data safely
+    description = weather_data.get('weather', [{}])[0].get('description', 'N/A')
+    icon = weather_data.get('weather', [{}])[0].get('icon', 'N/A')
+    main = weather_data.get('weather', [{}])[0].get('main', 'N/A')
+    temp = weather_data.get('main', {}).get('temp', 0)
+    humid = weather_data.get('main', {}).get('humidity', 0)
+    feels_like = weather_data.get('main', {}).get('feels_like', 0)
+    wind_deg = weather_data.get('wind', {}).get('deg', 0)
+    wind = weather_data.get('wind', {}).get('speed', 0)
+    cloud = weather_data.get('clouds', {}).get('all', 0)
+
+    # Fetch weather data from CSV
+    csv_url = "https://res.cloudinary.com/dm71xhdxd/raw/upload/v1724061927/Static%20Images/FinalAlldistricts_wlqjel.csv"
+    response = requests.get(csv_url)
+    content = response.content.decode('utf-8').splitlines()
+    csv_reader = csv.DictReader(content)
+
+    for row in csv_reader:
+        if row['district'] == city:
+            temp = row.get('tempavg', temp)
+            humid = row.get('humidityavg', humid)
+            pressure = row.get('sealevelpressureavg', 'N/A')
+            wind = row.get('windspeedavg', wind)
+            cloud = row.get('cloudcoveravg', cloud)
+
+    # Convert sunrise and sunset times safely
+    sunrise = weather_data.get('sys', {}).get('sunrise')
+    sunset = weather_data.get('sys', {}).get('sunset')
+
+    sunrise_time_chennai = sunset_time_chennai = "N/A"
+    if sunrise and sunset:
+        sunrise_datetime_utc = datetime.fromtimestamp(sunrise, tz=timezone.utc)  # ✅ FIXED
+        sunset_datetime_utc = datetime.fromtimestamp(sunset, tz=timezone.utc)  # ✅ FIXED
+        chennai_timezone = pytz.timezone('Asia/Kolkata')
+
+        sunrise_time_chennai = sunrise_datetime_utc.astimezone(chennai_timezone).strftime('%I:%M %p')
+        sunset_time_chennai = sunset_datetime_utc.astimezone(chennai_timezone).strftime('%I:%M %p')
+
+    # Update user profile data
+    user_data.state = region
+    if user_data.state != 'Karnataka':
+        user_data.city = city
+    else:
+        user_data.district = city
+    user_data.save()
+
+    plots = Plot.objects.filter(user_profile=user_data).first()
+
+    context = {
+        'country': country,
+        'region': region,
+        'city': city,
+        'postal_code': postal_code,
+        'longitude': longitude,
+        'latitude': latitude,
+        'description': description,
+        'icon': icon,
+        'temp': temp,
+        'humid': humid,
+        'wind_deg': wind_deg,
+        'wind': wind,
+        'cloud': cloud,
+        'sunrise': sunrise_time_chennai,
+        'sunset': sunset_time_chennai,
+        'day': date.today(),
+        'main': main,
+        'feels_like': feels_like,
+        'pressure': pressure,
+        'user_data': user_data,
+        'plots': plots,
+    }
+
+    return render(request, '1. authentication/dashboard.html', context)
 
 @login_required
 def changePasswordView(request):
-	if request.method == 'POST':
-		form = CustomPasswordChangeForm(request.user, data=request.POST)
-		if form.is_valid():
-			user =  form.save()
-			update_session_auth_hash(request, user)
-			return redirect(reverse('W2AI:password-change-done'))
-	else:
-		form = CustomPasswordChangeForm(request.user)
-	return render(request, '1. authentication/change_password.html', {'form': form})
+    if request.method == 'POST':
+        form = CustomPasswordChangeForm(request.user, data=request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            return redirect(reverse('W2AI:password_change_done'))  # Fixed URL name
+    else:
+        form = CustomPasswordChangeForm(request.user)
+    
+    return render(request, '1. authentication/change_password.html', {'form': form})
 
 @login_required
 def password_change_done(request):
@@ -453,66 +533,79 @@ def load_json_data(file_path):
 		data=json.load(json_file)
 	return data
 
+
 @login_required
 def user_profile_view(request):
-	json_file_path = os.path.join(settings.BASE_DIR, 'W2AI/static/data.json')
-	data = load_json_data(json_file_path)
-	user_data = UserProfile.objects.get(user=request.user)
-	districts = data[0]['districts']
-	if request.method == 'POST':
-		form = UserProfileForm(data=request.POST, instance=request.user.profile if hasattr(request.user, 'profile') else None)
-		plot_formset = PlotFormSet(data=request.POST, instance=request.user.profile)
-		city = request.session.get('city')  # This will give the district value and not city value
-		region = request.session.get('region')
-		zip_code = request.session.get('postal_code')
+    json_file_path = os.path.join(settings.BASE_DIR, 'W2AI/static/data.json')
+    data = load_json_data(json_file_path)
+    user_data = UserProfile.objects.get(user=request.user)
+    districts = data[0]['districts']
+    
+    if request.method == 'POST':
+        form = UserProfileForm(data=request.POST, instance=request.user.profile if hasattr(request.user, 'profile') else None)
+        plot_formset = PlotFormSet(data=request.POST, instance=request.user.profile)
+        city = request.session.get('city')  # This will give the district value and not city value
+        region = request.session.get('region')
+        zip_code = request.session.get('postal_code')
 
-		if not city or not region or not zip_code:
-			return render(request, '1. authentication/dashboard.html', {'error': 'Location not provided'})
+        if not city or not region or not zip_code:
+            return render(request, '1. authentication/dashboard.html', {'error': 'Location not provided'})
 
-		if form.is_valid() and plot_formset.is_valid():
-			selected_village = form.cleaned_data['village']
-			selected_village = selected_village[0].upper()+selected_village[1:]
-			selected_taluk = form.cleaned_data['taluk']
-			selected_zone_district = form.cleaned_data['zone_district']
-			zone_list = {
-						'Plain-North Zone':['Bidar', 'Gulbarga(Kalaburgi)', 'Bijapur(Vijayapura)', 'Yadgir', 'Belgaum', 'Bagalkot', 'Raichur', 'Dharwad', 'Gadag', 'Koppala', 'Haveri','Bellary'],
-						'Plain-South Zone':['Chamarajanagar', 'Mysuru', 'Mandya', 'Hassan', 'Ramanagara', 'Bengaluru Rural', 'Kolar', 'Chikkaballapur', 'Tumkur', 'Chikmagalur(East)', 'Chitradurga', 'Davanagere', 'Anantapur', 'Chittoor(Andhra Pradesh)', 'Krishangiri(Tamil Nadu)'],
-						'Coastal Zone':['Dakshina Kannada(Mangalore)','Udupi','Uttara Kannada(West)','Kasargod(Kerala)'],
-						'Western (Malenadu) Zone':['Uttara Kannada(East)','Shimoga','Chikmagalur(West)','Coorg(Madikeri)(Kodagu)','Wayanad(Kerala)','Nilgiris(Tamil Nadu)']
-					}	
-			selected_zone = [zone for zone, location in zone_list.items() if selected_zone_district in location]
+        if form.is_valid() and plot_formset.is_valid():
+            selected_village = form.cleaned_data['village']
+            selected_village = selected_village[0].upper()+selected_village[1:]
+            selected_taluk = form.cleaned_data['taluk']
+            selected_zone_district = form.cleaned_data['zone_district']
+            zone_list = {
+                        'Plain-North Zone':['Bidar', 'Gulbarga(Kalaburgi)', 'Bijapur(Vijayapura)', 'Yadgir', 'Belgaum', 'Bagalkot', 'Raichur', 'Dharwad', 'Gadag', 'Koppala', 'Haveri','Bellary'],
+                        'Plain-South Zone':['Chamarajanagar', 'Mysuru', 'Mandya', 'Hassan', 'Ramanagara', 'Bengaluru Rural', 'Kolar', 'Chikkaballapur', 'Tumkur', 'Chikmagalur(East)', 'Chitradurga', 'Davanagere', 'Anantapur', 'Chittoor(Andhra Pradesh)', 'Krishangiri(Tamil Nadu)'],
+                        'Coastal Zone':['Dakshina Kannada(Mangalore)','Udupi','Uttara Kannada(West)','Kasargod(Kerala)'],
+                        'Western (Malenadu) Zone':['Uttara Kannada(East)','Shimoga','Chikmagalur(West)','Coorg(Madikeri)(Kodagu)','Wayanad(Kerala)','Nilgiris(Tamil Nadu)']
+                    }    
+            selected_zone = [zone for zone, location in zone_list.items() if selected_zone_district in location]
 
-			replaced_zone = str(selected_zone).replace(']','').replace('[','').replace("'",'')
-			filtered_data = {}
-			for district in districts:
-				for subdistrict in district['subDistricts']:
-					if subdistrict['subDistrict'] == selected_taluk:
-						filtered_data[subdistrict['subDistrict']] = subdistrict['villages']
-			if selected_village not in filtered_data[selected_taluk]:
-				message = "Enter Accurate Village name for the selected Taluk"
-				return render(request, '1. authentication/complete_profile.html',{'form':form,'plot_formset': plot_formset, 'message':message})
+            replaced_zone = str(selected_zone).replace(']','').replace('[','').replace("'",'')
+            filtered_data = {}
+            for district in districts:
+                for subdistrict in district['subDistricts']:
+                    if subdistrict['subDistrict'] == selected_taluk:
+                        filtered_data[subdistrict['subDistrict']] = subdistrict['villages']
+            if selected_village not in filtered_data[selected_taluk]:
+                message = "Enter Accurate Village name for the selected Taluk"
+                return render(request, '1. authentication/complete_profile.html',{'form':form,'plot_formset': plot_formset, 'message':message})
 
-			else:
-				user_profile, created = UserProfile.objects.update_or_create(
-					user=request.user,
-					defaults={
-						'taluk': selected_taluk,
-						'village':selected_village,
-						'district':city,
-						'state':region,
-						'zip_code':zip_code,
-						'zone_district':selected_zone_district,
-						'zone':replaced_zone
-					}
-				)
+            else:
+                user_profile, created = UserProfile.objects.update_or_create(
+                    user=request.user,
+                    defaults={
+                        'taluk': selected_taluk,
+                        'village':selected_village,
+                        'district':city,
+                        'state':region,
+                        'zip_code':zip_code,
+                        'zone_district':selected_zone_district,
+                        'zone':replaced_zone
+                    }
+                )
 
-				plot_formset.instance = user_profile
-				plot_formset.save()
-				return redirect(reverse('W2AI:dashboard'))
-	else:
-		form = UserProfileForm()
-		plot_formset = PlotFormSet()
-	return render(request, '1. authentication/complete_profile.html',{'form':form,'plot_formset': plot_formset})
+                plot_formset.instance = user_profile
+                plot_formset.save()
+                return redirect(reverse('W2AI:dashboard'))
+    else:
+        form = UserProfileForm()
+        plot_formset = PlotFormSet()
+    return render(request, '1. authentication/complete_profile.html',{'form':form,'plot_formset': plot_formset, 'user_data': user_data})
+
+@login_required
+def delete_plot(request, plot_id):
+    if request.method == 'POST':  # Change to check for POST method
+        plot = get_object_or_404(Plot, id=plot_id, user_profile__user=request.user)
+        plot.delete()
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error'}, status=405)
+
+
+#------------------------------- Below is Crop Intel Form Views --------------------------------------------------
 
 #CropIntel Views
 def CropIntelView(request):
@@ -527,98 +620,349 @@ def CropIntelView(request):
 	plot_data = [plot.user_profile.user.username for plot in Plot.objects.all()]
 	return render(request,'2. cropintel/cropintel.html',{'title':title,'desc':desc,'canonical':url,'plot_data':plot_data})
 
-@login_required
+
+import logging
+logger = logging.getLogger(__name__)
+
+# @login_required
+# def crop_intel_feeding_form(request):
+#     user_profile = get_object_or_404(UserProfile, user=request.user)
+#     plots = Plot.objects.filter(user_profile=user_profile)
+    
+#     # Initialize weather variables with default values
+#     weather_data = {
+#         'temp': None,
+#         'humid': None,
+#         'pressure': None,
+#         'wind': None,
+#         'wind_deg': None,
+#         'cloud': None,
+#         'description': None
+#     }
+    
+#     # Get location data from session
+#     location_data = {
+#         'latitude': request.session.get('latitude'),
+#         'longitude': request.session.get('longitude'),
+#         'city': request.session.get('city'),
+#         'country': request.session.get('country'),
+#         'region': request.session.get('region'),
+#         'postal_code': request.session.get('postal_code')
+#     }
+    
+#     # Get weather data
+#     weather_api_key = '44efc615f164e272266fd2cb3bd2ad3a'
+#     units = 'metric'
+#     api_weather_data = get_agromonitoring_weather(
+#         weather_api_key, 
+#         location_data['latitude'], 
+#         location_data['longitude'], 
+#         units
+#     )
+    
+#     # Get district data
+#     csv_url = "https://res.cloudinary.com/dm71xhdxd/raw/upload/v1724061927/Static%20Images/FinalAlldistricts_wlqjel.csv"
+#     try:
+#         response = requests.get(csv_url)
+#         response.raise_for_status()  # Raise an exception for bad status codes
+#         content = response.content.decode('utf-8').splitlines()
+#         csv_reader = csv.DictReader(content)
+        
+#         user_zone_district = user_profile.zone_district
+        
+#         # Find matching district and update weather data
+#         for row in csv_reader:
+#             if row['district'] == user_zone_district:
+#                 weather_data.update({
+#                     'description': api_weather_data['weather'][0]['description'],
+#                     'temp': row['tempavg'],
+#                     'humid': row['humidityavg'],
+#                     'pressure': row['sealevelpressureavg'],
+#                     'wind': row['windspeedavg'],
+#                     'wind_deg': api_weather_data['wind']['deg'],
+#                     'cloud': row['cloudcoveravg']
+#                 })
+#                 break
+        
+#         if weather_data['temp'] is None:
+#             raise ValueError(f"No matching district found for {user_zone_district}")
+            
+#     except (requests.RequestException, ValueError) as e:
+#         # Log the error and set default values
+#         logger.error(f"Error fetching district data: {str(e)}")
+#         weather_data.update({
+#             'description': 'Data unavailable',
+#             'temp': '0',
+#             'humid': '0',
+#             'pressure': '0',
+#             'wind': '0',
+#             'wind_deg': '0',
+#             'cloud': '0'
+#         })
+
+#     # Get options for form fields
+#     form_options = {
+#         'crop_grown_options': Plot.CROPS,
+#         'soil_condition_options': Plot.SOIL_CONDITION,
+#         'soil_health_options': Plot.SOIL_HEALTH,
+#         'soil_ph_options': Plot.pH,
+#         'soil_nutrients_options': Plot.SOIL_NUTRIENTS,
+#         'water_source_options': Plot.WATER_SOURCES,
+#         'water_avail_options': Plot.WATER_SUFFICIENCIES
+#     }
+
+#     if request.method == 'POST':
+#         form = CropIntelUserInputForm(data=request.POST)
+#         if form.is_valid():
+#             user_input_form = form.save(commit=False)
+            
+#             # Get plot information
+#             plot_input = request.POST.get('plot')
+#             plot_info = Plot.objects.filter(plot_name=plot_input).first()
+            
+#             # Update user input form with form data
+#             form_data = {
+#                 'plot_name': request.POST.get('plot_name'),
+#                 'crop_grown': request.POST.get('crop_grown'),
+#                 'land_area': request.POST.get('land_area'),
+#                 'soil_condition': request.POST.get('soil_condition'),
+#                 'soil_health': request.POST.get('soil_health'),
+#                 'soil_ph': request.POST.get('soil_ph'),
+#                 'soil_rich_nutrients': request.POST.get('soil_rich_nutrients'),
+#                 'soil_average_nutrients': request.POST.get('soil_avg_nutrients'),
+#                 'soil_poor_nutrients': request.POST.get('soil_poor_nutrients'),
+#                 'water_source': request.POST.get('water_source'),
+#                 'water_availability': request.POST.get('water_avail')
+#             }
+            
+#             # Update user input form and plot info
+#             for field, value in form_data.items():
+#                 setattr(user_input_form, field, value)
+#                 if plot_info:
+#                     setattr(plot_info, field, value)
+            
+#             # Set user details
+#             user_input_form.user_name = user_profile.name
+#             user_input_form.phone_no = user_profile.whatsapp_no
+            
+#             # Set weather data
+#             user_input_form.temperature = weather_data['temp']
+#             user_input_form.humidity = weather_data['humid']
+#             user_input_form.weather = weather_data['description']
+#             user_input_form.atmospheric_pressure = weather_data['pressure']
+#             user_input_form.cloud = weather_data['cloud']
+#             user_input_form.wind_condition = f"{weather_data['wind']} and direction {weather_data['wind_deg']}"
+#             user_input_form.location = user_profile.zone_district
+            
+#             # Save the form
+#             user_input_form.save()
+            
+#             # Get the saved instance
+#             instance = CropIntelInput.objects.get(id=user_input_form.id)
+            
+#             # Prepare notification
+#             subject = 'Crop Intel Service Enquiry'
+#             message = f'''Enquiry is <br>
+#                         <strong>Customer Name: </strong> {instance.user_name}<br>
+#                         <strong>Customer Phone Number: </strong> {instance.phone_no}<br>'''
+            
+#             return redirect(reverse('W2AI:form-message'))
+#     else:
+#         form = CropIntelUserInputForm()
+
+#     context = {
+#         'form': form,
+#         'user_profile': user_profile,
+#         'plots': plots,
+#         **form_options
+#     }
+    
+#     return render(request, '2. cropintel/cropintel_form.html', context)
+from .forms import CropIntelUserInputForm
+
+logger = logging.getLogger(__name__)
+
 def crop_intel_feeding_form(request):
-	user_profile = get_object_or_404(UserProfile, user=request.user)
-	plots = Plot.objects.filter(user_profile=user_profile)
-	latitude = request.session.get('latitude')
-	longitude = request.session.get('longitude')
-	city = request.session.get('city')
-	country = request.session.get('country')
-	region = request.session.get('region')
-	postal_code = request.session.get('postal_code')
-	weather_api_key = '44efc615f164e272266fd2cb3bd2ad3a'
-	units = 'metric'
-	date = '2024-01-01'
-	weather_data = get_agromonitoring_weather(weather_api_key, latitude, longitude, units)
-	csv_url = "https://res.cloudinary.com/dm71xhdxd/raw/upload/v1724061927/Static%20Images/FinalAlldistricts_wlqjel.csv"  # Replace with your Cloudinary URL
-	user_district = user_profile.district
-	user_zone_district=user_profile.zone_district
-	
-	response = requests.get(csv_url)
-	content = response.content.decode('utf-8').splitlines()
-	csv_reader = csv.DictReader(content)
-	for row in csv_reader:
-		if row['district'] == user_zone_district:
-			description = weather_data['weather'][0]['description']
-			#main = weather_data['weather'][0]['main']
-			temp = row['tempavg']
-			humid = row['humidityavg']
-			pressure = row['sealevelpressureavg']
-			wind = row['windspeedavg']
-			wind_deg = weather_data['wind']['deg']
-			cloud = row['cloudcoveravg']
-	crop_grown_options = Plot.CROPS
-	soil_condition_options = Plot.SOIL_CONDITION
-	soil_health_options = Plot.SOIL_HEALTH
-	soil_ph_options = Plot.pH
-	soil_nutrients_options = Plot.SOIL_NUTRIENTS
-	water_source_options = Plot.WATER_SOURCES
-	water_avail_options = Plot.WATER_SUFFICIENCIES
-	if request.method == 'POST':
-		form = CropIntelUserInputForm(data=request.POST)
-		if form.is_valid():
-			user_input_form = form.save(commit=False)
-			land_type_selected = form.cleaned_data['land_type']
-			
-			plot_input = request.POST.get('plot')
-			plot_info = Plot.objects.filter(plot_name=plot_input)
-			plot_info.user_profile = user_profile
-			user_input_form.plot_name = request.POST.get('plot_name')
-			plot_info.plot_name = request.POST.get('plot_name')
-			user_input_form.crop_grown = request.POST.get('crop_grown')
-			plot_info.crop_grown = request.POST.get('crop_grown')
-			user_input_form.land_area = request.POST.get('land_area')
-			plot_info.land_area = request.POST.get('land_area')
-			user_input_form.soil_condition = request.POST.get('soil_condition')
-			plot_info.soil_condition = request.POST.get('soil_condition')
-			user_input_form.soil_health = request.POST.get('soil_health')
-			plot_info.soil_health = request.POST.get('soil_health')
-			user_input_form.soil_ph = request.POST.get('soil_ph')
-			plot_info.soil_ph = request.POST.get('soil_ph')
-			user_input_form.soil_rich_nutrients = request.POST.get('soil_rich_nutrients')
-			plot_info.soil_rich_nutrients = request.POST.get('soil_rich_nutrients')
-			user_input_form.soil_average_nutrients = request.POST.get('soil_avg_nutrients')
-			plot_info.soil_average_nutrients = request.POST.get('soil_avg_nutrients')
-			user_input_form.soil_poor_nutrients = request.POST.get('soil_poor_nutrients')
-			plot_info.soil_poor_nutrients = request.POST.get('soil_poor_nutrients')
-			user_input_form.water_source = request.POST.get('water_source')
-			plot_info.water_source = request.POST.get('water_source')
-			user_input_form.water_availability = request.POST.get('water_avail')
-			
-			plot_info.water_availability = request.POST.get('water_avail')
-			user_input_form.user_name = user_profile.name
-			user_input_form.phone_no =user_profile.whatsapp_no
-			user_input_form.temperature = temp
-			user_input_form.humidity = humid
-			user_input_form.weather = description
-			user_input_form.atmospheric_pressure = pressure 
-			user_input_form.cloud = cloud
-			user_input_form.wind_condition = f'{wind} and direction {wind_deg}'
-			user_input_form.location = user_profile.zone_district
-			user_input_form.save()
-			instance = CropIntelInput.objects.get(id=user_input_form.id)
-			#plot_info.save()
-			subject = 'Crop Intel Service Enquiry'
-			message = f'''Enquiry is <br>
-						<strong>Customer Name: </strong> {instance.user_name}<br>
-						<strong>Customer Phone Number: </strong> {instance.phone_no}<br>'''
-			#send_notification(subject, message, ['dr.prasannad@way2agribusiness.com'])
-			return redirect(reverse('W2AI:form-message'))
-			#return redirect(reverse('W2AI:crop-intel-recommendation'))
-	else:
-		form = CropIntelUserInputForm()
-	return render(request,'2. cropintel/cropintel_form.html',{'form':form,'user_profile':user_profile,'plots':plots,'crop_grown_options':crop_grown_options,'soil_condition_options':soil_condition_options,'soil_health_options':soil_health_options,'soil_ph_options':soil_ph_options,'soil_nutrients_options':soil_nutrients_options,'water_source_options':water_source_options,'water_avail_options':water_avail_options})
+    user = request.user
+    user_profile = None
+    plots = None
+
+    if user.is_authenticated:
+        user_profile = get_object_or_404(UserProfile, user=user)
+        plots = Plot.objects.filter(user_profile=user_profile)
+
+    # Default weather data
+    weather_data = {
+        'temp': None,
+        'humid': None,
+        'pressure': None,
+        'wind': None,
+        'wind_deg': None,
+        'cloud': None,
+        'description': None
+    }
+
+    # Get location data from session
+    location_data = {
+        'latitude': request.session.get('latitude'),
+        'longitude': request.session.get('longitude'),
+        'city': request.session.get('city'),
+        'country': request.session.get('country'),
+        'region': request.session.get('region'),
+        'postal_code': request.session.get('postal_code')
+    }
+
+    # Get weather data
+    weather_api_key = '44efc615f164e272266fd2cb3bd2ad3a'
+    units = 'metric'
+    api_weather_data = None
+    
+    if location_data['latitude'] and location_data['longitude']:
+        try:
+            api_weather_data = get_agromonitoring_weather(
+                weather_api_key, 
+                location_data['latitude'], 
+                location_data['longitude'], 
+                units
+            )
+        except Exception as e:
+            logger.error(f"Error fetching weather data: {str(e)}")
+
+    # Get district data
+    csv_url = "https://res.cloudinary.com/dm71xhdxd/raw/upload/v1724061927/Static%20Images/FinalAlldistricts_wlqjel.csv"
+    try:
+        response = requests.get(csv_url)
+        response.raise_for_status()
+        content = response.content.decode('utf-8').splitlines()
+        csv_reader = csv.DictReader(content)
+
+        user_zone_district = user_profile.zone_district if user.is_authenticated and user_profile else None
+
+        for row in csv_reader:
+            if row['district'] == user_zone_district:
+                weather_data.update({
+                    'description': api_weather_data['weather'][0]['description'] if api_weather_data else 'Data unavailable',
+                    'temp': row['tempavg'],
+                    'humid': row['humidityavg'],
+                    'pressure': row['sealevelpressureavg'],
+                    'wind': row['windspeedavg'],
+                    'wind_deg': api_weather_data['wind']['deg'] if api_weather_data else '0',
+                    'cloud': row['cloudcoveravg']
+                })
+                break
+
+        if weather_data['temp'] is None:
+            weather_data.update({
+                'description': 'Data unavailable',
+                'temp': '0',
+                'humid': '0',
+                'pressure': '0',
+                'wind': '0',
+                'wind_deg': '0',
+                'cloud': '0'
+            })
+
+    except (requests.RequestException, ValueError) as e:
+        logger.error(f"Error fetching district data: {str(e)}")
+        weather_data.update({
+            'description': 'Data unavailable',
+            'temp': '0',
+            'humid': '0',
+            'pressure': '0',
+            'wind': '0',
+            'wind_deg': '0',
+            'cloud': '0'
+        })
+
+    # Get options for form fields from Plot model
+    form_options = {
+        'crop_grown_options': Plot.CROPS,
+        'soil_condition_options': Plot.SOIL_CONDITION,
+        'soil_health_options': Plot.SOIL_HEALTH,
+        'soil_ph_options': Plot.pH,
+        'soil_nutrients_options': Plot.SOIL_NUTRIENTS,
+        'water_source_options': Plot.WATER_SOURCES,
+        'water_avail_options': Plot.WATER_SUFFICIENCIES
+    }
+
+    if request.method == 'POST':
+        form = CropIntelUserInputForm(data=request.POST)
+        if form.is_valid():
+            user_input_form = form.save(commit=False)
+
+            # Get plot information if user is authenticated
+            if user.is_authenticated:
+                plot_input = request.POST.get('selected_plot')
+                plot_info = Plot.objects.filter(plot_name=plot_input, user_profile=user_profile).first()
+            else:
+                plot_info = None
+
+            # Update user input form with form data
+            form_data = {
+                'plot_name': request.POST.get('plot_name'),
+                'crop_grown': request.POST.get('crop_grown'),
+                'land_area': request.POST.get('land_area'),
+                'soil_condition': request.POST.get('soil_condition'),
+                'soil_health': request.POST.get('soil_health'),
+                'soil_ph': request.POST.get('soil_ph'),
+                'soil_rich_nutrients': request.POST.get('soil_rich_nutrients'),
+                'soil_average_nutrients': request.POST.get('soil_avg_nutrients'),
+                'soil_poor_nutrients': request.POST.get('soil_poor_nutrients'),
+                'water_source': request.POST.get('water_source'),
+                'water_availability': request.POST.get('water_avail')
+            }
+
+            for field, value in form_data.items():
+                setattr(user_input_form, field, value)
+                if plot_info:
+                    setattr(plot_info, field, value)
+
+            # Handle user details
+            if user.is_authenticated:
+                user_input_form.user_name = user_profile.name
+                user_input_form.phone_no = user_profile.whatsapp_no
+                user_input_form.district = user_profile.zone_district
+                user_input_form.location = user_profile.zone_district
+            else:
+                user_input_form.user_name = request.POST.get('user_name')
+                user_input_form.phone_no = request.POST.get('phone_no')
+                user_input_form.district = request.POST.get('district')
+                user_input_form.taluk = request.POST.get('taluk')
+                user_input_form.address = request.POST.get('address')
+                user_input_form.location = request.POST.get('district')
+
+            # Set weather data
+            user_input_form.temperature = weather_data['temp']
+            user_input_form.humidity = weather_data['humid']
+            user_input_form.weather = weather_data['description']
+            user_input_form.atmospheric_pressure = weather_data['pressure']
+            user_input_form.cloud = weather_data['cloud']
+            user_input_form.wind_condition = f"{weather_data['wind']} and direction {weather_data['wind_deg']}"
+
+            # Save the form
+            user_input_form.save()
+
+            # Update plot if needed
+            if plot_info:
+                plot_info.save()
+
+            return redirect(reverse('W2AI:form-message'))
+        else:
+            # Handle form errors
+            logger.error(f"Form errors: {form.errors}")
+    else:
+        form = CropIntelUserInputForm()
+
+    context = {
+        'form': form,
+        'user_profile': user_profile,
+        'plots': plots,
+        'is_authenticated': user.is_authenticated,
+        **form_options
+    }
+
+    return render(request, '2. cropintel/cropintel_form.html', context)
+#------------------------------- Above is Crop Intel Form Views --------------------------------------------------
 
 @login_required
 def crop_intel_recommendation(request):
@@ -656,36 +1000,68 @@ def AgMachineXView(request):
 	url = request.build_absolute_uri(request.path)
 	return render(request,'3. agmachinex/machinexai.html', {'title':title,'desc':desc,'canonical':url})
 
-@login_required
+# @login_required
+# def agmachinex_user_input_view(request):
+# 	if request.method == 'POST':
+# 		form = AgMachineXUserInputForm(data=request.POST)
+# 		if form.is_valid():
+# 			user_input_form = form.save(commit=False)
+# 			profile = UserProfile.objects.get(user=request.user)
+# 			user_input_form.full_name = profile.name
+# 			user_input_form.whatsapp_no = profile.whatsapp_no
+# 			user_input_form.email_id = request.user.email if request.user.email else None
+# 			user_input_form.state = profile.state
+# 			user_input_form.district = profile.district if profile.district else None
+# 			user_input_form.taluk = profile.taluk if profile.taluk else None
+# 			user_input_form.village = profile.village if profile.village else None
+# 			user_input_form.zip_code = profile.zip_code if profile.zip_code else None
+# 			user_input_form.zone = profile.zone if profile.zone else None
+# 			user_input_form.save()
+# 			instance = AgMachineXUserInput.objects.get(id=user_input_form.id)
+# 			instance_id = instance.id
+# 			#url = reverse('W2AI:agmachinex-recommendation', args=[instance_id])
+# 			#return redirect(url)
+# 			# subject = 'AgMachineX Service Enquiry'
+# 			# message = f'''Enquiry is <br>
+# 			# 			<strong>Customer Name: </strong> {instance.full_name}<br>
+# 			# 			<strong>Customer Phone Number: </strong> {instance.whatsapp_no}<br>'''
+# 			# send_notification(subject, message, ['dr.prasannad@way2agribusiness.com'])
+# 			return redirect(reverse('W2AI:form-message'))
+# 	else:
+# 		form = AgMachineXUserInputForm()
+# 	return render(request,'3. agmachinex/agmachinex_user_input.html',{'form':form})
+
+from django.contrib.auth.models import AnonymousUser
 def agmachinex_user_input_view(request):
-	if request.method == 'POST':
-		form = AgMachineXUserInputForm(data=request.POST)
-		if form.is_valid():
-			user_input_form = form.save(commit=False)
-			profile = UserProfile.objects.get(user=request.user)
-			user_input_form.full_name = profile.name
-			user_input_form.whatsapp_no = profile.whatsapp_no
-			user_input_form.email_id = request.user.email if request.user.email else None
-			user_input_form.state = profile.state
-			user_input_form.district = profile.district if profile.district else None
-			user_input_form.taluk = profile.taluk if profile.taluk else None
-			user_input_form.village = profile.village if profile.village else None
-			user_input_form.zip_code = profile.zip_code if profile.zip_code else None
-			user_input_form.zone = profile.zone if profile.zone else None
-			user_input_form.save()
-			instance = AgMachineXUserInput.objects.get(id=user_input_form.id)
-			instance_id = instance.id
-			#url = reverse('W2AI:agmachinex-recommendation', args=[instance_id])
-			#return redirect(url)
-			# subject = 'AgMachineX Service Enquiry'
-			# message = f'''Enquiry is <br>
-			# 			<strong>Customer Name: </strong> {instance.full_name}<br>
-			# 			<strong>Customer Phone Number: </strong> {instance.whatsapp_no}<br>'''
-			# send_notification(subject, message, ['dr.prasannad@way2agribusiness.com'])
-			return redirect(reverse('W2AI:form-message'))
-	else:
-		form = AgMachineXUserInputForm()
-	return render(request,'3. agmachinex/agmachinex_user_input.html',{'form':form})
+    if request.method == 'POST':
+        form = AgMachineXUserInputForm(data=request.POST)
+        if form.is_valid():
+            user_input_form = form.save(commit=False)
+            
+            # If user is authenticated, auto-fill fields
+            if request.user.is_authenticated and not isinstance(request.user, AnonymousUser):
+                try:
+                    profile = UserProfile.objects.get(user=request.user)
+                    
+                    user_input_form.full_name = profile.name or form.cleaned_data.get("full_name")
+                    user_input_form.whatsapp_no = profile.whatsapp_no or form.cleaned_data.get("whatsapp_no")
+                    user_input_form.email_id = request.user.email if request.user.email else form.cleaned_data.get("email_id")
+                    user_input_form.state = profile.state or form.cleaned_data.get("state")
+                    user_input_form.district = profile.district or form.cleaned_data.get("district")
+                    user_input_form.taluk = profile.taluk or form.cleaned_data.get("taluk")
+                    user_input_form.village = profile.village or form.cleaned_data.get("village")
+                    user_input_form.zip_code = profile.zip_code or form.cleaned_data.get("zip_code")
+                    user_input_form.zone = profile.zone or form.cleaned_data.get("zone")
+                
+                except UserProfile.DoesNotExist:
+                    pass  # If no profile, allow manual entry
+            
+            # Save form (for both registered and anonymous users)
+            user_input_form.save()
+        return redirect(reverse('W2AI:form-message'))
+    else:
+        form = AgMachineXUserInputForm()
+    return render(request, '3. agmachinex/agmachinex_user_input.html', {'form': form})
 
 class AgMachineXUserInputViewSet(ModelViewSet):
 	queryset = AgMachineXUserInput.objects.all()
@@ -699,9 +1075,9 @@ class AgMachineSpecificationsView(ModelViewSet):
 	queryset = AgMachineSpecifications.objects.all()
 	serializer_class = AgMachineSpecificationsSerializer
 
-class ExistingUserPurchaseHistoryView(ModelViewSet):
-	queryset = NutriTracker.objects.all()
-	serializer_class = ExistingFarmerPurchaseHistorySerializer()
+# class ExistingUserPurchaseHistoryView(ModelViewSet):
+# 	queryset = NutriTracker.objects.all()
+# 	serializer_class = ExistingFarmerPurchaseHistorySerializer()
 
 class CropIntelKnowledgeView(ModelViewSet):
 	queryset = CropIntelKnowledge.objects.all()
@@ -754,7 +1130,7 @@ def agmachinex_recommendation_view(request, instance_id):
 			return render(request, '3. agmachinex/agmachines_recommendation.html', {'filtered_products': filtered_products,'filtered_products_crop': filtered_products_crop,'filtered_all': filtered_all, 'enquired_landarea':land_area, 'enquired_crop':crop, 'enquired_budget': budget, 'enquired_machine':machine_req,'form':form,'selected_brand':selected_brand,'selected_crop':selected_crop})
 	return render(request, '3. agmachinex/agmachines_recommendation.html',{'recommended_product':recommend_machine, 'enquired_landarea':land_area, 'enquired_crop':crop, 'enquired_budget': budget, 'enquired_machine':machine_req,'form':form})
 
-#FBI Views
+#---------------------------------------------- Below is AgriFBI views --------------------------------------------
 def FBIView(request):
 	title=''
 	desc=''
@@ -767,28 +1143,56 @@ def FBIView(request):
 	plot_data = [plot.user_profile.user.username for plot in Plot.objects.all()]
 	return render(request,'4. fbi/fbi.html', {'title':title,'desc':desc,'canonical':url,'plot_data':plot_data})
 
-@login_required
-def fbi_crop_selection(request):
-	crops = AgriFBI.objects.all()
-	if request.method == 'POST':
-		enquiry = FBIEnquiry()
-		profile = UserProfile.objects.get(user=request.user)
-		enquiry.phone_no = profile.whatsapp_no
-		enquiry.user_name = profile.name
-		selected_crops = request.POST.getlist('crops')
-		enquiry.crop = [selected_crop for selected_crop in selected_crops]
-		enquiry.save()
-		instance = FBIEnquiry.objects.get(id=enquiry.id)
-		instance_id = instance.id
-		url = reverse('W2AI:fbi-report-generation', args=[instance_id])
-		#return redirect(url)
-		subject = 'Agri FBI Service Enquiry'
-		message = f'''Enquiry is <br>
-					<strong>Customer Name: </strong> {instance.user_name}<br>
-					<strong>Customer Phone Number: </strong> {instance.phone_no}<br>'''
-		send_notification(subject, message, ['dr.prasannad@way2agribusiness.com'])
-		return redirect(reverse('W2AI:form-message'))
-	return render(request, '4. fbi/fbi_input_crop.html', {'crops':crops})
+from django.forms import formset_factory
+from .models import FBI, CropDetail
+from .forms import FBIForm, CropDetailFormSet
+def fbi_form(request):
+    if request.method == 'POST':
+        fbi_form = FBIForm(request.POST)
+        crop_formset = CropDetailFormSet(request.POST, prefix='crops')
+        
+        if fbi_form.is_valid() and crop_formset.is_valid():
+            fbi = fbi_form.save()
+            
+            for form in crop_formset:
+                if form.is_valid() and form.cleaned_data and not form.cleaned_data.get('DELETE', False):
+                    crop = form.save(commit=False)
+                    crop.fbi = fbi
+                    crop.save()
+            
+            # Add success message or redirect
+        return redirect(reverse('W2AI:form-message'))
+    else:
+        fbi_form = FBIForm()
+        crop_formset = CropDetailFormSet(prefix='crops')
+    
+    return render(request, '4. fbi/fbi_input_crop.html', {
+        'fbi_form': fbi_form,
+        'crop_formset': crop_formset
+    })
+
+# @login_required
+# def fbi_crop_selection(request):
+# 	crops = AgriFBI.objects.all()
+# 	if request.method == 'POST':
+# 		enquiry = FBIEnquiry()
+# 		profile = UserProfile.objects.get(user=request.user)
+# 		enquiry.phone_no = profile.whatsapp_no
+# 		enquiry.user_name = profile.name
+# 		selected_crops = request.POST.getlist('crops')
+# 		enquiry.crop = [selected_crop for selected_crop in selected_crops]
+# 		enquiry.save()
+# 		instance = FBIEnquiry.objects.get(id=enquiry.id)
+# 		instance_id = instance.id
+# 		url = reverse('W2AI:fbi-report-generation', args=[instance_id])
+# 		#return redirect(url)
+# 		subject = 'Agri FBI Service Enquiry'
+# 		message = f'''Enquiry is <br>
+# 					<strong>Customer Name: </strong> {instance.user_name}<br>
+# 					<strong>Customer Phone Number: </strong> {instance.phone_no}<br>'''
+# 		send_notification(subject, message, ['dr.prasannad@way2agribusiness.com'])
+# 		return redirect(reverse('W2AI:form-message'))
+# 	return render(request, '4. fbi/fbi_input_crop.html', {'crops':crops})
 
 @login_required
 def fbi_report_generate(request, instance_id):
@@ -1025,7 +1429,10 @@ def actual_sales(request):
 		form =  ActualSalesForm()
 	return render(request, '4. fbi/market-planner/actual_sales.html',{'form':form})
 
-#AgriClinic Views
+#---------------------------------------------- Above is AgriFBI views --------------------------------------------
+
+
+#-------------------------------------- Below Agri Clinic Related views ------------------------------------------
 def AgriClinicView(request):
 	title=''
 	desc=''
@@ -1038,32 +1445,42 @@ def AgriClinicView(request):
 	plot_data = [plot.user_profile.user.username for plot in Plot.objects.all()]
 	return render(request,'5. agriclinic/nutriai.html', {'title':title,'desc':desc,'canonical':url,'plot_data':plot_data})
 
-@login_required    
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
+
+from django.contrib.auth import get_user_model
+User = get_user_model()
+
 def advisor_view(request):
-	if request.method == 'POST':
-		form = AdvisorForm(data=request.POST)
-		if form.is_valid():
-			ac_form = form.save(commit=False)
-			profile = UserProfile.objects.get(user=request.user)
-			ac_form.name = profile.name
-			ac_form.whatsapp_no =  profile.whatsapp_no
-			ac_form.email = request.user.email if request.user.email else None
-			ac_form.save()
-			cropName = ac_form.crop.name
-			cropID = ac_form.id
-			instance = Advisor.objects.get(id=cropID)
-			subject = 'AgriClinic Service Enquiry'
-			message = f'''Enquiry is <br>
-						<strong>Customer Name: </strong> {instance.name}<br>
-						<strong>Customer Phone Number: </strong> {instance.whatsapp_no}<br>'''
-			send_notification(subject, message, ['dr.prasannad@way2agribusiness.com'])
-			return redirect(reverse('W2AI:form-message'))
-			#url = reverse('W2AI:nutrient-recommendation', args=[cropName, cropID])
-			#return redirect(url)
-	else:
-		form = AdvisorForm()
-	return render(request, '5. agriclinic/advisorform.html',{'form':form})
-		    
+    if request.method == 'POST':
+        form = AdvisorForm(data=request.POST)
+        if form.is_valid():
+            ac_form = form.save(commit=False)
+
+            if request.user.is_authenticated:
+                profile = UserProfile.objects.get(user=request.user)
+                ac_form.user = request.user
+                ac_form.full_name = profile.name
+                ac_form.whatsapp_no = profile.whatsapp_no
+                ac_form.email_id = request.user.email if request.user.email else None
+            else:
+                ac_form.user = None  # Anonymous user
+
+            ac_form.save()
+
+            subject = 'AgriClinic Service Enquiry'
+            message = f'''Enquiry is <br>
+                        <strong>Customer Name: </strong> {ac_form.full_name}<br>
+                        <strong>Customer Phone Number: </strong> {ac_form.whatsapp_no}<br>'''
+            
+            send_notification(subject, message, ['dr.prasannad@way2agribusiness.com'])
+
+        return redirect(reverse('W2AI:form-message'))
+    else:
+        form = AdvisorForm()
+    
+    return render(request, '5. agriclinic/advisorform.html', {'form': form})
+
 @login_required    
 def amt_of_nutrient(request,crop_name,id):
 	crop=Crop.objects.get(name=crop_name)
@@ -1145,117 +1562,6 @@ def amt_of_nutrient(request,crop_name,id):
 		recommended_k = {k:v for k, v in eq_k.items() if v[0] is not None and v[0] == crop_name if v[1] >= tolerance_range_k[0] and v[1] <= tolerance_range_k[1] }
 		
 		return render(request,'5. agriclinic/advisor.html',{'name':name,'crop':crop_name,'amt_nval':amt_nitrogen_added,'amt_pval':amt_phosphorus_added,'amt_kval':amt_potassium_added,'final_nval':final_nval,'final_pval':final_pval,'final_kval':final_kval,'recommended_n':recommended_n,'recommended_p':recommended_p,'recommended_k':recommended_k,'area':area})
-
-#NutriTracker Views
-def NutriTrackerView(request):
-	title=''
-	desc=''
-	seo = SeoContent.objects.all()
-	for i in seo:
-		if i.page == 'home':
-			title = i.meta_title
-			desc = i.meta_description
-	url = request.build_absolute_uri(request.path)
-	plot_data = [plot.user_profile.user.username for plot in Plot.objects.all()]
-	return render(request,'6. nutritracker/nutritracker.html', {'title':title,'desc':desc,'canonical':url,'plot_data':plot_data})
-
-@login_required
-def new_user_purchase_history(request):
-	profile = get_object_or_404(UserProfile, user=request.user)
-	plot_choices = list(map(lambda plot: (plot.plot_name, plot.plot_name), filter(lambda plot: plot.plot_name is not None, Plot.objects.filter(user_profile=profile))))
-	plots = Plot.objects.filter(user_profile=profile)
-	crop_choices=Plot.CROPS
-	soil_condition=Plot.SOIL_CONDITION
-	soil_health=Plot.SOIL_HEALTH
-	soil_ph = Plot.pH
-	soil_nutrients = Plot.SOIL_NUTRIENTS
-	water_source = Plot.WATER_SOURCES
-	water_avail = Plot.WATER_SUFFICIENCIES
-	if request.method == 'POST':
-		form = NewFarmerPurchaseHistoryForm(data=request.POST)
-		fertilizer_formset = NTFertilizerPurchaseFormSet(data=request.POST, instance=NewFarmerPurchaseHistory())
-		if form.is_valid() and fertilizer_formset.is_valid():
-			new_user = form.save(commit=False)
-			plot_input = new_user.cleaned_data['plot']
-			plot_info = get_object_or_404(Plot, plot_name=plot_input)
-			new_user.name = profile.name
-			new_user.whatsapp_no = profile.whatsapp_no 
-			new_user.email = request.user.email if request.user.email else None
-			new_user.state = profile.state
-			new_user.district = profile.district if profile.district else None
-			new_user.taluk = profile.taluk if profile.taluk else None
-			main_instance = new_user.save()
-			fertilizer_formset.instance = main_instance
-			fertilizer_formset.save()
-			url = reverse('W2AI:dashboard')
-			#return redirect(url)
-			instance = NewFarmerPurchaseHistory.objects.get(id=main_instance.id)
-			subject = 'NutriTracker Service Enquiry'
-			message = f'''Enquiry is <br>
-						<strong>Customer Name: </strong> {instance.name}<br>
-						<strong>Customer Phone Number: </strong> {instance.whatsapp_no}<br>'''
-			send_notification(subject, message, ['dr.prasannad@way2agribusiness.com'])
-			return redirect(reverse('W2AI:form-message'))
-	else:
-		form = NewFarmerPurchaseHistoryForm(request=request)
-		form.fields['plot'].choices = plot_choices
-		fertilizer_formset = NTFertilizerPurchaseFormSet()
-	return render(request,'6. nutritracker/nutritracker_form.html',{'form':form,'fertilizer_formset':fertilizer_formset,'plots':plots,'crop_choices':crop_choices,'soil_condition':soil_condition,'soil_health':soil_health,'soil_ph':soil_ph,'soil_nutrients':soil_nutrients,'water_source':water_source,'water_avail':water_avail})
-
-class NewFarmerPurchaseHistoryViewSet(ModelViewSet):
-	queryset = NewFarmerPurchaseHistory.objects.all()
-	serializer_class = NewFarmerPurchaseHistorySerializer
-
-	def get_ag_userinput_details(self, request):
-		nt_newuser_hist_form = NewFarmerPurchaseHistoryForm()
-		return render(request, 'contact.html', {'nt_newuser-hist_form': nt_newuser_hist_form})
-
-@login_required
-def sending_schedule(request):
-	subject = 'Fertilizer Scheduling'
-	message = 'Fertilizer Notification Scheduling'
-	profile = UserProfile.objects.get(user=request.user)
-	recipient_list = request.user.email if request.user.email else None
-	schedule_date = NewFarmerPurchaseHistory.objects.filter(name=profile.name)
-	dates = {}
-	for i in schedule_date:
-		if i.purchase_date1 and i.crop1 and i.crop_stage1:
-			dates[str(i.purchase_date1)] = (i.crop1, i.crop_stage1)
-		if i.purchase_date2 and i.crop2 and i.crop_stage2:
-			dates[str(i.purchase_date2)] = (i.crop2, i.crop_stage2)
-		if i.purchase_date3 and i.crop3 and i.crop_stage3:
-			dates[str(i.purchase_date3)] = (i.crop3, i.crop_stage3)
-		if i.purchase_date4 and i.crop4 and i.crop_stage4:
-			dates[str(i.purchase_date4)] = (i.crop4, i.crop_stage4)
-		if i.purchase_date5 and i.crop5 and i.crop_stage5:
-			dates[str(i.purchase_date5)] = (i.crop5, i.crop_stage5) 
-	date_keys = list(dates.keys())
-	date_objects = [datetime.strptime(date, '%Y-%m-%d').date() for date in date_keys]
-	recent_date = max(date_objects)
-	data = {}
-	for k, v in dates.items():
-		if k == str(recent_date):
-			data[recent_date] = v
-	next_schedule = NutriTrackerSchedule.objects.get(crops = data[recent_date][0])
-	crop_type = {
-					'Annual Crops':['Amla', 'Avocado', 'Banana', 'Carrot', 'Chilli', 'Citrus', 'Cocoa', 'Coffee', 'Cotton', 'Curry Leaves', 'Dragon Fruit', 'Drumstick', 'Fig', 'Ginger', 'Grapes', 'Groundnut', 'Guava', 'Jasmin', 'Lime', 'Macadamia', 'Mahogani', 'Maize', 'Mango', 'Mangosteen', 'Mosambi', 'Onion', 'Papaya', 'Pepper', 'Pineapple', 'Potato', 'Rambutan', 'Sapota', 'Sugarcane', 'Tender Coconut', 'Tomato', 'Tur', 'Turmeric'],
-					'Perennial Crops':['Areca New', 'Arecanut', 'Betelvine', 'Cashewnut', 'Cauliflower (Cole Crops)', 'Chrysanthemum', 'Coconut', 'Custard Apple', 'Durian', 'Jack Fruit', 'Kokum', 'Nutmeg', 'Paddy', 'Pomegranate', 'Rose', 'Rosewood']
-			  	}
-	for k, v in crop_type.items():
-		if data[recent_date][0] in v:
-			c_type = k
-	if next_schedule.crop_types == c_type and next_schedule.crop_stage == data[recent_date][1]:
-		result_date = recent_date + timedelta(days=int(next_schedule.scheduling_period)*30) 
-	if datetime.today().date() == result_date:
-		send_notification(subject, message, recipient_list)
-	else:
-		return HttpResponse("Next schedule will schedule soon")
-	return HttpResponse('sent')
-
-#FieldIntel Views
-def farm_intel_view(request):
-	url = request.build_absolute_uri(request.path)
-	return render(request, '7. fieldintel/fieldIntel.html',{'canonical':url})
 
 @login_required
 def disease_recognition_view(request):
@@ -1390,165 +1696,100 @@ def symptom_recognition_report(request, id):
 		predicted_disease_match = finalpredicted_class
 	return render(request,'5. agriclinic/5.1 symptom/symptom-recognition.html',{'recognized_disease':set(selected_disease),'recognized_deficiency':set(selected_deficiency),'recognized_pests':set(selected_pests),'selected_symptoms':selected_keys,'infected_crop':crop,'predicted_disease_match': predicted_disease_match,'finalpredicted_class':finalpredicted_class})
 
-def ats_view(request):
-	try:
-		roadmap=ATSRoadmap.objects.get(id=1)
-	except ATSRoadmap.DoesNotExist:
-		roadmap=None
+
+#-------------------------------------- Above Agri Clinic Related views -------------------------------------------
+
+
+#-------------------------------------- Below Nutritracker Related views -------------------------------------------
+def NutriTrackerView(request):
+	title=''
+	desc=''
+	seo = SeoContent.objects.all()
+	for i in seo:
+		if i.page == 'home':
+			title = i.meta_title
+			desc = i.meta_description
 	url = request.build_absolute_uri(request.path)
-	url_ats_intro = request.build_absolute_uri(reverse('W2AI:atsintro-list'))
-	url_ats_info = request.build_absolute_uri(reverse('W2AI:atsinfo-list'))
-	url_ats_contact = request.build_absolute_uri(reverse('W2AI:atscontactinfo-list'))
-	response3 = requests.get(url_ats_intro)
-	response1 = requests.get(url_ats_info)
-	response2 = requests.get(url_ats_contact)
-	data = intro = contact_info = None
-	if response1.status_code == 200 and response2.status_code == 200 and response3.status_code == 200:
-		data = response1.json()
-		contact_info = response2.json() 
-		intro = response3.json()
-	if request.method == 'POST':
-		if 'select-form2' in request.POST:
-			value = request.POST.get('select-form2')
-			url = reverse(f"W2AI:{value.split('--')[1]}", args=[value.split('--')[2],value.split('--')[3]])
-			return redirect(url)
-		elif 'form1' in request.POST:
-			form = ATSSellerForm(data=request.POST)
-			image_formset = ATSSellerProductImageFormSet(data=request.POST, files=request.FILES, instance=ATSSeller())
-			if form.is_valid() and image_formset.is_valid():
-				phone = form.cleaned_data['seller_company']
-				try:
-					parsed_number = phonenumbers.parse(phone,'IN')
-					if not phonenumbers.is_valid_number(parsed_number) and str(parsed_number.national_number)[0] not in ['9', '8', '7', '6']:
-						message = 'Invalid Phone number: Must be of 10 digit length and Must start with 9, 8, 7 or 6'
-						form = ATSSellerForm(data=request.POST)
-						return render(request, 'ats.html',{'form': form, 'data': data, 'contact_info': contact_info, 'intro': intro, 'product_info': product_info,'image_formset':image_formset,'message':message,'canonical':url, 'product_images':product_images,'roadmap':roadmap})
-					elif str(parsed_number.national_number)[0] not in ['9', '8', '7', '6']:
-						message = 'Invalid Phone Number: Must start with 9, 8, 7, or 6'
-						form = ATSSellerForm(data=request.POST)
-						return render(request, 'ats.html',{'form': form, 'data': data, 'contact_info': contact_info, 'intro': intro, 'image_formset':image_formset,'message':message,'canonical':url,'roadmap':roadmap})
-					elif not phonenumbers.is_valid_number(parsed_number):
-						message = 'Invalid Phone Number: must be of 10 digit'
-						form = ATSSellerForm(data=request.POST)
-						return render(request, 'ats.html',{'form': form, 'data': data, 'contact_info': contact_info, 'intro': intro, 'image_formset':image_formset,'message':message,'canonical':url,'roadmap':roadmap})
-				except phonenumbers.phonenumberutil.NumberParseException:
-					message = 'Invalid Phone number'
-					form = ATSSellerForm(data=request.POST)
-					return render(request, 'ats.html',{'form': form, 'data': data, 'contact_info': contact_info, 'intro': intro, 'image_formset':image_formset,'message':message,'canonical':url,'roadmap':roadmap})
-				main_instance = form.save()
-				image_formset.instance = main_instance
-				image_formset.save()
-				instance = ATSSeller.objects.get(id=main_instance.id)
-				subject = 'way2agriintel.com: Agritech Mart Seller Enquiry'
-				message = f'''<strong>Agritech Mart Seller Enquiry</strong> from <em style="darkblue">way2agriintel.com</em>.<br>
-            			<strong>Customer Name: </strong>{instance.seller_name}<br>
-                        <strong>Phone number: </strong>{instance.seller_company}<br>
-                        <strong>Address: </strong>{instance.seller_address}'''
-				recipient_list = ['dr.prasannad@way2agribusiness.com']
-				send_notification(subject, message, recipient_list)
-				return redirect(reverse('W2AI:atm-seller-success'))
-			else:
-				return HttpResponse('none has been submiitted')
+	plot_data = [plot.user_profile.user.username for plot in Plot.objects.all()]
+	return render(request,'6. nutritracker/nutritracker.html', {'title':title,'desc':desc,'canonical':url,'plot_data':plot_data})
+
+from W2AI.forms import NutriTrackerModelForm
+
+def new_user_purchase_history(request):
+    if request.method == "POST":
+        # Using ModelForm instead of regular Form since you're trying to save it
+        form = NutriTrackerModelForm(request.POST)
+        if form.is_valid():
+            # Save the form data to create a new NutriTracker object
+            nutritracker = form.save()
+            # You can add any additional processing here if needed
+            return redirect(reverse('W2AI:form-message'))  # Redirect to a success page
+    else:
+        # Initialize an empty form for GET requests
+        form = NutriTrackerModelForm()
+
+    return render(request, "6. nutritracker/nutritracker_form.html", {"form": form})
+
+
+#########################################################################################################
+
+def nutritracker_success(request):
+    return render(request, 'nutritracker_success.html')
+
+# class NewFarmerPurchaseHistoryViewSet(ModelViewSet):
+# 	queryset = NewFarmerPurchaseHistory.objects.all()
+# 	serializer_class = NewFarmerPurchaseHistorySerializer
+
+# 	def get_ag_userinput_details(self, request):
+# 		nt_newuser_hist_form = NewFarmerPurchaseHistoryForm()
+# 		return render(request, 'contact.html', {'nt_newuser-hist_form': nt_newuser_hist_form})
+
+@login_required
+def sending_schedule(request):
+	subject = 'Fertilizer Scheduling'
+	message = 'Fertilizer Notification Scheduling'
+	profile = UserProfile.objects.get(user=request.user)
+	recipient_list = request.user.email if request.user.email else None
+	schedule_date = NewFarmerPurchaseHistory.objects.filter(name=profile.name)
+	dates = {}
+	for i in schedule_date:
+		if i.purchase_date1 and i.crop1 and i.crop_stage1:
+			dates[str(i.purchase_date1)] = (i.crop1, i.crop_stage1)
+		if i.purchase_date2 and i.crop2 and i.crop_stage2:
+			dates[str(i.purchase_date2)] = (i.crop2, i.crop_stage2)
+		if i.purchase_date3 and i.crop3 and i.crop_stage3:
+			dates[str(i.purchase_date3)] = (i.crop3, i.crop_stage3)
+		if i.purchase_date4 and i.crop4 and i.crop_stage4:
+			dates[str(i.purchase_date4)] = (i.crop4, i.crop_stage4)
+		if i.purchase_date5 and i.crop5 and i.crop_stage5:
+			dates[str(i.purchase_date5)] = (i.crop5, i.crop_stage5) 
+	date_keys = list(dates.keys())
+	date_objects = [datetime.strptime(date, '%Y-%m-%d').date() for date in date_keys]
+	recent_date = max(date_objects)
+	data = {}
+	for k, v in dates.items():
+		if k == str(recent_date):
+			data[recent_date] = v
+	next_schedule = NutriTrackerSchedule.objects.get(crops = data[recent_date][0])
+	crop_type = {
+					'Annual Crops':['Amla', 'Avocado', 'Banana', 'Carrot', 'Chilli', 'Citrus', 'Cocoa', 'Coffee', 'Cotton', 'Curry Leaves', 'Dragon Fruit', 'Drumstick', 'Fig', 'Ginger', 'Grapes', 'Groundnut', 'Guava', 'Jasmin', 'Lime', 'Macadamia', 'Mahogani', 'Maize', 'Mango', 'Mangosteen', 'Mosambi', 'Onion', 'Papaya', 'Pepper', 'Pineapple', 'Potato', 'Rambutan', 'Sapota', 'Sugarcane', 'Tender Coconut', 'Tomato', 'Tur', 'Turmeric'],
+					'Perennial Crops':['Areca New', 'Arecanut', 'Betelvine', 'Cashewnut', 'Cauliflower (Cole Crops)', 'Chrysanthemum', 'Coconut', 'Custard Apple', 'Durian', 'Jack Fruit', 'Kokum', 'Nutmeg', 'Paddy', 'Pomegranate', 'Rose', 'Rosewood']
+			  	}
+	for k, v in crop_type.items():
+		if data[recent_date][0] in v:
+			c_type = k
+	if next_schedule.crop_types == c_type and next_schedule.crop_stage == data[recent_date][1]:
+		result_date = recent_date + timedelta(days=int(next_schedule.scheduling_period)*30) 
+	if datetime.today().date() == result_date:
+		send_notification(subject, message, recipient_list)
 	else:
-		form = ATSSellerForm() 
-		image_formset = ATSSellerProductImageFormSet()
-	return render(request, 'ats.html', {'form': form, 'data': data, 'contact_info': contact_info, 'intro': intro, 'image_formset':image_formset,'canonical':url,'roadmap':roadmap})
+		return HttpResponse("Next schedule will schedule soon")
+	return HttpResponse('sent')
 
-def ats_category_company(request, category_slug, company_slug):
-	try:
-		roadmap = ATSRoadmap.objects.get(id=1)
-	except ATSRoadmap.DoesNotExist:
-		roadmap = None
+#FieldIntel Views
+def farm_intel_view(request):
 	url = request.build_absolute_uri(request.path)
-	url_ats_intro = request.build_absolute_uri(reverse('W2AI:atsintro-list'))
-	url_ats_info = request.build_absolute_uri(reverse('W2AI:atsinfo-list'))
-	url_ats_contact = request.build_absolute_uri(reverse('W2AI:atscontactinfo-list'))
-	url_ats_contact_product = request.build_absolute_uri(reverse('W2AI:atscontactproductinfo-list'))
-	url_ats_contact_product_images = request.build_absolute_uri(reverse('W2AI:atscontactproductimages-list'))
-	response1 = requests.get(url_ats_intro)
-	response2 = requests.get(url_ats_info)
-	response3 = requests.get(url_ats_contact)
-	response4 = requests.get(url_ats_contact_product)
-	response5 = requests.get(url_ats_contact_product_images)
-	data = intro = None
-	if response1.status_code == 200 and response2.status_code == 200 and response3.status_code==200 and response4.status_code==200 and response5.status_code==200:
-		intro = response1.json()
-		data = response2.json()
-		contact_info = response3.json() 
-		product_info = response4.json()
-		product_images = response5.json()
-		product_image_dict = {}
-		for image in product_images:
-			product_name = image['seller_product']['product_name']
-			if product_name not in product_image_dict:
-				product_image_dict[product_name] = [image['product_image']]
-			else:
-				product_image_dict[product_name].append(image['product_image'])
-	if request.method == 'POST':
-		if 'select-form2' in request.POST:
-			category_slug = request.POST.get('selected-category')
-			company_slug = request.POST.get('selected-company')
-			if category_slug and company_slug:
-				url = reverse(f"W2AI:ats-category-company", args=[category_slug, company_slug])
-				return redirect(url)
-		elif 'form1' in request.POST:
-			form = ATSSellerForm(data=request.POST)
-			image_formset = ATSSellerProductImageFormSet(data=request.POST, files=request.FILES, instance=ATSSeller())
-			if form.is_valid() and image_formset.is_valid():
-				phone = form.cleaned_data['seller_company']
-				try:
-					parsed_number = phonenumbers.parse(phone,'IN')
-					if not phonenumbers.is_valid_number(parsed_number) and str(parsed_number.national_number)[0] not in ['9', '8', '7', '6']:
-						message = 'Invalid Phone number: Must be of 10 digit length and Must start with 9, 8, 7 or 6'
-						form = ATSSellerForm(data=request.POST)
-						return render(request, 'ats.html',{'form': form, 'data': data,'contact_info': contact_info, 'intro': intro, 'product_info': product_info,'image_formset':image_formset,'message':message,'canonical':url, 'product_images':product_images,'roadmap':roadmap})
-					elif str(parsed_number.national_number)[0] not in ['9', '8', '7', '6']:
-						message = 'Invalid Phone Number: Must start with 9, 8, 7, or 6'
-						form = ATSSellerForm(data=request.POST)
-						return render(request, 'ats.html',{'form': form, 'data': data, 'contact_info': contact_info, 'intro': intro, 'product_info': product_info,'image_formset':image_formset,'message':message,'canonical':url,'product_images':product_images,'roadmap':roadmap})
-					elif not phonenumbers.is_valid_number(parsed_number):
-						message = 'Invalid Phone Number: must be of 10 digit'
-						form = ATSSellerForm(data=request.POST)
-						return render(request, 'ats.html',{'form': form, 'data': data, 'contact_info': contact_info, 'intro': intro, 'product_info': product_info,'image_formset':image_formset,'message':message,'canonical':url,'product_images':product_images,'roadmap':roadmap})
-				except phonenumbers.phonenumberutil.NumberParseException:
-					message = 'Invalid Phone number'
-					form = ATSSellerForm(data=request.POST)
-					return render(request, 'ats.html',{'form': form, 'data': data, 'contact_info': contact_info, 'intro': intro, 'product_info': product_info,'image_formset':image_formset,'message':message,'canonical':url,'product_images':product_images,'roadmap':roadmap})
-				main_instance = form.save()
-				image_formset.instance = main_instance
-				image_formset.save()
-				instance = ATSSeller.objects.get(id=main_instance.id)
-				subject = f'{url}: Agritech Mart Seller Enquiry'
-				message = f'Agritech Mart Seller Enquiry from {url}. Customer Name: {instance.seller_name}, Phone number: {instance.seller_company} and Address: {instance.seller_address}'
-				recipient_list = ['dr.prasannad@way2agribusiness.com']
-				send_notification(subject, message, recipient_list)
-				return redirect(reverse('W2AI:atm-seller-success'))
-		else:
-			return HttpResponse('none has been submiitted')
-	form = ATSSellerForm() 
-	image_formset = ATSSellerProductImageFormSet()
-	return render(request, 'atm-category-company.html', {'category_slug':category_slug,'company_slug':company_slug,'roadmap':roadmap,'form':form,'image_formset':image_formset,'intro':intro,'data':data,'contact_info':contact_info,'product_info':product_info,'product_images':product_images,'canonical':url,'product_image_dict':product_image_dict})
+	return render(request, '7. fieldintel/fieldIntel.html',{'canonical':url})
 
-def seller_enquiry_success_view	(request):
-	url = request.build_absolute_uri(request.path)
-	return render(request, 'ats_seller_enquiry_success.html', {'canonical':url})
-	
-class ATSIntroViewSet(viewsets.ModelViewSet):
-	queryset = ATSIntro.objects.all()
-	serializer_class = ATSIntroSerializer
 
-class ATSInfoViewSet(viewsets.ModelViewSet):
-	queryset = ATSInfo.objects.all()
-	serializer_class = ATSSerializer
-
-class ATSContactInfoViewSet(viewsets.ModelViewSet):
-	queryset = ATSContactInfo.objects.all()
-	serializer_class = ATSContactSerializer
-
-class ATSContactProductInfoViewSet(viewsets.ModelViewSet):
-	queryset = ATSContactProductInfo.objects.all()
-	serializer_class = ATSContactProductSerializer
-
-class ATSContactProductImagesViewSet(viewsets.ModelViewSet):
-	queryset = ATSContactProductImages.objects.all()
-	serializer_class = ATSContactProductImagesSerializer
+#-------------------------------------- Above Nutritracker Related views -------------------------------------------

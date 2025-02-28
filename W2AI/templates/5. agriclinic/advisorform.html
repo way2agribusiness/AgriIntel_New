@@ -5,78 +5,75 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@900&display=swap" rel="stylesheet">
     <title>Way2AgriIntel AI | AgriClinic Form </title>
-    <link rel="stylesheet" href="{% static 'css/nutricrops.css' %}"/>    
+    <link rel="stylesheet" href="{% static 'css/cropforms.css' %}"/>    
 {% endblock %}
 {% block header %}{% endblock %}
 {% block content %}
+
+<div class="form-div">
     <p class="note">
         Access to the online service will be available shortly after the launch of the <strong>"AgriClinic"</strong> module. 
         Until then, our team will call you to offer an interim solution over the phone. 
-        Kindly complete and submit the form below./ 
+        Kindly complete and submit the form below.
+    </p>
+    <p class="note">
         AgriClinic ಮಾಡ್ಯೂಲ್ ಸ್ವಲ್ಪ ಸಮಯದ ನಂತರ ಆನ್‌ಲೈನ್ ಸೇವೆಗೆ ಲಭ್ಯವಿರುತ್ತದೆ. ಅಲ್ಲಿಯವರೆಗೆ, ನಮ್ಮ ತಂಡವು ಫೋನ್ ಮೂಲಕ ಮಧ್ಯಂತರ ಪರಿಹಾರವನ್ನು ನೀಡಲು ನಿಮಗೆ ಕರೆ ಮಾಡುತ್ತದೆ. ದಯವಿಟ್ಟು ಕೆಳಗಿನ ಫಾರ್ಮ್ ಪೂರ್ಣಗೊಳಿಸಿ ಮತ್ತು ಸಲ್ಲಿಸಿ.
     </p>
     <br>
-    <div class="form-div">
-        <form method="post" style="border:1px solid black;border-radius:5px;">
-            <h4 class="form-heading">Nutrient Deficiency Analysis Form</h4>
-            <br>
-            {% csrf_token %}
-                {% for field in form %}
-                    <div id='{{field.auto_id}}_div' class="form-first-div">
-                        <div class="form-second-div">
-                            <div>
-                                <label>{{ field.label}}</label>    
-                            </div>
-                        </div>
-                        <div class="input-div">
-                            <div>
-                                {{ field }}
-                            </div>
-                        </div>
-                    </div> 
-                {% endfor %}
-                <br>
-                <div class="button-div" >
-                    <button type="submit" style="padding:5px;background-color:green;border:1px solid black;border-radius:10px;"><span>Click For Nutrient Advice</span></button>
+
+    <form method="post" class="ci-feeding">
+        <h4 class="form-heading">AgriClinic Input Form</h4>
+        <br>
+        {% csrf_token %}
+        
+        {% for field in form %}
+            <div id='{{field.auto_id}}_div' class="form-first-div">
+                <div class="form-second-div">
+                    <label>{{ field.label }}</label>    
                 </div>
-                <br>
-        </form>
-    </div>
-    <script>
-        const availableOfStrField = document.getElementById('id_available_of_str');
-        const parentDiv = document.getElementById('id_available_of_str_div');
-        const nitrogenField = document.getElementById('id_nitrogen_div');
-        const phosphorusField = document.getElementById('id_phosphorus_div');
-        const potassiumField = document.getElementById('id_potassium_div');
+                <div class="input-div">
+                    {{ field }}
+                </div>
+            </div> 
+        {% endfor %}
+        
+        <br>
+        <div class="button-div">
+            <button type="submit" class="submit-btn"><span>Click For Nutrient Advice</span></button>
+        </div>
+        <br>
+    </form>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // const availableOfStrField = document.getElementById('id_available_of_str');
+        // const nitrogenField = document.getElementById('id_nitrogen_div');
+        // const phosphorusField = document.getElementById('id_phosphorus_div');
+        // const potassiumField = document.getElementById('id_potassium_div');
         const phValueField = document.getElementById('id_ph_value_div');
         const nValueField = document.getElementById('id_n_value_div');
         const pValueField = document.getElementById('id_p_value_div');
         const kValueField = document.getElementById('id_k_value_div');
-        nitrogenField.style.display = 'none';
-        phosphorusField.style.display = 'none';
-        potassiumField.style.display = 'none';
-        parentDiv.addEventListener('change', function () 
-        {
-            if (availableOfStrField.checked) 
-            {
-                nitrogenField.style.display = 'none';
-                phosphorusField.style.display = 'none';
-                potassiumField.style.display = 'none';   
-                phValueField.style.display = 'block';
-                nValueField.style.display = 'block';
-                pValueField.style.display = 'block';
-                kValueField.style.display = 'block';       
-            } 
-            else 
-            {
-                nitrogenField.style.display = 'block';
-                phosphorusField.style.display = 'block';
-                potassiumField.style.display = 'block';
-                phValueField.style.display = 'none';
-                nValueField.style.display = 'none';
-                pValueField.style.display = 'none';
-                kValueField.style.display = 'none';
-            }
-        });
-    </script>
+
+        function toggleFields() {
+            // const isChecked = availableOfStrField.checked;
+            
+            // Show Soil Test Fields
+            phValueField.style.display = isChecked ? 'block' : 'none';
+            nValueField.style.display = isChecked ? 'block' : 'none';
+            pValueField.style.display = isChecked ? 'block' : 'none';
+            kValueField.style.display = isChecked ? 'block' : 'none';
+
+            // Hide or Show Nutrient Drop-downs
+            // nitrogenField.style.display = isChecked ? 'none' : 'block';
+            // phosphorusField.style.display = isChecked ? 'none' : 'block';
+            // potassiumField.style.display = isChecked ? 'none' : 'block';
+        }
+
+        // // Attach event listener to the checkbox
+        // availableOfStrField.addEventListener('change', toggleFields);
+        // toggleFields();  // Set initial state on page load
+    });
+</script>
 {% endblock %}

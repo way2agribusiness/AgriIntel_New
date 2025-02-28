@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+    <title>Way2AgriIntel AI | AgriClinic {% if title %}| {{title}} {% endif %}</title>
+{% endblock %}
+{% block content %}
+	<br><br><br>
+    <div class="intro">
+        <div class="div1">
+            <img src="https://res.cloudinary.com/dm71xhdxd/image/upload/v1714453417/Static%20Images/AgriClinic_p3hvlf.webp" alt="Agri Clinic Logo" loading="lazy">
+        </div>
+        <div class="div2">
+            <h3>About Agri Clinic</h3>
+            <p>The <strong>"Agri Clinic" </strong> service, offered under Way2AgriIntel by Way2Agribusiness India Pvt Ltd, leverages AI and machine learning models to effectively address and manage crop nutrient concerns. These advanced models employ data analysis and predictive techniques to evaluate factors such as soil composition, weather conditions, and plant attributes. By assimilating these insights, Agri Clinic generates recommendations to optimize nutrient application. This analysis is rooted in logical reasoning, with nutrient suggestions contingent on factors like the availability of soil test reports, blanket recommendations, crop growth stages, reclamation needs, and nutrient sources. The service covers a diverse range of crops including Paddy, Maize, Tomato, Sugarcane, Coconut, Arecanut, Coffee, Banana, Papaya, Pomegranate, Cotton, Onion, Tur, and Pepper. Additionally, Agri Clinic incorporates an image recognition model that aids in identifying nutrient or fertilizer deficiencies, as well as the requirement for plant protection products or pesticides. By amalgamating technology and agriculture, Agri Clinic contributes to enhanced crop health and increased agricultural productivity.</p>
+            {% if not user.is_authenticated %}
+                <span class="tooltiptext">Click <a href="{% url 'W2AI:login_url' %}" id="login">Login</a>  for Access Service</span>
+            {% endif %}
+        </div>
+    </div>  
+	{% if user.is_authenticated %}
+	    <div class="click" id="hover-link" {% if user.username not in plot_data %}onmouseover="hoverMessage()" {% endif %}>
+		    <a href="{% url 'W2AI:advisor_form' %}" {% if user.username not in plot_data %}style="pointer-events:none"{% endif %}>Click Here</a>
+	    </div>
+        <div id="message" >Please Complete Your Profile click (<strong style="color:darkgreen"><a href="{% url 'W2AI:update-user-profile' %}">"Complete Profile"</a></strong>)</div>
+	{% endif %} 
+	<br><br>
+    <script>
+    	const msg = document.getElementById('message');
+        msg.style.display='none';
+        function hoverMessage(){
+            msg.style.display='block';
+            msg.style.marginLeft='800px';
+            msg.style.marginTop='-25px';
+            msg.style.opacity='1';
+        }
+        window.onload = setInterval(() => msg.style.opacity = '0', 5000);
+    </script>
+{% endblock %}

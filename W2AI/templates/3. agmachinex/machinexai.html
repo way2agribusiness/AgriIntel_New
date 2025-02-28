@@ -11,28 +11,13 @@
         </div>
         <div class="div2">
             <h3>About AgMachineX</h3>
-            <p>The <strong>"AgMachineX"</strong> service, a cornerstone of Way2AgriIntel by Way2Agribusiness India Pvt Ltd, redefines the landscape of farm machinery selection for farmers. With a focus on practicality and efficiency, it undertakes a comprehensive analysis of farmers' needs. The service takes into account critical factors such as land holding, chosen crops, and prevailing machinery prices, offering tailored recommendations to optimize machinery choices. AgMachineX acts as a prudent advisor, acknowledging budget constraints by providing alternative options in case budget limitations arise. It prioritizes branded and cost-effective technology. For tillage machineries such as power tillers, weeders, and augers, soil type becomes a pivotal consideration. Covering an impressive array of crops including Paddy, Maize, Tomato, Sugarcane, Coconut, Arecanut, Coffee, Banana and more, AgMachineX extends its guidance to a spectrum of machinery. From power weeders, Chaff cutter, Sprayers, Brush cutter, Coconut climber, Coconut dehusker, Earth auger, Power tiller, Arecanut dehusker, Water pump, Chain saw, it recommendations encompass the essentials. Reflecting a seamless blend of technology and agricultural wisdom, AgMachineX empowers farmers with pragmatic choices, cultivating efficiency and productivity on their fields.</p>
-            {% if not user.is_authenticated %}
-                <span class="tooltiptext">Click <a href="{% url 'W2AI:login_url' %}" id="login">Login</a>  for Access Service</span>
-            {% endif %}
+            <p>The <strong>"AgMachineX"</strong> service, a cornerstone of Way2AgriIntel by Way2Agribusiness India Pvt Ltd, redefines the landscape of farm machinery selection for farmers. With a focus on practicality and efficiency, it undertakes a comprehensive analysis of farmers' needs. The service takes into account critical factors such as land holding, chosen crops, and prevailing machinery prices, offering tailored recommendations to optimize machinery choices. AgMachineX acts as a prudent advisor, acknowledging budget constraints by providing alternative options in case budget limitations arise. It prioritizes branded and cost-effective technology. For tillage machineries such as power tillers, weeders, and augers, soil type becomes a pivotal consideration. Covering an impressive array of crops including Paddy, Maize, Tomato, Sugarcane, Coconut, Arecanut, Coffee, Banana and more, AgMachineX extends its guidance to a spectrum of machinery. From power weeders, Chaff cutter, Sprayers, Brush cutter, Coconut climber, Coconut dehusker, Earth auger, Power tiller, Arecanut dehusker, Water pump, Chain saw, its recommendations encompass the essentials. Reflecting a seamless blend of technology and agricultural wisdom, AgMachineX empowers farmers with pragmatic choices, cultivating efficiency and productivity on their fields.</p>
         </div>
     </div> 
-	{% if user.is_authenticated %}
-	    <div class="click" id="hover-link" {% if user.username not in plot_data %}onmouseover="hoverMessage()" {% endif %}>
-		    <a href="{% url 'W2AI:agmachinex-input-form' %}" {% if user.username not in plot_data %}style="pointer-events:none"{% endif %}>Click Here</a>
-	    </div>
-        <div id="message" >Please Complete Your Profile click (<strong style="color:darkgreen"><a href="{% url 'W2AI:update-user-profile' %}">"Complete Profile"</a></strong>)</div>
-    {% endif %} 
+
+    <div class="click" id="hover-link">
+        <a href="{% url 'W2AI:agmachinex-input-form' %}">Click Here</a>
+    </div>
+
     <br><br>
-    <script>
-        const msg = document.getElementById('message');
-        msg.style.display='none';
-        function hoverMessage(){
-            msg.style.display='block';
-            msg.style.marginLeft='800px';
-            msg.style.marginTop='-25px';
-            msg.style.opacity='1';
-        }
-        window.onload = setInterval(() => msg.style.opacity = '0', 5000);
-    </script>
 {% endblock %}

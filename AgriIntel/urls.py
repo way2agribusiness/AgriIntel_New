@@ -21,7 +21,7 @@ from django.conf.urls.static import static
 from django.contrib.sitemaps import views 
 from W2AI.sitemap import HomePageSitemap, AboutUsPageSitemap, ContactUsPageSitemap, AgMachineXPageSitemap, CropIntelPageSitemap
 from W2AI.sitemap import AgriClinicPageSitemap, FBIPageSitemap, NutriTrackerPageSitemap, FieldIntelPageSitemap,FieldIntelFeedbackPageSitemap
-from W2AI.sitemap import AddedServicesPageSitemap,AgritechMartPageSitemap, AgritechMartCountryCategoryPageSitemap, RegisterPageSitemap
+from W2AI.sitemap import AddedServicesPageSitemap,RegisterPageSitemap
 from W2AI.sitemap import LoginPageSitemap
 import os
 from django.http import HttpResponse
@@ -41,8 +41,6 @@ sitemaps = {
 	'field-intel':FieldIntelPageSitemap,
 	'feedback':FieldIntelFeedbackPageSitemap,
 	'farm-management-solutions':AddedServicesPageSitemap,
-	'agritech-mart':AgritechMartPageSitemap,
-	'agritech-mart-category-country':AgritechMartCountryCategoryPageSitemap,
 	'register':RegisterPageSitemap,
 	'login':LoginPageSitemap,
 }

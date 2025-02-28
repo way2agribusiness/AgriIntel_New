@@ -2,15 +2,47 @@
 {% load static %}
 {% block head %}
     <title>Way2AI | {{user.username|capfirst}} Dashboard</title>
-    <link href="{% static 'css/auth.css' %}" rel="stylesheet"/>        	
-	
+    <link href="{% static 'css/dashboard.css' %}" rel="stylesheet"/>
 {% endblock %}
+
 {% block header %}{% endblock %}
+
 {% block content %}
-    <i class="material-icons" id="account-icon" onclick="openProfile(event)">account_box</i>
+<h1 class="welcome-message">Welcome {{user.username|capfirst}}</h1>
     <div class="dashboard-div">
+        <!-- Mobile Profile Toggle -->
+        <div class="profile-toggle">
+            <h3 id="username">Welcome {{user.username|capfirst}}</h3>
+            <!-- <button onclick="toggleProfile()">Toggle Profile</button> -->
+        </div>
+
+        <!-- Services Section -->
+        <div class="features">
+            <!-- <h1 class="welcome-message">Our Services</h1> -->
+            <h3>Our Services</h3>
+            <ul class="services">
+                <li class="service-item">
+                    <a href="{% url 'W2AI:cropintel' %}" style="text-decoration: none;">CropIntel</a>
+                </li>
+                <li class="service-item">
+                    <a href="{% url 'W2AI:agmachinex' %}"style="text-decoration: none;">AgMachineX</a>
+                </li>
+                <li class="service-item">
+                    <a href="{% url 'W2AI:agri-fbi' %}"style="text-decoration: none;">Agri FBI</a>
+                </li>
+                <li class="service-item">
+                    <a href="{% url 'W2AI:agriclinic' %}"style="text-decoration: none;">Agri Clinic</a>
+                </li>
+                <li class="service-item">
+                    <a href="{% url 'W2AI:nutritracker' %}"style="text-decoration: none;">NutriTracker</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Profile Section -->
         <section class="profile-sec">
-            <h3 id="username"><span></span>Welcome <span>{{user.username|capfirst}}</span></h3>
+            <!-- <h1 class="welcome-message">Your Profile</h1> -->
+            <h3> Your Profile</h3>
             <p><strong>Name</strong><span>{{user_data.name | capfirst}}</span></p>
             <p><strong>Whatsapp No.</strong><span>{{user_data.whatsapp_no}}</span></p>
             <p><strong>Registration Date </strong><span>{{user.date_joined}}</span></p>
@@ -19,7 +51,7 @@
             {% endif %}
             {% if user_data.district %}
                 <p><strong>Current Location</strong><span>{{user_data.district}}</span></p>
-            {% endif %} 
+            {% endif %}
             {% if user_data.zone_district %}
                 <p><strong>Crop Grown Location</strong><span>{{user_data.zone_district}}</span></p>
             {% endif %}
@@ -38,56 +70,63 @@
             {% if user_data.zip_code %}
                 <p><strong>ZIP Code</strong><span>{{user_data.zip_code}}</span></p>
             {% endif %}
-            <div class="btns">
+            
+            <!-- <div class="btns">
                 {% if plots.plot_name == None %}
                     <button type="submit" class="cp">
                         <i class="fa-solid fa-pencil"></i>
                         <a href="{% url 'W2AI:update-user-profile' %}">Complete Profile</a>
                     </button>
+                    <p style="margin-top: 5px; color: darkgreen;">Please complete your profile!</p>
+                {% endif %}
+            </div> -->
+            <div class="btns">
+                <button type="submit" class="cp">
+                    <i class="fa-solid fa-pencil"></i>
+                    <a href="{% url 'W2AI:update-user-profile' %}">Update Profile</a>
+                </button>
+                {% if plots.plot_name == None %}
+                    <p style="margin-top: 5px; color: darkgreen;">Please complete your profile!</p>
                 {% endif %}
             </div>
-            <br>
-            <div class="features">
-                <h3>Our Services</h3><br>
-                <div class="services">
-                    <div id="hover-link" {% if plots.plot_name == None %}onmouseover="hoverMessage()" onmouseleave="mouseLeave()"{% endif %}><a href="{% url 'W2AI:cropintel' %}" {% if plots.plot_name == None %}style="pointer-events:none"{% endif %}>CropIntel</a></div>
-                    <div id="hover-link" {% if plots.plot_name == None %}onmouseover="hoverMessage()" onmouseleave="mouseLeave()"{% endif %}><a href="{% url 'W2AI:agriclinic' %}" {% if plots.plot_name == None %}style="pointer-events:none"{% endif %}>Agri Clinic</a></div>
-                    <div id="hover-link" {% if plots.plot_name == None %}onmouseover="hoverMessage()" onmouseleave="mouseLeave()"{% endif %}><a href="{% url 'W2AI:agmachinex' %}" {% if plots.plot_name == None %}style="pointer-events:none"{% endif %}>AgMachineX</a></div>
-                    <div id="hover-link" {% if plots.plot_name == None %}onmouseover="hoverMessage()" onmouseleave="mouseLeave()"{% endif %}><a href="{% url 'W2AI:agri-fbi' %}" {% if plots.plot_name == None %}style="pointer-events:none"{% endif %}>Way2ABI Agri FBI</a></div>
-                    <div id="hover-link" {% if plots.plot_name == None %}onmouseover="hoverMessage()" onmouseleave="mouseLeave()"{% endif %}><a href="{% url 'W2AI:nutritracker' %}" {% if plots.plot_name == None %}style="pointer-events:none"{% endif %}>NutriTracker</a></div>
+        </section>
+
+    <!-- Location and Weather Section -->
+    <section class="profile-info">
+        <div class="loc-weather">
+            <div>
+                <h2>Device Location</h2>
+                <div class="weather-icon-container">
+                    <img src="https://res.cloudinary.com/dm71xhdxd/image/upload/v1705925079/Static%20Images/map_tpmloy.png" alt="Map" style="max-width: 25%; height: auto;"/>
                 </div>
-                <div id="message">Please Complete Your Profile (<strong style="color:darkgreen">"Complete Profile"</strong>)</div>
+                <h4>
+                    <span>Location:</span>
+                    <span id="detected-location">Detecting...</span>
+                </h4>
+                <h4>
+                    <span>Longitude:</span>
+                    <span id="longitude">{{longitude}}</span>
+                </h4>
+                <h4>
+                    <span>Latitude:</span>
+                    <span id="latitude">{{latitude}}</span>
+                </h4>
+                <h4>
+                    <span>Address:</span>
+                    <span id="location">Detecting...</span>
+                </h4>
             </div>
-        </section>
-        <section class="dashboard-center">
-            {% if plots.plot_name == None %}
-                <p>Please Complete Your Profile by Clicking <strong style="color:darkgreen">"Complete Profile"</strong> in left side Pane</p>
-            {% endif %}
-        </section>
-        <section class="profile-info">
-            <div class="loc-weather">
-                <div>
-                    <h2>Device Location</h2>
-                    <h3>
-                        <img src="https://res.cloudinary.com/dm71xhdxd/image/upload/v1705925079/Static%20Images/map_tpmloy.png"/> 
-                        <span>{{city}} {{region}} {{country}}-{{postal_code}}</span>
-                    </h3>
-                    <h4>
-                        <span><strong>Longitude Coordinate: </strong></span>
-                        <span>{{longitude}}</span>
-                    </h4>
-                    <h4>
-                        <span><strong>Latitude Coordinate: </strong></span>
-                        <span>{{latitude}}</span>
-                    </h4>
-                </div>
-                <div>
-                    <h2>Weather Profile</h2>
-                    <p style="text-align: center">{{day}}</p>
-                    <h3>
-                        <img src="http://openweathermap.org/img/w/{{icon}}.png"/>
-                        <span>{{description | capfirst}}</span>
-                        
+        </div>
+    </section>
+            
+    <section class="profile-info">
+        <div class="loc-weather">
+            <div>
+                <h2>Weather Profile</h2>
+                <p style="text-align: center; font-weight: bold;">{{day}}</p>
+                    <h3 style="display: flex; align-items: center; justify-content: center; color: darkgreen;">
+                        <img src="http://openweathermap.org/img/w/{{icon}}.png" width="90" height="auto" alt="Weather Icon"/>
+                        <span style="margin-left: 10px;">{{description | capfirst}}</span>
                     </h3>
                     <h4>
                         <span><strong>Temperature: </strong></span>
@@ -110,17 +149,13 @@
                         <span>{{wind}} miles/h</span>
                     </h4>
                     <h4>
-                        <span><strong>Wind Degree: </strong></span>
-                        <span>{{wind_deg}} deg</span>
-                    </h4>
-                    <h4>
                         <span><strong>Wind Direction: </strong></span>
                         {% if wind_deg == 0 or wind_deg == 360 %}
                             <span>North</span>
                         {% elif wind_deg > 0 and wind_deg < 90 %}
                             <span>North East</span>
                         {% elif wind_deg == 90 %}
-                            <span>{{wind_deg}} deg and Direction: East</span>
+                            <span>East</span>
                         {% elif wind_deg > 90 and wind_deg < 180 %}
                             <span>South East</span>
                         {% elif wind_deg == 180 %}
@@ -138,54 +173,65 @@
                         <span>{{cloud}} %</span>
                     </h4>
                     <h4>
-                        <span><strong>Sunrise Time: </strong></span>
+                        <span><strong>Sunrise: </strong></span>
                         <span>{{sunrise}}</span>
                     </h4>
                     <h4>
-                        <span><strong>Sunset Time: </strong></span>
+                        <span><strong>Sunset: </strong></span>
                         <span>{{sunset}}</span>
                     </h4>
                     <h4>
-                        <span><strong>Atmospheric Pressure: </strong></span>
+                        <span><strong>Pressure: </strong></span>
                         <span>{{pressure}} hPa</span>
                     </h4>
                 </div>
             </div>
         </section>
-        
     </div>
+
     <script>
-    	const msg = document.getElementById('message')
-        msg.style.display='none';
-        function hoverMessage(){
-            msg.style.display='block';
-            msg.style.position='absolute';
-            msg.style.top='95%';
-            msg.style.left='300px';
+        function toggleProfile() {
+            const profileSection = document.querySelector('.profile-sec');
+            profileSection.classList.toggle('active');
         }
-        function mouseLeave(){
-            msg.style.display='none';
+
+        // Function to get location and update weather
+        function getLocationAndWeather() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function (position) {
+                        let lat = position.coords.latitude;
+                        let lon = position.coords.longitude;
+
+                        // Update coordinates on page
+                        document.getElementById("latitude").innerText = lat;
+                        document.getElementById("longitude").innerText = lon;
+                        
+                        // Reverse Geocode using OpenStreetMap
+                        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                document.getElementById("location").innerText = data.display_name;
+                                document.getElementById("detected-location").innerText = 
+                                    `${data.address.city || data.address.town || data.address.village || ''} ${data.address.state || ''} ${data.address.country || ''}`;
+                            })
+                            .catch(error => {
+                                document.getElementById("location").innerText = "Location not found";
+                                document.getElementById("detected-location").innerText = "Location not found";
+                            });
+                    },
+                    function (error) {
+                        document.getElementById("location").innerText = "Location access denied";
+                        document.getElementById("detected-location").innerText = "Location access denied";
+                    }
+                );
+            } else {
+                document.getElementById("location").innerText = "Geolocation not supported";
+                document.getElementById("detected-location").innerText = "Geolocation not supported";
+            }
         }
-        const profileSec = document.querySelector('.profile-sec');
-        const weatherSec = document.querySelector('.profile-info');
-        const profileIcon = document.getElementById('account-icon');
-        const weatherIcon = document.getElementById('account-icon1');
-        const dashBoard = document.querySelector('.dashboard-div');
-        const userName = document.getElementById('username');
-        const services = document.querySelector('.features');
-       
-        if (window.innerWidth <= 768){
-            profileSec.style.display = 'none';
-            profileIcon.insertAdjacentElement('beforebegin',userName);
-            profileIcon.insertAdjacentElement('afterend',services);
-        }
-        function openProfile(){
-            if (profileSec.style.display === 'none'){
-                profileSec.style.display = 'block';
-            }else{
-                profileSec.style.display = 'none';
-            } 
-        }
+
+        // Call the function when page loads
+        window.onload = getLocationAndWeather;
     </script>
 {% endblock %}
-

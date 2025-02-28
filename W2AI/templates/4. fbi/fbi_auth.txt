@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+    <title>Way2AgriIntel AI | Way2ABI Agri FBI {% if title %}| {{title}} {% endif %}</title>
+{% endblock %}
+{% block content %}
+	<br><br>
+    <div class="intro">
+        <div class="div6">
+            <img src="https://res.cloudinary.com/dm71xhdxd/image/upload/v1696587180/Static%20Images/FBI_zcy9hMp_w8o803_udc6bk.webp" alt="Way2ABI Agri FBI Logo" loading="lazy" class="fbi-img"/>
+        </div>
+        <div class="div2">
+            <h3>About Agri FBI</h3>
+        	<p><strong>Agri FBI</strong>, developed by Way2Agribusiness India Pvt Ltd under Way2AgriIntel, revolutionizes farmers' decision-making processes by providing crucial insights into crop planning and market dynamics. Understanding the pressing need for simplicity and clarity, Agri FBI offers accessible yet comprehensive market intelligence tailored to the needs of average-educated farmers. By offering periodical price outlooks and market insights for key commodity categories such as Coffee, Arecanut, Pepper, Coconut, Copra, Maize, Tur, Onion, and Tomato, Agri FBI empowers farmers to make informed decisions about what to grow, when to grow, and how to market their produce for optimal price realization. Its content, meticulously curated through extensive research and analysis, encompasses market fundamentals, statistical tools, technical analysis, and field and market reports. Agri FBI also offers customized strategies called “Market Planner” to meet the need of the individual farmers or the buyers. Through the standardized "Report" feature covering price outlooks, summaries, and critical factors, Agri FBI ensures that farmers have the necessary tools to navigate market fluctuations and enhance their profitability.</p>
+        	{% if not user.is_authenticated %}
+                <span class="tooltiptext">Click <a href="{% url 'W2AI:login_url' %}" id="login">Login</a>  for Access Service</span>
+            {% endif %}
+    	</div>
+    </div> 
+	{% if user.is_authenticated %}
+	    <div class="click" id="hover-link" {% if user.username not in plot_data %}onmouseover="hoverMessage()" {% endif %}>
+		    <a href="{% url 'W2AI:fbi-crop-selection' %}" {% if user.username not in plot_data %}style="pointer-events:none"{% endif %}>Click Here</a>
+	    </div>
+        <div id="message" >Please Complete Your Profile click (<strong style="color:darkgreen"><a href="{% url 'W2AI:update-user-profile' %}">"Complete Profile"</a></strong>)</div>
+	{% endif %} 
+	<br><br>
+	<script>
+    	const msg = document.getElementById('message');
+        msg.style.display='none';
+        function hoverMessage(){
+            msg.style.display='block';
+            msg.style.marginLeft='800px';
+            msg.style.marginTop='-25px';
+            msg.style.opacity='1';
+        }
+        window.onload = setInterval(() => msg.style.opacity = '0', 5000);
+    </script>
+{% endblock %}
